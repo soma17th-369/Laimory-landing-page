@@ -1,0 +1,35 @@
+---
+import { getLangFromUrl, useTranslations, getLocalizedHome } from '../i18n/utils';
+import LanguagePicker from './LanguagePicker.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const home = getLocalizedHome(lang);
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur dark:border-slate-800/60 dark:bg-slate-950/80"
+>
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+    <a href={home} class="flex items-center gap-2 text-lg font-bold tracking-tight">
+      <span class="inline-block h-6 w-6 rounded-lg bg-brand"></span>
+      Laimory
+    </a>
+
+    <div class="flex items-center gap-4 sm:gap-6">
+      <a
+        href="#features"
+        class="hidden text-sm font-medium text-slate-600 hover:text-brand sm:inline dark:text-slate-300"
+      >
+        {t('nav.features')}
+      </a>
+      <LanguagePicker />
+      <a
+        href="#cta"
+        class="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-dark"
+      >
+        {t('nav.cta')}
+      </a>
+    </div>
+  </nav>
+</header>

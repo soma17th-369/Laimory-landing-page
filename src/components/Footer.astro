@@ -1,0 +1,21 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-slate-200 dark:border-slate-800">
+  <div
+    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6"
+  >
+    <div class="flex items-center gap-2 font-semibold">
+      <span class="inline-block h-5 w-5 rounded-md bg-brand"></span>
+      Laimory
+    </div>
+    <p class="text-sm text-slate-500 dark:text-slate-400">
+      © {year} Laimory. {t('footer.rights')}
+    </p>
+  </div>
+</footer>

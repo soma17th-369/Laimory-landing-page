@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   Laimory 브랜드 토큰 (Tailwind v4 @theme)
+   여기 색상만 바꾸면 전체 사이트에 반영됩니다.
+   사용 예: bg-brand / text-brand / hover:bg-brand-dark
+   ───────────────────────────────────────────── */
+@theme {
+  --color-brand: #4f46e5;
+  --color-brand-dark: #4338ca;
+  --color-brand-light: #eef2ff;
+}
+
+html {
+  scroll-behavior: smooth;
+}

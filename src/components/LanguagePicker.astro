@@ -1,0 +1,17 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+// 현재는 홈 페이지만 있으므로 각 언어의 홈으로 전환합니다.
+// 페이지가 늘어나면 여기서 현재 경로 기준으로 매핑하도록 확장하세요.
+const active = 'rounded px-2 py-1 bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white';
+const idle =
+  'rounded px-2 py-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white';
+---
+
+<div class="flex items-center gap-1 text-sm font-medium">
+  <a href="/" class={lang === 'ko' ? active : idle}>KO</a>
+  <span class="text-slate-300 dark:text-slate-600">/</span>
+  <a href="/en/" class={lang === 'en' ? active : idle}>EN</a>
+</div>
