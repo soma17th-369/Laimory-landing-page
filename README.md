@@ -26,7 +26,10 @@ npm run preview  # 빌드 결과 미리보기
 src/
 ├─ pages/
 │  ├─ index.astro            # 한국어 홈 (/)
-│  └─ en/index.astro         # 영어 홈 (/en/)
+│  ├─ en/index.astro         # 영어 홈 (/en/)
+│  ├─ 404.astro              # 없는 주소 (noindex)
+│  ├─ robots.txt.ts          # /robots.txt 생성
+│  └─ sitemap.xml.ts         # /sitemap.xml 생성
 ├─ layouts/
 │  └─ Layout.astro           # 공통 HTML 뼈대 (head, meta, 폰트, Header/Footer)
 ├─ components/
@@ -51,7 +54,9 @@ src/
 ├─ lib/
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
 │  ├─ moods.ts               # 감정별 색·표정 정의
-│  └─ links.ts               # 앱 다운로드 링크 · 약관 URL
+│  ├─ links.ts               # 앱 다운로드 링크 · 약관 URL
+│  ├─ site.ts                # 절대 URL 헬퍼 (site 기준)
+│  └─ schema.ts              # JSON-LD 구조화 데이터
 └─ styles/
    └─ global.css             # 디자인 토큰 + 공통 클래스
 
@@ -68,6 +73,19 @@ public/
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **섹션 추가/편집**: `src/components/sections/` 에 컴포넌트 추가 후 `pages/index.astro`, `pages/en/index.astro` 에 삽입
 - **아이콘 추가**: 디자인 파일에서 패스를 추출해 `src/lib/icons.ts` 에 추가
+
+## SEO
+
+canonical · hreflang · `og:url` · robots.txt · sitemap.xml이 모두 `astro.config.mjs`의
+`site` 값 하나를 기준으로 만들어집니다. 도메인이 바뀌면 **그 한 줄만** 고치면 됩니다.
+어디에도 도메인을 하드코딩하지 마세요 — `src/lib/site.ts`의 헬퍼를 쓰면 됩니다.
+
+- 색인에서 빼야 하는 페이지는 `<Layout noindex>` 로 감싸면 canonical · hreflang ·
+  구조화 데이터가 함께 빠집니다.
+- 구조화 데이터에 평점 · 다운로드 수 같은 **근거 없는 값을 넣지 마세요.** 구글 스팸 정책
+  위반이며 수동 조치 대상입니다. 넣지 않은 항목과 이유는 `src/lib/schema.ts` 주석 참고.
+- 사이트맵에 **아직 배포되지 않은 주소를 넣지 마세요.** 크롤러가 404를 받습니다.
+  새 페이지가 실제로 배포된 뒤에 `src/pages/sitemap.xml.ts`에 추가합니다.
 
 ## 배포
 
