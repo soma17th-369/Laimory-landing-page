@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { absolute } from '../lib/site';
+import { TERMS_URL } from '../lib/links';
 
 /**
  * sitemap.xml
@@ -18,16 +19,13 @@ import { absolute } from '../lib/site';
 const LOCALIZED_PAGES = [{ ko: '/', en: '/en/' }];
 
 /**
- * 한국어 문서만 있는 페이지.
+ * 한국어 문서만 있는 페이지 — 약관 6종.
  *
- * 약관 페이지(/terms/{slug}/{version})는 아직 main에 없어서 넣지 않았습니다.
- * 없는 주소를 사이트맵에 올리면 크롤러가 404를 받습니다.
- * 약관이 배포된 뒤 src/lib/links.ts의 TERMS_URL을 여기에 연결하세요.
- *
- * 그때 주의할 점: 약관이 개정되면 새 버전만 사이트맵에 남기고 구버전 HTML은
- * noindex로 돌려야 같은 문서끼리 색인에서 경쟁하지 않습니다.
+ * TERMS_URL이 현행 버전을 가리키므로, 약관이 개정되면 여기도 자동으로 새 주소만
+ * 나갑니다. 다만 구버전 HTML 파일은 public에 그대로 남아 있으니 noindex로 돌려야
+ * 같은 문서의 여러 버전이 색인에서 경쟁하지 않습니다.
  */
-const KO_ONLY_PAGES: string[] = [];
+const KO_ONLY_PAGES: string[] = Object.values(TERMS_URL);
 
 export const GET: APIRoute = ({ site }) => {
   const url = (path: string) => absolute(site, path);
