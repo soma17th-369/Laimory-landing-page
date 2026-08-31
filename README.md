@@ -54,7 +54,7 @@ Vercel 배포는 GitHub Actions가 담당합니다.
 
 - Pull Request: 빌드 검증 후 Preview 배포
 - `main` 브랜치 push: 빌드 검증 후 Production 배포
-- 운영 도메인: `https://laimory.com`
+- 운영 도메인: `https://laimory.app`
 
 최초 Vercel 프로젝트 연결, GitHub Secrets, Route 53 레코드 설정은
 [배포 운영 가이드](docs/deployment.md)를 따라 진행하세요.

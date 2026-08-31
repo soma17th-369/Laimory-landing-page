@@ -7,8 +7,8 @@
 
 - Pull Request → GitHub Actions 빌드 → Vercel Preview
 - `main` push → GitHub Actions 빌드 → Vercel Production
-- 대표 주소 → `https://laimory.com`
-- `www.laimory.com` → `https://laimory.com` 영구 리다이렉트
+- 대표 주소 → `https://laimory.app`
+- `www.laimory.app` → `https://laimory.app` 영구 리다이렉트
 
 `vercel.json`에서 Vercel Git 자동 배포를 비활성화했으므로 실제 배포는 GitHub Actions가
 담당합니다.
@@ -22,7 +22,7 @@ Vercel이 `vercel.json`과 GitHub Actions 워크플로를 확인할 수 있어�
 
 - Vercel 프로젝트를 생성할 수 있는 Owner 또는 Member 권한
 - GitHub 저장소의 Actions Secrets를 등록할 수 있는 권한
-- Route 53의 `laimory.com` Public Hosted Zone 레코드를 변경할 수 있는 AWS 권한
+- Route 53의 `laimory.app` Public Hosted Zone 레코드를 변경할 수 있는 AWS 권한
 
 ## 1. Vercel 프로젝트 생성
 
@@ -123,18 +123,18 @@ Required reviewers를 설정합니다.
 
 1. Vercel Dashboard에서 `laimory-landing-page` 프로젝트를 엽니다.
 2. **Settings → Domains**로 이동합니다.
-3. 입력란에 `laimory.com`을 입력하고 **Add**를 누릅니다.
-4. 이어서 `www.laimory.com`도 별도로 추가합니다.
+3. 입력란에 `laimory.app`을 입력하고 **Add**를 누릅니다.
+4. 이어서 `www.laimory.app`도 별도로 추가합니다.
 5. 두 도메인 카드에 표시되는 DNS 레코드의 **Type**, **Name**, **Value**를 기록합니다.
 
 Route 53이 DNS를 관리하므로 Vercel이 Nameserver 변경을 제안하더라도 네임서버는 바꾸지
 않습니다. Vercel 도메인 카드가 안내하는 `A`, `CNAME`, 필요 시 `TXT` 레코드만 Route 53에
 등록합니다.
 
-현재 프로젝트는 `https://laimory.com`을 대표 주소로 사용합니다. 두 도메인이 모두 추가되면:
+현재 프로젝트는 `https://laimory.app`을 대표 주소로 사용합니다. 두 도메인이 모두 추가되면:
 
-1. `www.laimory.com` 도메인 카드에서 **Edit**을 누릅니다.
-2. **Redirect to**에서 `laimory.com`을 선택합니다.
+1. `www.laimory.app` 도메인 카드에서 **Edit**을 누릅니다.
+2. **Redirect to**에서 `laimory.app`을 선택합니다.
 3. Permanent Redirect를 선택해 저장합니다.
 
 ## 6. AWS Route 53에 apex A 레코드 등록
@@ -145,8 +145,8 @@ Route 53이 DNS를 관리하므로 Vercel이 Nameserver 변경을 제안하더�
 1. [AWS Management Console](https://console.aws.amazon.com/)에 로그인합니다.
 2. 상단 검색창에서 **Route 53**을 검색해 서비스를 엽니다.
 3. 왼쪽 메뉴에서 **Hosted zones**를 선택합니다.
-4. `laimory.com` Public Hosted Zone을 선택합니다.
-5. 기존에 이름이 `laimory.com`인 `A` 레코드가 있는지 확인합니다.
+4. `laimory.app` Public Hosted Zone을 선택합니다.
+5. 기존에 이름이 `laimory.app`인 `A` 레코드가 있는지 확인합니다.
 6. 기존 레코드가 있으면 선택 후 **Edit record**, 없으면 **Create record**를 누릅니다.
 7. 다음과 같이 입력합니다.
 
@@ -155,7 +155,7 @@ Route 53이 DNS를 관리하므로 Vercel이 Nameserver 변경을 제안하더�
 | Record name | 비워 둠 |
 | Record type | `A – Routes traffic to an IPv4 address` |
 | Alias | `Off` |
-| Value | Vercel의 `laimory.com` 도메인 카드에 표시된 IPv4 주소 |
+| Value | Vercel의 `laimory.app` 도메인 카드에 표시된 IPv4 주소 |
 | TTL | `300` |
 | Routing policy | `Simple routing` |
 
@@ -166,7 +166,7 @@ Vercel 공식 문서의 일반 A 값은 `76.76.21.21`이지만, Vercel 프로젝
 
 ## 7. AWS Route 53에 www CNAME 레코드 등록
 
-1. 같은 Hosted Zone에서 이름이 `www.laimory.com`인 기존 `A` 또는 `CNAME`을 확인합니다.
+1. 같은 Hosted Zone에서 이름이 `www.laimory.app`인 기존 `A` 또는 `CNAME`을 확인합니다.
 2. 기존 웹 호스팅 레코드가 있으면 **Edit record**, 없으면 **Create record**를 누릅니다.
 3. 다음과 같이 입력합니다.
 
@@ -174,7 +174,7 @@ Vercel 공식 문서의 일반 A 값은 `76.76.21.21`이지만, Vercel 프로젝
 | --- | --- |
 | Record name | `www` |
 | Record type | `CNAME – Routes traffic to another domain name` |
-| Value | Vercel의 `www.laimory.com` 도메인 카드에 표시된 CNAME 대상 |
+| Value | Vercel의 `www.laimory.app` 도메인 카드에 표시된 CNAME 대상 |
 | TTL | `300` |
 | Routing policy | `Simple routing` |
 
@@ -183,7 +183,7 @@ Vercel 공식 문서의 일반 A 값은 `76.76.21.21`이지만, Vercel 프로젝
 Vercel 공식 문서의 일반 CNAME 값은 `cname.vercel-dns-0.com`이지만, 프로젝트 화면에
 고유한 값이 표시되면 그 값을 사용합니다.
 
-zone apex인 `laimory.com`에는 CNAME을 만들 수 없습니다. apex에는 6단계의 `A` 레코드를,
+zone apex인 `laimory.app`에는 CNAME을 만들 수 없습니다. apex에는 6단계의 `A` 레코드를,
 `www`에는 이 단계의 `CNAME`을 사용합니다.
 
 ## 8. Vercel이 소유권 확인 TXT를 요구하는 경우
@@ -217,11 +217,11 @@ Vercel에서 Invalid Configuration이 발생할 수 있습니다. 기존 레코�
 ## 10. 연결 완료 확인
 
 1. Vercel 프로젝트의 **Settings → Domains**를 새로고침합니다.
-2. `laimory.com`과 `www.laimory.com`이 모두 **Valid Configuration**인지 확인합니다.
+2. `laimory.app`과 `www.laimory.app`이 모두 **Valid Configuration**인지 확인합니다.
 3. 인증서 발급이 끝나 HTTPS가 활성화될 때까지 기다립니다.
-4. 시크릿 브라우저 창에서 `https://laimory.com`을 엽니다.
-5. `https://laimory.com/en/`도 엽니다.
-6. `https://www.laimory.com`이 `https://laimory.com`으로 이동하는지 확인합니다.
+4. 시크릿 브라우저 창에서 `https://laimory.app`을 엽니다.
+5. `https://laimory.app/en/`도 엽니다.
+6. `https://www.laimory.app`이 `https://laimory.app`으로 이동하는지 확인합니다.
 7. 브라우저 주소창의 자물쇠/사이트 정보에서 인증서 오류가 없는지 확인합니다.
 
 Route 53 변경 자체는 일반적으로 빠르게 반영되지만 기존 TTL과 각 DNS resolver 캐시에 따라
