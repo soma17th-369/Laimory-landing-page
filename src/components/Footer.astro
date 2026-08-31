@@ -2,9 +2,16 @@
 import Logo from './Logo.astro';
 import { getLangFromUrl, useCopy } from '../i18n/utils';
 import { DOWNLOAD_URL, TERMS_URL, isExternal } from '../lib/links';
+import { BUSINESS } from '../lib/business';
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
+
+/**
+ * 약관 링크는 TERMS_URL의 키 순서를 그대로 따릅니다.
+ * 새 약관이 늘면 links 라벨이 없다는 사실을 타입 검사가 알려 줍니다.
+ */
+const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
 ---
 
 <footer class="footer" id="download">
@@ -19,9 +26,19 @@ const c = useCopy(lang);
       {c.footer.cta}
     </a>
     <nav class="footer__legal" aria-label={c.footer.legal}>
-      <a href={TERMS_URL.termsOfService} hreflang="ko">{c.footer.terms}</a>
-      <a href={TERMS_URL.privacyPolicy} hreflang="ko">{c.footer.privacy}</a>
+      {termsKeys.map((key) => (
+        <a href={TERMS_URL[key]} hreflang="ko">{c.footer.links[key]}</a>
+      ))}
     </nav>
+    {c.footer.legalNote && <p class="footer__legal-note">{c.footer.legalNote}</p>}
+    <address class="footer__business" aria-label={c.footer.business.label}>
+      <span>{c.footer.business.ownerLabel} {c.footer.business.owner}</span>
+      <span>{c.footer.business.registrationLabel} {BUSINESS.registrationNumber}</span>
+      <span>{c.footer.business.addressLabel} {c.footer.business.address}</span>
+      <span>{c.footer.business.lbsLabel} {BUSINESS.lbsReportNumber}</span>
+      <span>{c.footer.business.privacyOfficerLabel} {c.footer.business.privacyOfficer}</span>
+      <span>{c.footer.business.contactLabel} <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></span>
+    </address>
     <small class="footer__credit">{c.footer.credit}</small>
   </div>
 </footer>
@@ -84,8 +101,64 @@ const c = useCopy(lang);
     text-underline-offset: 0.2em;
   }
 
-  .footer__credit {
+  .footer__legal-note {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--lm-primary-faint);
+  }
+
+  /* 사업자 정보 ─ 항목 사이를 가운뎃점으로 잇고, 좁은 화면에서는 줄로 나눕니다. */
+  .footer__business {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 10px;
+    max-width: 640px;
     margin-top: 4px;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: center;
+    color: var(--lm-primary-faint);
+    text-wrap: pretty;
+  }
+
+  .footer__business span::after {
+    content: '·';
+    margin-left: 10px;
+    color: var(--lm-navy-line);
+  }
+
+  .footer__business span:last-child::after {
+    content: none;
+  }
+
+  .footer__business a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .footer__business a:hover {
+    color: var(--lm-primary-soft);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 640px) {
+    /* 좁은 화면에서는 항목마다 줄을 바꿔 가운뎃점이 어색하게 걸리지 않게 합니다. */
+    .footer__business {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .footer__business span::after {
+      content: none;
+    }
+  }
+
+  .footer__credit {
+    margin-top: 12px;
     font-family: var(--lm-font-label);
     font-weight: 400;
     font-size: 12px;

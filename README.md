@@ -51,7 +51,8 @@ src/
 ├─ lib/
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
 │  ├─ moods.ts               # 감정별 색·표정 정의
-│  └─ links.ts               # 앱 다운로드 링크 · 약관 URL
+│  ├─ links.ts               # 앱 다운로드 링크 · 약관 URL
+│  └─ business.ts            # 사업자 정보 (번호·이메일 등 언어 무관한 값)
 └─ styles/
    └─ global.css             # 디자인 토큰 + 공통 클래스
 
@@ -66,6 +67,7 @@ public/
 - **색상 변경**: `src/styles/global.css` 의 `:root` 안 `--lm-*` 토큰
 - **앱 다운로드 링크**: `src/lib/links.ts` 의 `DOWNLOAD_URL` — 지금은 푸터로 스크롤만 하는 자리표시자입니다.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
+- **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/i18n/ui.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
 - **섹션 추가/편집**: `src/components/sections/` 에 컴포넌트 추가 후 `pages/index.astro`, `pages/en/index.astro` 에 삽입
 - **아이콘 추가**: 디자인 파일에서 패스를 추출해 `src/lib/icons.ts` 에 추가
 

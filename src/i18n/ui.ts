@@ -68,9 +68,32 @@ export interface SiteCopy {
     tagline: string;
     cta: string;
     credit: string;
+    /** 약관 링크 묶음의 접근성 레이블 */
     legal: string;
-    terms: string;
-    privacy: string;
+    /** 키가 lib/links.ts의 TERMS_URL과 1:1로 대응합니다. */
+    links: {
+      termsOfService: string;
+      privacyPolicy: string;
+      sensitiveInformationConsent: string;
+      thirdPartyProvisionConsent: string;
+      crossBorderTransferConsent: string;
+      locationBasedServiceTerms: string;
+    };
+    /** 약관이 한국어로만 제공된다는 안내. 한국어판에는 불필요해 빈 문자열입니다. */
+    legalNote: string;
+    /** 사업자 정보. 번호·이메일 등 언어 무관한 값은 lib/business.ts에 있습니다. */
+    business: {
+      label: string;
+      ownerLabel: string;
+      owner: string;
+      registrationLabel: string;
+      addressLabel: string;
+      address: string;
+      lbsLabel: string;
+      privacyOfficerLabel: string;
+      privacyOfficer: string;
+      contactLabel: string;
+    };
   };
   /** 목업 안에 들어가는 앱 화면 문구 */
   app: {
@@ -171,8 +194,27 @@ const ko: SiteCopy = {
     tagline: '기억하려고 애쓰지 않아도, 하루는 남습니다.',
     cta: '앱 다운로드',
     legal: '약관 및 정책',
-    terms: '이용약관',
-    privacy: '개인정보 처리방침',
+    links: {
+      termsOfService: '이용약관',
+      privacyPolicy: '개인정보 처리방침',
+      sensitiveInformationConsent: '민감정보 처리 동의',
+      thirdPartyProvisionConsent: '제3자 제공 동의',
+      crossBorderTransferConsent: '국외 이전 동의',
+      locationBasedServiceTerms: '위치기반서비스 이용약관',
+    },
+    legalNote: '',
+    business: {
+      label: '사업자 정보',
+      ownerLabel: '사업자명 · 대표',
+      owner: '이동건',
+      registrationLabel: '사업자등록번호',
+      addressLabel: '주소',
+      address: '대구광역시 수성구 지범로17길 85',
+      lbsLabel: '위치기반서비스사업 신고번호',
+      privacyOfficerLabel: '개인정보 보호책임자',
+      privacyOfficer: '이동건',
+      contactLabel: '문의',
+    },
     credit: 'Team 369 · Laimory',
   },
 
@@ -289,8 +331,27 @@ const en: SiteCopy = {
     tagline: 'You do not have to try to remember. The day stays anyway.',
     cta: 'Download the app',
     legal: 'Legal',
-    terms: 'Terms of Service (Korean)',
-    privacy: 'Privacy Policy (Korean)',
+    links: {
+      termsOfService: 'Terms of Service',
+      privacyPolicy: 'Privacy Policy',
+      sensitiveInformationConsent: 'Sensitive Information Consent',
+      thirdPartyProvisionConsent: 'Third-Party Provision Consent',
+      crossBorderTransferConsent: 'Cross-Border Transfer Consent',
+      locationBasedServiceTerms: 'Location-Based Service Terms',
+    },
+    legalNote: 'The legal documents are provided in Korean.',
+    business: {
+      label: 'Business information',
+      ownerLabel: 'Business name · Representative',
+      owner: 'DongGeon Lee',
+      registrationLabel: 'Business registration number',
+      addressLabel: 'Address',
+      address: '85 Jibeom-ro 17-gil, Suseong-gu, Daegu, Republic of Korea',
+      lbsLabel: 'Location-based service report number',
+      privacyOfficerLabel: 'Privacy officer',
+      privacyOfficer: 'DongGeon Lee',
+      contactLabel: 'Contact',
+    },
     credit: 'Team 369 · Laimory',
   },
 
