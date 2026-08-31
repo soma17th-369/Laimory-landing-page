@@ -3,19 +3,36 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getLangFromUrl, useCopy } from '../i18n/utils';
+import { absolute } from '../lib/site';
+import { buildSchema } from '../lib/schema';
+
+interface Props {
+  /** 제목을 직접 지정할 때 (404 등). 기본값은 언어별 사이트 제목입니다. */
+  title?: string;
+  /**
+   * 색인에서 빼야 하는 페이지에 사용합니다.
+   * canonical과 hreflang도 함께 빠집니다. 색인하지 않을 페이지가
+   * 정규 주소를 주장하면 신호가 어긋나기 때문입니다.
+   */
+  noindex?: boolean;
+}
+
+const { title: titleOverride, noindex = false } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
 
-const title = c.meta.title;
+const title = titleOverride ?? c.meta.title;
 const description = c.meta.description;
 
 /** 정규 주소와 언어별 대체 주소 */
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const canonical = absolute(Astro.site, Astro.url.pathname);
 const alternates = [
-  { hreflang: 'ko', href: new URL('/', Astro.site ?? Astro.url.origin).href },
-  { hreflang: 'en', href: new URL('/en/', Astro.site ?? Astro.url.origin).href },
+  { hreflang: 'ko', href: absolute(Astro.site, '/') },
+  { hreflang: 'en', href: absolute(Astro.site, '/en/') },
 ];
+
+const schema = buildSchema(Astro.site, lang, description);
 ---
 
 <!doctype html>
@@ -29,16 +46,26 @@ const alternates = [
     <meta name="theme-color" content="#262e46" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonical.href} />
-    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
-    <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
+
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {
+      !noindex && (
+        <>
+          <link rel="canonical" href={canonical} />
+          {alternates.map((alt) => (
+            <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+          ))}
+          <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
+        </>
+      )
+    }
 
     <!-- SNS 공유 미리보기 -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Laimory" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical.href} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'ko' ? 'ko_KR' : 'en_US'} />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
@@ -58,6 +85,13 @@ const alternates = [
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
     />
+
+    <!-- 구조화 데이터. 색인하지 않을 페이지에는 넣지 않습니다. -->
+    {
+      !noindex && (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+      )
+    }
   </head>
 
   <body>
