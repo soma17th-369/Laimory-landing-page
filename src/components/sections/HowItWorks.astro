@@ -1,0 +1,142 @@
+---
+import Icon from '../Icon.astro';
+import type { IconName } from '../../lib/icons';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const c = useCopy(lang);
+
+/** 단계별 아이콘과 배지 색. 문구는 i18n에서 옵니다. */
+const looks: { icon: IconName; size: number; tone: string }[] = [
+  { icon: 'camera', size: 22, tone: 'joy' },
+  { icon: 'sparkle', size: 20, tone: 'calm' },
+  { icon: 'pencil', size: 20, tone: 'green' },
+];
+---
+
+<section class="how lm-section lm-page" id="how">
+  <div class="how__head">
+    <span class="lm-eyebrow">{c.how.eyebrow}</span>
+    <h2 class="lm-h2 how__title">{c.how.title}</h2>
+  </div>
+
+  <ol class="how__grid">
+    {
+      c.how.steps.map((step, i) => (
+        <li class="lm-card how__card">
+          <div class="how__card-top">
+            <span class={`how__badge how__badge--${looks[i].tone}`}>
+              <Icon name={looks[i].icon} size={looks[i].size} />
+            </span>
+            <span class="how__num">{String(i + 1).padStart(2, '0')}</span>
+          </div>
+          <h3 class="how__step">{step.title}</h3>
+          <p class="how__body">{step.body}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .how {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(36px, 4vw, 56px);
+  }
+
+  .how__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .how__title {
+    text-align: center;
+  }
+
+  .how__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+  }
+
+  .how__card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 30px 28px 32px;
+  }
+
+  .how__card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .how__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+  }
+
+  .how__badge--joy {
+    background: var(--lm-badge-joy);
+    color: var(--lm-badge-joy-ink);
+  }
+
+  .how__badge--calm {
+    background: var(--lm-badge-calm);
+    color: var(--lm-badge-calm-ink);
+  }
+
+  .how__badge--green {
+    background: var(--lm-badge-green);
+    color: var(--lm-badge-green-ink);
+  }
+
+  .how__num {
+    font-family: var(--lm-font-label);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--lm-outline);
+  }
+
+  .how__step {
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--lm-ink);
+  }
+
+  .how__body {
+    margin: 0;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--lm-ink-muted);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 860px) {
+    .how__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .how__card {
+      padding: 26px 24px 28px;
+    }
+  }
+</style>

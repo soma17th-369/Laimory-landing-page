@@ -1,0 +1,147 @@
+---
+import Icon from '../Icon.astro';
+import PhoneFrame from '../PhoneFrame.astro';
+import AppScreen from '../AppScreen.astro';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const c = useCopy(lang);
+---
+
+<section class="control lm-section lm-page" id="control">
+  <div class="control__device">
+    <PhoneFrame height={520} label={c.control.title}>
+      <AppScreen app={c.app} mood={c.mood} />
+    </PhoneFrame>
+  </div>
+
+  <div class="control__copy">
+    <span class="lm-eyebrow">{c.control.eyebrow}</span>
+    <h2 class="lm-h2 control__title">{c.control.title}</h2>
+    <p class="lm-body control__body">{c.control.body}</p>
+
+    <div class="control__cards">
+      <div class="lm-card control__card">
+        <span class="control__label control__label--ai">
+          <Icon name="sparkle" size={18} />
+          {c.control.aiLabel}
+        </span>
+        <span class="control__quote">{c.control.aiText}</span>
+      </div>
+
+      <div class="control__card control__card--mine">
+        <span class="control__label control__label--mine">{c.control.myLabel}</span>
+        <span class="control__mine">{c.control.myText}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .control {
+    display: flex;
+    align-items: center;
+    gap: clamp(40px, 5.5vw, 80px);
+  }
+
+  .control__device {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .control__copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .control__title {
+    margin-top: 20px;
+  }
+
+  .control__body {
+    margin: 22px 0 0;
+    max-width: 470px;
+  }
+
+  .control__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 36px;
+    max-width: 480px;
+  }
+
+  .control__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 26px;
+    border-radius: var(--lm-radius-tile);
+    box-sizing: border-box;
+  }
+
+  .control__card--mine {
+    background: var(--lm-navy);
+  }
+
+  .control__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--lm-font-label);
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+  }
+
+  .control__label--ai {
+    color: var(--lm-primary-faint);
+  }
+
+  /* 아이콘만 조금 더 진하게 */
+  .control__label--ai :global(svg) {
+    color: var(--lm-on-primary-container);
+  }
+
+  .control__label--mine {
+    color: var(--lm-primary);
+  }
+
+  .control__quote {
+    font-family: var(--lm-font-serif);
+    font-size: clamp(19px, 1.7vw, 22px);
+    line-height: 1.6;
+    color: var(--lm-ink);
+  }
+
+  .control__mine {
+    font-weight: 500;
+    font-size: clamp(19px, 1.7vw, 22px);
+    line-height: 1.6;
+    color: #ffffff;
+  }
+
+  /* 세로로 쌓일 때는 설명을 먼저 읽히게 하고 목업을 아래에 둡니다. */
+  @media (max-width: 900px) {
+    .control {
+      flex-direction: column;
+      align-items: stretch;
+      gap: clamp(36px, 5vw, 48px);
+    }
+
+    .control__device {
+      order: 2;
+    }
+
+    .control__copy {
+      order: 1;
+    }
+
+    .control__body,
+    .control__cards {
+      max-width: none;
+    }
+  }
+</style>

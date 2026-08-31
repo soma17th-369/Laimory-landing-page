@@ -1,0 +1,161 @@
+---
+import Icon from '../Icon.astro';
+import type { IconName } from '../../lib/icons';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const c = useCopy(lang);
+
+/** 데이터 소스별 아이콘과 배지 색. 문구는 i18n에서 옵니다. */
+const looks: { icon: IconName; tone: string }[] = [
+  { icon: 'camera', tone: 'joy' },
+  { icon: 'calendar', tone: 'calm' },
+  { icon: 'pin', tone: 'green' },
+  { icon: 'sneaker', tone: 'purple' },
+];
+---
+
+<section class="sources" id="sources">
+  <div class="sources__inner lm-page">
+    <div class="sources__head">
+      <h2 class="lm-h2">
+        {c.sources.titleLine1}<br />{c.sources.titleLine2}
+      </h2>
+      <p class="sources__lead">{c.sources.body}</p>
+    </div>
+
+    <ul class="sources__grid">
+      {
+        c.sources.items.map((item, i) => (
+          <li class="lm-card sources__card">
+            <span class={`sources__badge sources__badge--${looks[i].tone}`}>
+              <Icon name={looks[i].icon} size={20} />
+            </span>
+            <span class="sources__title">{item.title}</span>
+            <span class="sources__body">{item.body}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sources {
+    background: var(--lm-paper-2);
+  }
+
+  .sources__inner {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, 3.4vw, 44px);
+    padding: var(--lm-section-y) var(--lm-gutter);
+  }
+
+  .sources__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .sources__lead {
+    margin: 0;
+    max-width: 380px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--lm-ink-muted);
+    text-wrap: pretty;
+  }
+
+  .sources__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .sources__card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px 24px 28px;
+    border-radius: var(--lm-radius-tile);
+  }
+
+  .sources__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+  }
+
+  .sources__badge--joy {
+    background: var(--lm-badge-joy);
+    color: var(--lm-badge-joy-ink);
+  }
+
+  .sources__badge--calm {
+    background: var(--lm-badge-calm);
+    color: var(--lm-badge-calm-ink);
+  }
+
+  .sources__badge--green {
+    background: var(--lm-badge-green);
+    color: var(--lm-badge-green-ink);
+  }
+
+  .sources__badge--purple {
+    background: var(--lm-badge-purple);
+    color: var(--lm-badge-purple-ink);
+  }
+
+  .sources__title {
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--lm-ink);
+  }
+
+  .sources__body {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--lm-ink-muted);
+  }
+
+  @media (max-width: 1000px) {
+    .sources__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .sources__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .sources__lead {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .sources__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .sources__card {
+      padding: 22px 20px 24px;
+    }
+  }
+</style>
