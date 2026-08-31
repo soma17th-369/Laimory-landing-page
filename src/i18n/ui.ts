@@ -64,7 +64,14 @@ export interface SiteCopy {
     weary: string;
     down: string;
   };
-  footer: { tagline: string; cta: string; credit: string };
+  footer: {
+    tagline: string;
+    cta: string;
+    credit: string;
+    legal: string;
+    terms: string;
+    privacy: string;
+  };
   /** 목업 안에 들어가는 앱 화면 문구 */
   app: {
     time: string;
@@ -163,6 +170,9 @@ const ko: SiteCopy = {
   footer: {
     tagline: '기억하려고 애쓰지 않아도, 하루는 남습니다.',
     cta: '앱 다운로드',
+    legal: '약관 및 정책',
+    terms: '이용약관',
+    privacy: '개인정보 처리방침',
     credit: 'Team 369 · Laimory',
   },
 
@@ -278,6 +288,9 @@ const en: SiteCopy = {
   footer: {
     tagline: 'You do not have to try to remember. The day stays anyway.',
     cta: 'Download the app',
+    legal: 'Legal',
+    terms: 'Terms of Service (Korean)',
+    privacy: 'Privacy Policy (Korean)',
     credit: 'Team 369 · Laimory',
   },
 

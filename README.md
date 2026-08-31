@@ -51,9 +51,13 @@ src/
 ├─ lib/
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
 │  ├─ moods.ts               # 감정별 색·표정 정의
-│  └─ links.ts               # 앱 다운로드 링크 (스토어 주소 나오면 여기만 교체)
+│  └─ links.ts               # 앱 다운로드 링크 · 약관 URL
 └─ styles/
    └─ global.css             # 디자인 토큰 + 공통 클래스
+
+public/
+└─ terms/                     # 약관 원문 HTML (Laimory-server에서 가져온 정적 파일)
+   └─ {slug}/{version}.html   # 예: terms-of-service/1.0.html → /terms/terms-of-service/1.0
 ```
 
 ## 자주 하는 수정
@@ -61,6 +65,7 @@ src/
 - **문구 변경**: `src/i18n/ui.ts` 의 `ko` / `en` 값 수정. 두 언어가 같은 타입을 쓰므로 한쪽만 고치면 타입 검사에서 걸립니다.
 - **색상 변경**: `src/styles/global.css` 의 `:root` 안 `--lm-*` 토큰
 - **앱 다운로드 링크**: `src/lib/links.ts` 의 `DOWNLOAD_URL` — 지금은 푸터로 스크롤만 하는 자리표시자입니다.
+- **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **섹션 추가/편집**: `src/components/sections/` 에 컴포넌트 추가 후 `pages/index.astro`, `pages/en/index.astro` 에 삽입
 - **아이콘 추가**: 디자인 파일에서 패스를 추출해 `src/lib/icons.ts` 에 추가
 
@@ -73,3 +78,5 @@ Vercel 배포는 GitHub Actions가 담당합니다.
 
 최초 Vercel 프로젝트 연결, GitHub Secrets, Route 53 레코드 설정은
 [배포 운영 가이드](docs/deployment.md)를 따라 진행하세요.
+
+약관 HTML 게시와 개정 절차는 [약관 문서 운영 가이드](docs/terms.md)를 따릅니다.
