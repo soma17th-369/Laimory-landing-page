@@ -50,5 +50,11 @@ src/
 
 ## 배포
 
-정적 사이트로 빌드되므로 **Vercel / Netlify / Cloudflare Pages / GitHub Pages** 어디든 배포 가능합니다.
-빌드 명령 `npm run build`, 출력 폴더 `dist/` 로 설정하세요.
+Vercel 배포는 GitHub Actions가 담당합니다.
+
+- Pull Request: 빌드 검증 후 Preview 배포
+- `main` 브랜치 push: 빌드 검증 후 Production 배포
+- 운영 도메인: `https://laimory.com`
+
+최초 Vercel 프로젝트 연결, GitHub Secrets, Route 53 레코드 설정은
+[배포 운영 가이드](docs/deployment.md)를 따라 진행하세요.

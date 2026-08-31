@@ -1,0 +1,154 @@
+name: CI and Vercel deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  VERCEL_CLI_VERSION: '59.10.0'
+  ASTRO_TELEMETRY_DISABLED: '1'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+
+  deploy-preview:
+    name: Deploy preview
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Check deployment secrets
+        shell: bash
+        run: |
+          missing=0
+          for secret_name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error::$secret_name GitHub secret is not configured."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Install Vercel CLI
+        run: npm install --global "vercel@${VERCEL_CLI_VERSION}"
+
+      - name: Pull preview environment
+        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+
+      - name: Build Vercel artifacts
+        run: vercel build --token="$VERCEL_TOKEN"
+
+      - name: Deploy preview
+        id: deploy
+        shell: bash
+        run: |
+          deployment_url="$(vercel deploy --prebuilt --token="$VERCEL_TOKEN")"
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
+          echo "### Vercel preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "$deployment_url" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-production:
+    name: Deploy production
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Check deployment secrets
+        shell: bash
+        run: |
+          missing=0
+          for secret_name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error::$secret_name GitHub secret is not configured."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Install Vercel CLI
+        run: npm install --global "vercel@${VERCEL_CLI_VERSION}"
+
+      - name: Pull production environment
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build production artifacts
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy production
+        id: deploy
+        shell: bash
+        run: |
+          deployment_url="$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")"
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
+          echo "### Vercel production" >> "$GITHUB_STEP_SUMMARY"
+          echo "$deployment_url" >> "$GITHUB_STEP_SUMMARY"
