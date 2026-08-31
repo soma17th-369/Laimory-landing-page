@@ -1,44 +1,153 @@
 ---
-import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import PhoneFrame from '../PhoneFrame.astro';
+import AppScreen from '../AppScreen.astro';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+import { DOWNLOAD_URL, isExternal } from '../../lib/links';
 
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const c = useCopy(lang);
 ---
 
-<section class="relative overflow-hidden">
-  <div
-    class="absolute inset-0 -z-10 bg-gradient-to-b from-indigo-50 via-white to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-950"
-  >
-  </div>
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <span class="hero__eyebrow">{c.hero.eyebrow}</span>
+      <h1 class="hero__title lm-rise">
+        {c.hero.titleLine1}<br />{c.hero.titleLine2}
+      </h1>
+      <p class="hero__body">{c.hero.body}</p>
 
-  <div class="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:py-32">
-    <span
-      class="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1.5 text-sm font-medium text-brand dark:border-indigo-900 dark:bg-indigo-950/50"
-    >
-      {t('hero.badge')}
-    </span>
+      <div class="hero__actions">
+        <a
+          class="lm-btn lm-btn--primary hero__cta"
+          href={DOWNLOAD_URL}
+          rel={isExternal(DOWNLOAD_URL) ? "noopener" : undefined}
+        >
+          {c.hero.ctaPrimary}
+        </a>
+        <a class="lm-btn lm-btn--ghost hero__cta" href="#how">
+          {c.hero.ctaSecondary}
+        </a>
+      </div>
 
-    <h1 class="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-      {t('hero.title')}
-    </h1>
+      <p class="hero__meta">
+        <span>{c.hero.metaSources}</span>
+        <span class="hero__meta-sep" aria-hidden="true"></span>
+        <span>{c.hero.metaConsent}</span>
+      </p>
+    </div>
 
-    <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
-      {t('hero.subtitle')}
-    </p>
-
-    <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <a
-        href="#cta"
-        class="w-full rounded-full bg-brand px-8 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-brand-dark sm:w-auto"
-      >
-        {t('hero.cta_primary')}
-      </a>
-      <a
-        href="#features"
-        class="w-full rounded-full border border-slate-300 px-8 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
-      >
-        {t('hero.cta_secondary')}
-      </a>
+    <div class="hero__device">
+      <PhoneFrame height={560} label={c.meta.title}>
+        <AppScreen app={c.app} mood={c.mood} />
+      </PhoneFrame>
     </div>
   </div>
 </section>
+
+<style>
+  .hero {
+    background: var(--lm-navy);
+  }
+
+  .hero__inner {
+    width: 100%;
+    max-width: var(--lm-page-max);
+    margin-inline: auto;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(40px, 5vw, 72px);
+    /* 아래 여백이 0이라 폰 목업이 섹션 바닥에 붙어 올라옵니다. */
+    padding: clamp(56px, 7vw, 104px) var(--lm-gutter) 0;
+  }
+
+  .hero__copy {
+    flex: 1;
+    min-width: 0;
+    padding-top: clamp(0px, 2vw, 32px);
+  }
+
+  .hero__eyebrow {
+    font-family: var(--lm-font-label);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    color: var(--lm-primary);
+  }
+
+  .hero__title {
+    margin: 26px 0 0;
+    font-weight: 700;
+    font-size: clamp(32px, 4.3vw, 60px);
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: #ffffff;
+    text-wrap: pretty;
+  }
+
+  .hero__body {
+    margin: 28px 0 0;
+    max-width: 520px;
+    font-weight: 400;
+    font-size: clamp(16px, 1.4vw, 19px);
+    line-height: 1.8;
+    color: var(--lm-primary-soft);
+    text-wrap: pretty;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: clamp(32px, 3.4vw, 44px);
+  }
+
+  .hero__cta {
+    padding: 18px clamp(24px, 2.6vw, 34px);
+    font-size: clamp(15px, 1.3vw, 17px);
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: clamp(28px, 2.8vw, 36px) 0 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--lm-primary-dim);
+  }
+
+  .hero__meta-sep {
+    width: 1px;
+    height: 12px;
+    background: var(--lm-navy-line);
+  }
+
+  .hero__device {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* 세로로 쌓이면 목업이 아래 여백을 채우며 섹션 바닥에 붙습니다. */
+  @media (max-width: 900px) {
+    .hero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: clamp(40px, 6vw, 56px);
+    }
+
+    .hero__body {
+      max-width: none;
+    }
+
+    .hero__device {
+      margin-inline: auto;
+    }
+  }
+</style>

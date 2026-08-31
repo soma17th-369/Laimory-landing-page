@@ -1,16 +1,199 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────
-   Laimory 브랜드 토큰 (Tailwind v4 @theme)
-   여기 색상만 바꾸면 전체 사이트에 반영됩니다.
-   사용 예: bg-brand / text-brand / hover:bg-brand-dark
+   Laimory 디자인 토큰
+   원본 디자인 파일(Figma Variables)에서 실제로 쓰인 값만 옮겨 왔습니다.
+   색을 바꾸려면 여기만 고치면 전체 페이지에 반영됩니다.
    ───────────────────────────────────────────── */
-@theme {
-  --color-brand: #4f46e5;
-  --color-brand-dark: #4338ca;
-  --color-brand-light: #eef2ff;
+:root {
+  /* 다크(네이비) 영역 ─ 헤더 · 히어로 · 푸터 */
+  --lm-navy: #262e46;
+  --lm-navy-deep: #1b2136;
+  --lm-navy-line: #4c5a80;
+
+  /* 브랜드 페리윙클 */
+  --lm-primary: #879bd3;
+  --lm-primary-soft: #a4b5e0;
+  --lm-primary-dim: #7c8ab0;
+  --lm-primary-faint: #5c6a94;
+  --lm-primary-container: #dce3f4;
+  --lm-on-primary-container: #37446a;
+
+  /* 종이(라이트) 영역 */
+  --lm-paper: #faf8f5;
+  --lm-paper-2: #f3f0eb;
+  --lm-surface: #ffffff;
+
+  /* 잉크(텍스트) */
+  --lm-ink: #1f1c18;
+  --lm-ink-muted: #6e665a;
+  --lm-ink-faint: #928a7c;
+  --lm-outline: #d6cfc4;
+  --lm-outline-2: #e7e2da;
+
+  /* 감정 팔레트 */
+  --lm-joy: #ed9f7e;
+  --lm-calm: #7fb0dc;
+  --lm-mellow: #bfb295;
+  --lm-weary: #a88fcb;
+  --lm-down: #8a93ab;
+
+  /* 아이콘 배지 배경 */
+  --lm-badge-joy: #fcede4;
+  --lm-badge-joy-ink: #8a4527;
+  --lm-badge-calm: #dce3f4;
+  --lm-badge-calm-ink: #37446a;
+  --lm-badge-green: #eaf1ee;
+  --lm-badge-green-ink: #3a5749;
+  --lm-badge-purple: #f1ebf6;
+  --lm-badge-purple-ink: #5b4a72;
+
+  /* 타이포 */
+  --lm-font-sans: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --lm-font-serif: "Gowun Batang", Georgia, "Times New Roman", serif;
+  --lm-font-label: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --lm-font-app: "Pretendard Variable", Pretendard, "Noto Sans KR", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* 레이아웃 ─ 시안은 1440px 기준, 좁은 화면에서는 여백이 줄어듭니다 */
+  --lm-page-max: 1440px;
+  --lm-gutter: clamp(20px, 5.5vw, 80px);
+  --lm-section-y: clamp(64px, 7.5vw, 104px);
+  --lm-radius-card: 20px;
+  --lm-radius-tile: 16px;
 }
 
 html {
   scroll-behavior: smooth;
+  /* 앵커로 이동했을 때 제목이 화면 맨 위에 딱 붙지 않도록 */
+  scroll-padding-top: 24px;
+}
+
+body {
+  background: var(--lm-paper);
+  color: var(--lm-ink);
+  font-family: var(--lm-font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 페이지 폭 제한 + 좌우 여백 */
+.lm-page {
+  width: 100%;
+  max-width: var(--lm-page-max);
+  margin-inline: auto;
+}
+
+.lm-section {
+  padding-block: var(--lm-section-y);
+  padding-inline: var(--lm-gutter);
+}
+
+/* 섹션 머리말 */
+.lm-eyebrow {
+  font-family: var(--lm-font-label);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  color: var(--lm-ink-faint);
+}
+
+.lm-h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--lm-ink);
+  text-wrap: pretty;
+}
+
+.lm-body {
+  font-weight: 400;
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.85;
+  color: var(--lm-ink-muted);
+  text-wrap: pretty;
+}
+
+/* 흰 카드 ─ 얇은 테두리는 레이아웃을 밀지 않도록 inset 그림자로 그립니다 */
+.lm-card {
+  background: var(--lm-surface);
+  border-radius: var(--lm-radius-card);
+  box-shadow: inset 0 0 0 1px var(--lm-outline-2);
+  box-sizing: border-box;
+}
+
+/* 버튼 */
+.lm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.lm-btn:active {
+  transform: translateY(1px);
+}
+
+.lm-btn--primary {
+  background: var(--lm-primary);
+  color: var(--lm-navy-deep);
+}
+
+.lm-btn--primary:hover {
+  background: var(--lm-primary-soft);
+}
+
+.lm-btn--ghost {
+  box-shadow: inset 0 0 0 1px var(--lm-navy-line);
+  color: var(--lm-primary-soft);
+  font-weight: 500;
+}
+
+.lm-btn--ghost:hover {
+  background: rgb(255 255 255 / 6%);
+  color: #ffffff;
+}
+
+/* 키보드 포커스는 항상 보이게 */
+:where(a, button):focus-visible {
+  outline: 2px solid var(--lm-primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* 등장 애니메이션 ─ 모션을 줄이도록 설정한 사용자에게는 적용하지 않습니다 */
+@keyframes lm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lm-rise {
+  animation: lm-rise 640ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .lm-rise {
+    animation: none;
+  }
 }

@@ -1,0 +1,70 @@
+---
+import MoodFace from '../MoodFace.astro';
+import { moodOrder } from '../../lib/moods';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const c = useCopy(lang);
+---
+
+<section class="strip lm-page">
+  <p class="strip__pill">
+    <span class="strip__faces">
+      {moodOrder.map((emotion) => <MoodFace emotion={emotion} size={36} />)}
+    </span>
+    <span class="strip__text">{c.mood.question}</span>
+  </p>
+</section>
+
+<style>
+  .strip {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--lm-gutter) var(--lm-section-y);
+  }
+
+  .strip__pill {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 18px 28px;
+    border-radius: 999px;
+    background: var(--lm-paper-2);
+  }
+
+  .strip__faces {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .strip__text {
+    margin-inline-start: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--lm-ink-muted);
+  }
+
+  @media (max-width: 520px) {
+    .strip__pill {
+      border-radius: 28px;
+      padding: 18px 22px;
+      gap: 12px;
+    }
+
+    .strip__faces {
+      gap: 10px;
+    }
+
+    .strip__text {
+      margin-inline-start: 0;
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

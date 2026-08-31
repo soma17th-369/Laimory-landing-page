@@ -1,21 +1,76 @@
 ---
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import Logo from './Logo.astro';
+import { getLangFromUrl, useCopy } from '../i18n/utils';
+import { DOWNLOAD_URL, isExternal } from '../lib/links';
 
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const year = new Date().getFullYear();
+const c = useCopy(lang);
 ---
 
-<footer class="border-t border-slate-200 dark:border-slate-800">
-  <div
-    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6"
-  >
-    <div class="flex items-center gap-2 font-semibold">
-      <span class="inline-block h-5 w-5 rounded-md bg-brand"></span>
-      Laimory
-    </div>
-    <p class="text-sm text-slate-500 dark:text-slate-400">
-      © {year} Laimory. {t('footer.rights')}
-    </p>
+<footer class="footer" id="download">
+  <div class="footer__inner lm-page">
+    <span class="footer__logo"><Logo width={200} /></span>
+    <p class="footer__tagline">{c.footer.tagline}</p>
+    <a
+      class="lm-btn lm-btn--primary footer__cta"
+      href={DOWNLOAD_URL}
+      rel={isExternal(DOWNLOAD_URL) ? "noopener" : undefined}
+    >
+      {c.footer.cta}
+    </a>
+    <small class="footer__credit">{c.footer.credit}</small>
   </div>
 </footer>
+
+<style>
+  .footer {
+    background: var(--lm-navy);
+  }
+
+  .footer__inner {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: clamp(64px, 6vw, 88px) var(--lm-gutter) clamp(56px, 5vw, 72px);
+  }
+
+  .footer__logo {
+    display: block;
+    color: #ffffff;
+  }
+
+  .footer__tagline {
+    margin: 0;
+    max-width: 440px;
+    text-align: center;
+    font-weight: 400;
+    font-size: clamp(15px, 1.4vw, 17px);
+    line-height: 1.8;
+    color: var(--lm-primary-soft);
+    text-wrap: pretty;
+  }
+
+  .footer__cta {
+    margin-top: 20px;
+    padding: 16px 32px;
+    font-size: 16px;
+  }
+
+  .footer__credit {
+    margin-top: 24px;
+    font-family: var(--lm-font-label);
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: var(--lm-primary-faint);
+  }
+
+  @media (max-width: 480px) {
+    .footer__logo :global(svg) {
+      width: 160px;
+    }
+  }
+</style>

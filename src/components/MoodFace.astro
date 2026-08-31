@@ -1,0 +1,41 @@
+---
+/**
+ * 감정 얼굴. 원본 디자인의 26px 기준 좌표를 viewBox로 옮겨,
+ * 크기를 바꿔도 선 굵기 비율이 그대로 유지됩니다.
+ */
+import { moodColors, moodMouths, type Emotion } from '../lib/moods';
+
+interface Props {
+  emotion: Emotion;
+  size?: number;
+}
+
+const { emotion, size = 26 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 26 26"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  style={`color: ${moodColors[emotion]}`}
+>
+  <circle cx="13" cy="13" r="11.25" stroke="currentColor" stroke-width="1.5"></circle>
+  <circle cx="9.533" cy="10.833" r="1.1" fill="currentColor"></circle>
+  <circle cx="16.467" cy="10.833" r="1.1" fill="currentColor"></circle>
+  <path
+    d={moodMouths[emotion]}
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"></path>
+</svg>
+
+<style>
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
+</style>

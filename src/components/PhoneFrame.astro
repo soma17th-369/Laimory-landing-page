@@ -1,0 +1,55 @@
+---
+/**
+ * 화면 아래쪽이 잘려 올라오는 폰 목업 틀.
+ * 안쪽 화면은 스크롤되는 앱의 윗부분만 보여주므로 높이를 넘긴 내용은 잘립니다.
+ *
+ * 목업은 그림이므로 role="img"로 묶어, 보조기기에는 안의 문구가 통째로
+ * 읽히는 대신 label 한 줄만 전달됩니다.
+ */
+interface Props {
+  /** 보이는 화면 높이(px). 시안 기준 값을 넘기세요. */
+  height?: number;
+  /** 스크린 리더에 읽힐 설명 */
+  label: string;
+}
+
+const { height = 560, label } = Astro.props;
+---
+
+<div class="phone" style={`--phone-h: ${height}px`} role="img" aria-label={label}>
+  <div class="phone__screen">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .phone {
+    /* 시안 폭은 412px, 좁은 화면에서는 부모에 맞춰 줄어듭니다. */
+    width: min(412px, 100%);
+    height: var(--phone-h);
+    padding: 12px 12px 0;
+    box-sizing: border-box;
+    border-radius: 52px 52px 0 0;
+    background: var(--lm-ink);
+    flex-shrink: 0;
+  }
+
+  .phone__screen {
+    height: 100%;
+    overflow: hidden;
+    border-radius: 42px 42px 0 0;
+    background: var(--lm-paper);
+  }
+
+  /* 화면이 좁아지면 목업도 조금 낮게 잘라 자리를 덜 차지하게 합니다. */
+  @media (max-width: 640px) {
+    .phone {
+      height: min(var(--phone-h), 460px);
+      border-radius: 44px 44px 0 0;
+    }
+
+    .phone__screen {
+      border-radius: 34px 34px 0 0;
+    }
+  }
+</style>

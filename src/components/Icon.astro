@@ -1,0 +1,32 @@
+---
+/**
+ * 아이콘 한 개를 그립니다. 색은 currentColor를 따라가므로
+ * 감싸는 요소의 color만 지정하면 됩니다.
+ */
+import { icons, type IconName } from '../lib/icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+}
+
+const { name, size = 24 } = Astro.props;
+const icon = icons[name];
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox={icon.viewBox}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  set:html={icon.body}
+/>
+
+<style>
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
+</style>
