@@ -7,8 +7,9 @@
 
 - Pull Request → GitHub Actions 빌드 → Vercel Preview
 - `main` push → GitHub Actions 빌드 → Vercel Production
-- 대표 주소 → `https://laimory.app`
-- `www.laimory.app` → `https://laimory.app` 영구 리다이렉트
+- 랜딩 페이지 주소 → `https://www.laimory.app`
+- `www.laimory.app` → Vercel Production의 고정 주소 `laimory-landing-page.vercel.app`
+- `laimory.app` 루트 도메인과 기존 A 레코드는 변경하지 않음
 
 `vercel.json`에서 Vercel Git 자동 배포를 비활성화했으므로 실제 배포는 GitHub Actions가
 담당합니다.
@@ -119,74 +120,50 @@ Secret 이름은 `VERCEL_ORG_ID`이지만 입력값은 프로젝트를 소유한
 운영 배포 전 승인이 필요하면 **GitHub 저장소 → Settings → Environments → production**에서
 Required reviewers를 설정합니다.
 
-## 5. Vercel에 운영 도메인 추가
+## 5. 도메인 연결 원칙
 
-1. Vercel Dashboard에서 `laimory-landing-page` 프로젝트를 엽니다.
-2. **Settings → Domains**로 이동합니다.
-3. 입력란에 `laimory.app`을 입력하고 **Add**를 누릅니다.
-4. 이어서 `www.laimory.app`도 별도로 추가합니다.
-5. 두 도메인 카드에 표시되는 DNS 레코드의 **Type**, **Name**, **Value**를 기록합니다.
+DNS는 Route 53에서만 관리합니다. Vercel DNS로 이전하거나 Vercel 네임서버를 등록하지
+않습니다. Vercel 화면에 네임서버가 표시되더라도 다음 작업은 하지 않습니다.
 
-Route 53이 DNS를 관리하므로 Vercel이 Nameserver 변경을 제안하더라도 네임서버는 바꾸지
-않습니다. Vercel 도메인 카드가 안내하는 `A`, `CNAME`, 필요 시 `TXT` 레코드만 Route 53에
-등록합니다.
+- 도메인 등록기관에서 Route 53 네임서버를 Vercel 네임서버로 변경
+- Route 53 Hosted Zone의 `NS` 레코드를 Vercel 네임서버로 변경
+- Vercel DNS에 `A`, `CNAME`, `MX`, `TXT` 레코드 생성
 
-현재 프로젝트는 `https://laimory.app`을 대표 주소로 사용합니다. 두 도메인이 모두 추가되면:
+Vercel Production 주소는 배포마다 바뀌는 고유 주소가 아니라 프로젝트의 고정 주소인
+`laimory-landing-page.vercel.app`을 사용합니다. `www.laimory.app`이 이미 Vercel 프로젝트의
+Domains에 연결되어 있다면 Vercel에서는 더 변경할 것이 없습니다. 해당 연결은 Vercel의
+요청 라우팅과 HTTPS 인증서용이며 DNS 관리는 계속 Route 53이 담당합니다.
 
-1. `www.laimory.app` 도메인 카드에서 **Edit**을 누릅니다.
-2. **Redirect to**에서 `laimory.app`을 선택합니다.
-3. Permanent Redirect를 선택해 저장합니다.
+## 6. AWS Route 53에 www CNAME 레코드 등록
 
-## 6. AWS Route 53에 apex A 레코드 등록
-
-먼저 기존 DNS 레코드 화면을 캡처하거나 현재 값을 별도로 기록합니다. 문제가 생겼을 때
-이전 웹 호스팅 값으로 되돌리는 데 필요합니다.
+먼저 기존 `www` 레코드 값을 기록해 둡니다. 문제가 생기면 이전 값으로 되돌릴 수 있습니다.
 
 1. [AWS Management Console](https://console.aws.amazon.com/)에 로그인합니다.
 2. 상단 검색창에서 **Route 53**을 검색해 서비스를 엽니다.
 3. 왼쪽 메뉴에서 **Hosted zones**를 선택합니다.
 4. `laimory.app` Public Hosted Zone을 선택합니다.
-5. 기존에 이름이 `laimory.app`인 `A` 레코드가 있는지 확인합니다.
-6. 기존 레코드가 있으면 선택 후 **Edit record**, 없으면 **Create record**를 누릅니다.
+5. 이름이 `www.laimory.app`인 기존 `A` 또는 `CNAME` 레코드를 확인합니다.
+6. 기존 레코드가 있으면 **Edit record**, 없으면 **Create record**를 누릅니다.
 7. 다음과 같이 입력합니다.
-
-| Route 53 필드 | 입력값 |
-| --- | --- |
-| Record name | 비워 둠 |
-| Record type | `A – Routes traffic to an IPv4 address` |
-| Alias | `Off` |
-| Value | Vercel의 `laimory.app` 도메인 카드에 표시된 IPv4 주소 |
-| TTL | `300` |
-| Routing policy | `Simple routing` |
-
-8. **Create records** 또는 **Save**를 누릅니다.
-
-Vercel 공식 문서의 일반 A 값은 `76.76.21.21`이지만, Vercel 프로젝트의 Domains 화면에
-다른 값이 표시되면 화면에 표시된 프로젝트별 값을 사용합니다.
-
-## 7. AWS Route 53에 www CNAME 레코드 등록
-
-1. 같은 Hosted Zone에서 이름이 `www.laimory.app`인 기존 `A` 또는 `CNAME`을 확인합니다.
-2. 기존 웹 호스팅 레코드가 있으면 **Edit record**, 없으면 **Create record**를 누릅니다.
-3. 다음과 같이 입력합니다.
 
 | Route 53 필드 | 입력값 |
 | --- | --- |
 | Record name | `www` |
 | Record type | `CNAME – Routes traffic to another domain name` |
-| Value | Vercel의 `www.laimory.app` 도메인 카드에 표시된 CNAME 대상 |
+| Value | `laimory-landing-page.vercel.app` |
 | TTL | `300` |
 | Routing policy | `Simple routing` |
 
-4. **Create records** 또는 **Save**를 누릅니다.
+8. **Create records** 또는 **Save**를 누릅니다.
 
-Vercel 공식 문서의 일반 CNAME 값은 `cname.vercel-dns-0.com`이지만, 프로젝트 화면에
-고유한 값이 표시되면 그 값을 사용합니다.
+배포 로그에 표시되는 `laimory-landing-page-<배포 식별자>-<팀>.vercel.app` 형태의 주소는
+배포마다 바뀔 수 있으므로 CNAME 대상으로 사용하지 않습니다.
 
-zone apex인 `laimory.app`에는 CNAME을 만들 수 없습니다. apex에는 6단계의 `A` 레코드를,
-`www`에는 이 단계의 `CNAME`을 사용합니다.
+`laimory.app` 루트의 기존 `A`, `AAAA` 레코드는 수정하거나 삭제하지 않습니다. 이번 작업은
+`www` CNAME 하나만 변경합니다. CNAME은 URL 리다이렉트가 아니므로 접속 후 브라우저
+주소창에는 계속 `https://www.laimory.app`이 표시됩니다.
 
-## 8. Vercel이 소유권 확인 TXT를 요구하는 경우
+## 7. Vercel이 소유권 확인 TXT를 요구하는 경우
 
 도메인이 다른 Vercel 계정이나 프로젝트에서 사용 중이면 Vercel Domains 화면에 TXT 검증
 레코드가 표시될 수 있습니다.
@@ -198,7 +175,7 @@ zone apex인 `laimory.app`에는 CNAME을 만들 수 없습니다. apex에는 6�
 5. TTL은 `300`, Routing policy는 `Simple routing`으로 저장합니다.
 6. Vercel의 Domains 화면으로 돌아가 **Refresh** 또는 **Verify**를 누릅니다.
 
-## 9. 변경하면 안 되는 Route 53 레코드
+## 8. 변경하면 안 되는 Route 53 레코드
 
 다음 레코드는 이번 웹 호스팅 연결과 별개이므로 삭제하거나 덮어쓰지 않습니다.
 
@@ -206,28 +183,29 @@ zone apex인 `laimory.app`에는 CNAME을 만들 수 없습니다. apex에는 6�
 - 이메일 수신용 `MX`
 - SPF, DKIM, DMARC, 서비스 검증용 기존 `TXT`
 - 다른 서비스에서 사용 중인 서브도메인 레코드
+- 루트 `laimory.app`의 기존 `A`, `AAAA`
 
-기존 apex `AAAA`가 이전 웹 호스팅을 가리키거나 `www`에 서로 충돌하는 레코드가 있으면
-Vercel에서 Invalid Configuration이 발생할 수 있습니다. 기존 레코드의 용도를 확인한 뒤,
-이전 웹 호스팅용으로 확인된 충돌 레코드만 제거합니다.
+`www`에 기존 `A`, `AAAA`, `CNAME` 등 서로 충돌하는 레코드가 있으면 새 CNAME을 만들 수
+없습니다. 기존 레코드의 용도를 확인한 뒤 `www`용 충돌 레코드만 교체합니다.
 
 제한적인 `CAA` 레코드가 이미 있다면 Vercel Domains 화면에 추가로 요구되는 인증기관 값만
 등록합니다.
 
-## 10. 연결 완료 확인
+## 9. 연결 완료 확인
 
 1. Vercel 프로젝트의 **Settings → Domains**를 새로고침합니다.
-2. `laimory.app`과 `www.laimory.app`이 모두 **Valid Configuration**인지 확인합니다.
+2. `www.laimory.app`이 **Valid Configuration**인지 확인합니다.
 3. 인증서 발급이 끝나 HTTPS가 활성화될 때까지 기다립니다.
-4. 시크릿 브라우저 창에서 `https://laimory.app`을 엽니다.
-5. `https://laimory.app/en/`도 엽니다.
-6. `https://www.laimory.app`이 `https://laimory.app`으로 이동하는지 확인합니다.
+4. 시크릿 브라우저 창에서 `https://www.laimory.app`을 엽니다.
+5. `https://www.laimory.app/en/`도 엽니다.
+6. 주소가 다른 도메인으로 바뀌지 않고 `www.laimory.app`으로 유지되는지 확인합니다.
 7. 브라우저 주소창의 자물쇠/사이트 정보에서 인증서 오류가 없는지 확인합니다.
+8. 약관 6개 주소가 모두 열리는지 확인합니다. 확인 목록은 [약관 문서 운영 가이드](terms.md)에 있습니다.
 
 Route 53 변경 자체는 일반적으로 빠르게 반영되지만 기존 TTL과 각 DNS resolver 캐시에 따라
 사용자별 반영 시점은 달라질 수 있습니다.
 
-## 11. 이후 배포와 롤백
+## 10. 이후 배포와 롤백
 
 - Pull Request를 만들면 `Build` 후 Vercel Preview가 생성됩니다.
 - PR을 `main`에 병합하면 Production이 배포되고 운영 도메인이 새 배포를 가리킵니다.
@@ -242,8 +220,7 @@ Route 53 변경 자체는 일반적으로 빠르게 반영되지만 기존 TTL�
 - [Vercel Dashboard에서 프로젝트 만들기](https://vercel.com/docs/projects/managing-projects)
 - [Vercel Project ID 확인](https://vercel.com/docs/project-configuration/general-settings)
 - [Vercel Team ID 확인](https://vercel.com/docs/accounts#find-your-team-id)
-- [Vercel에 커스텀 도메인 추가](https://vercel.com/kb/guide/how-do-i-add-a-custom-domain-to-my-vercel-project)
-- [Vercel 도메인 리다이렉트](https://vercel.com/docs/domains/working-with-domains/deploying-and-redirecting)
+- [외부 DNS에서 Vercel 커스텀 도메인 연결](https://vercel.com/docs/domains/set-up-custom-domain#when-you're-using-an-external-dns-provider)
 - [GitHub Actions Secrets 등록](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)
 - [Route 53 콘솔에서 레코드 생성](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html)
 - [Route 53 DNS 레코드 유형](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ResourceRecordTypes.html)
