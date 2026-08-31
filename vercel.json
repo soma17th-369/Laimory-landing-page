@@ -7,7 +7,6 @@
     "deploymentEnabled": false
   },
 
-  "//": "약관은 public/terms/{slug}/{version}.html 로 두고, 확장자 없는 주소로 이어 줍니다. 배포된 버전은 덮어쓰지 않고, 개정 시 새 파일과 새 rewrite 한 줄을 추가하세요.",
   "rewrites": [
     {
       "source": "/terms/terms-of-service/1.0",
