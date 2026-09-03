@@ -1,0 +1,432 @@
+---
+/**
+ * "흩어진 순간을, 다시 읽을 수 있는 하루로."
+ * 왼쪽은 모아 오는 기록 네 가지, 오른쪽은 기록 카드 → 타임라인 카드 데모입니다.
+ */
+import Icon from '../Icon.astro';
+import SourceBadge from '../SourceBadge.astro';
+import { sourceLooks } from '../../lib/sources';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const c = useCopy(lang);
+
+/** 데모 카드에 보이는 사진 조각. 시안의 assets/photos/frag-*를 줄여 넣었습니다. */
+const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.webp'];
+---
+
+<section class="result" id="result">
+  <div class="result__inner lm-page">
+    <div class="result__copy">
+      <span class="lm-eyebrow">{c.result.eyebrow}</span>
+      <h2 class="lm-h2 result__title">
+        {c.result.titleLine1}<br />{c.result.titleLine2}
+      </h2>
+      <ul class="result__inputs">
+        {
+          c.result.inputs.map((item) => (
+            <li class="lm-card result__input">
+              <span class="result__dot" aria-hidden="true" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="demo" role="group" aria-label={c.result.demoLabel}>
+      <ul class="demo__sources">
+        {
+          c.result.sources.map((source, i) => (
+            <li class="lm-card demo__source">
+              <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={36} iconSize={18} />
+              <span class="demo__source-text">
+                <span class="demo__source-title">{source.title}</span>
+                <span class="demo__source-meta">{source.meta}</span>
+              </span>
+              {i === 0 && (
+                <span class="demo__thumbs" aria-hidden="true">
+                  <img src={frags[0]} alt="" width="26" height="26" loading="lazy" decoding="async" />
+                  <img src={frags[1]} alt="" width="26" height="26" loading="lazy" decoding="async" />
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+
+      <span class="demo__arrow" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path
+            d="M4 14h19M15 6l8 8-8 8"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+
+      <div class="demo__card">
+        <div class="demo__card-head">
+          <span class="demo__card-label">
+            <Icon name="sparkle" size={16} />
+            {c.result.timeline.label}
+          </span>
+          <span class="demo__card-date">{c.result.timeline.date}</span>
+        </div>
+
+        <ol class="demo__entries">
+          {
+            c.result.timeline.entries.map((entry, i) => (
+              <li class="demo__entry">
+                <span class="demo__time">{entry.time}</span>
+                <div class="demo__event">
+                  <div class="demo__event-row">
+                    <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={24} iconSize={13} />
+                    <span class="demo__event-title">{entry.title}</span>
+                    {entry.meta && <span class="demo__event-meta">{entry.meta}</span>}
+                  </div>
+                  {i === 0 && (
+                    <div class="demo__photos" aria-hidden="true">
+                      {frags.map((src) => (
+                        <img src={src} alt="" width="64" height="48" loading="lazy" decoding="async" />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <div class="demo__draft">
+          <span class="demo__draft-label">
+            <Icon name="sparkle" size={14} />
+            {c.result.timeline.draftLabel}
+          </span>
+          <p class="demo__draft-text">{c.result.timeline.draft}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="result__outro">{c.result.outro}</p>
+</section>
+
+<style>
+  .result__inner {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: clamp(40px, 5.5vw, 80px);
+    padding: var(--lm-section-y) var(--lm-gutter) clamp(40px, 3.9vw, 56px);
+  }
+
+  .result__copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .result__title {
+    margin-top: 20px;
+  }
+
+  .result__inputs {
+    list-style: none;
+    margin: 36px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 460px;
+  }
+
+  .result__input {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    border-radius: 14px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--lm-ink);
+  }
+
+  .result__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--lm-primary);
+    flex-shrink: 0;
+  }
+
+  /* 데모 ─ 기록 카드 → 타임라인 카드 */
+  .demo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: min(620px, 100%);
+    flex-shrink: 0;
+  }
+
+  .demo__sources {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .demo__source {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 14px;
+  }
+
+  .demo__source-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .demo__source-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--lm-ink);
+    white-space: nowrap;
+  }
+
+  .demo__source-meta {
+    font-family: var(--lm-font-label);
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--lm-ink-faint);
+    white-space: nowrap;
+  }
+
+  .demo__thumbs {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .demo__thumbs img {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    object-fit: cover;
+  }
+
+  .demo__arrow {
+    display: flex;
+    color: var(--lm-primary);
+    flex-shrink: 0;
+  }
+
+  .demo__card {
+    flex: 1.15;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px 22px 24px;
+    box-sizing: border-box;
+    border-radius: var(--lm-radius-card);
+    background: var(--lm-surface);
+    box-shadow:
+      0 2px 8px rgb(31 28 23 / 8%),
+      inset 0 0 0 1px var(--lm-outline-2);
+  }
+
+  .demo__card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .demo__card-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--lm-font-label);
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: var(--lm-primary-faint);
+  }
+
+  .demo__card-label :global(svg),
+  .demo__draft-label :global(svg) {
+    color: var(--lm-on-primary-container);
+  }
+
+  .demo__card-date {
+    font-family: var(--lm-font-label);
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1;
+    color: var(--lm-ink-faint);
+    white-space: nowrap;
+  }
+
+  .demo__entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .demo__entry {
+    display: flex;
+    gap: 10px;
+  }
+
+  .demo__time {
+    width: 38px;
+    flex-shrink: 0;
+    padding-top: 5px;
+    font-family: var(--lm-font-label);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--lm-ink-faint);
+  }
+
+  .demo__event {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--lm-paper);
+    box-shadow: inset 0 0 0 1px var(--lm-outline-3);
+  }
+
+  .demo__event-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .demo__event-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--lm-ink);
+  }
+
+  .demo__event-meta {
+    margin-left: auto;
+    font-family: var(--lm-font-label);
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1;
+    color: var(--lm-ink-faint);
+    white-space: nowrap;
+  }
+
+  .demo__photos {
+    display: flex;
+    gap: 6px;
+  }
+
+  .demo__photos img {
+    display: block;
+    width: 64px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .demo__draft {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--lm-primary-container);
+  }
+
+  .demo__draft-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-family: var(--lm-font-label);
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: var(--lm-primary-faint);
+  }
+
+  .demo__draft-text {
+    margin: 0;
+    font-family: var(--lm-font-serif);
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--lm-on-primary-container);
+  }
+
+  .result__outro {
+    margin: 0 auto;
+    max-width: var(--lm-page-max);
+    box-sizing: border-box;
+    padding: 0 var(--lm-gutter) clamp(64px, 6.7vw, 96px);
+    text-align: center;
+    font-weight: 600;
+    font-size: clamp(18px, 1.8vw, 26px);
+    line-height: 1.6;
+    color: var(--lm-on-primary-container);
+    text-wrap: pretty;
+  }
+
+  /* 데모가 들어갈 자리가 없으면 설명 아래로 내립니다. */
+  @media (max-width: 1100px) {
+    .result__inner {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .result__inputs {
+      max-width: none;
+    }
+
+    .demo {
+      width: 100%;
+    }
+  }
+
+  /* 아주 좁으면 기록 카드 → 화살표 → 타임라인을 세로로 세웁니다. */
+  @media (max-width: 600px) {
+    .demo {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .demo__sources,
+    .demo__card {
+      flex: none;
+    }
+
+    .demo__arrow {
+      align-self: center;
+      transform: rotate(90deg);
+    }
+  }
+</style>

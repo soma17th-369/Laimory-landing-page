@@ -12,9 +12,9 @@ const c = useCopy(lang);
 const home = getLocalizedHome(lang);
 
 const links = [
+  { href: '#problem', label: c.nav.problem },
   { href: '#how', label: c.nav.how },
-  { href: '#sources', label: c.nav.sources },
-  { href: '#control', label: c.nav.control },
+  { href: '#privacy', label: c.nav.privacy },
 ];
 ---
 
@@ -77,6 +77,7 @@ const links = [
     line-height: 1;
     color: var(--lm-primary-soft);
     text-decoration: none;
+    white-space: nowrap;
     transition: color 160ms ease;
   }
 

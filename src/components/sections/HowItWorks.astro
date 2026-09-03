@@ -1,56 +1,63 @@
 ---
-import Icon from '../Icon.astro';
-import type { IconName } from '../../lib/icons';
+/**
+ * "모으고, 정리하고, 내가 마무리합니다."
+ * 세 단계마다 실제 앱 화면 캡처를 작은 목업에 담아 보여 줍니다.
+ */
+import PhoneFrame from '../PhoneFrame.astro';
+import AppShot from '../AppShot.astro';
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
 
-/** 단계별 아이콘과 배지 색. 문구는 i18n에서 옵니다. */
-const looks: { icon: IconName; size: number; tone: string }[] = [
-  { icon: 'camera', size: 22, tone: 'joy' },
-  { icon: 'sparkle', size: 20, tone: 'calm' },
-  { icon: 'pencil', size: 20, tone: 'green' },
+/**
+ * 단계별 앱 화면 캡처. 문구는 i18n에서 옵니다.
+ * width · height는 파일의 실제 픽셀 크기입니다(설정 · 편집 화면은 2배 해상도).
+ */
+const shots = [
+  { src: '/images/app-settings.webp', width: 824, height: 1408 },
+  { src: '/images/app-timeline.webp', width: 376, height: 1282 },
+  { src: '/images/app-edit.webp', width: 824, height: 1784 },
 ];
 ---
 
-<section class="how lm-section lm-page" id="how">
-  <div class="how__head">
-    <span class="lm-eyebrow">{c.how.eyebrow}</span>
+<section class="how" id="how">
+  <div class="how__inner lm-page">
     <h2 class="lm-h2 how__title">{c.how.title}</h2>
-  </div>
 
-  <ol class="how__grid">
-    {
-      c.how.steps.map((step, i) => (
-        <li class="lm-card how__card">
-          <div class="how__card-top">
-            <span class={`how__badge how__badge--${looks[i].tone}`}>
-              <Icon name={looks[i].icon} size={looks[i].size} />
-            </span>
-            <span class="how__num">{String(i + 1).padStart(2, '0')}</span>
-          </div>
-          <h3 class="how__step">{step.title}</h3>
-          <p class="how__body">{step.body}</p>
-        </li>
-      ))
-    }
-  </ol>
+    <ol class="how__grid">
+      {
+        c.how.steps.map((step, i) => (
+          <li class="how__step">
+            <div class="how__text">
+              <span class="how__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="how__heading">{step.title}</h3>
+              <p class="how__body">{step.body}</p>
+            </div>
+            <div class="how__device">
+              <PhoneFrame width={360} height={420} size="sm" label={step.alt}>
+                <AppShot src={shots[i].src} width={shots[i].width} height={shots[i].height} />
+              </PhoneFrame>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
 </section>
 
 <style>
   .how {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(36px, 4vw, 56px);
+    background: var(--lm-paper-2);
   }
 
-  .how__head {
+  .how__inner {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: clamp(36px, 3.9vw, 56px);
+    padding: clamp(64px, 6.7vw, 96px) var(--lm-gutter) var(--lm-section-y);
   }
 
   .how__title {
@@ -63,45 +70,20 @@ const looks: { icon: IconName; size: number; tone: string }[] = [
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
+    gap: 28px;
     width: 100%;
   }
 
-  .how__card {
+  .how__step {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding: 30px 28px 32px;
+    gap: 20px;
   }
 
-  .how__card-top {
+  .how__text {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .how__badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
-  }
-
-  .how__badge--joy {
-    background: var(--lm-badge-joy);
-    color: var(--lm-badge-joy-ink);
-  }
-
-  .how__badge--calm {
-    background: var(--lm-badge-calm);
-    color: var(--lm-badge-calm-ink);
-  }
-
-  .how__badge--green {
-    background: var(--lm-badge-green);
-    color: var(--lm-badge-green-ink);
+    flex-direction: column;
+    gap: 12px;
   }
 
   .how__num {
@@ -109,13 +91,13 @@ const looks: { icon: IconName; size: number; tone: string }[] = [
     font-weight: 600;
     font-size: 13px;
     line-height: 1;
-    color: var(--lm-outline);
+    color: var(--lm-ink-faint);
   }
 
-  .how__step {
+  .how__heading {
     margin: 0;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 22px;
     line-height: 1.4;
     color: var(--lm-ink);
   }
@@ -129,14 +111,18 @@ const looks: { icon: IconName; size: number; tone: string }[] = [
     text-wrap: pretty;
   }
 
-  @media (max-width: 860px) {
+  /* 설명 길이가 달라도 목업의 윗선이 나란히 오도록 */
+  .how__device {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+  }
+
+  @media (max-width: 960px) {
     .how__grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: 16px;
-    }
-
-    .how__card {
-      padding: 26px 24px 28px;
+      gap: 48px;
+      max-width: 420px;
     }
   }
 </style>

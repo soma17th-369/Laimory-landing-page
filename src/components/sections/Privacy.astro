@@ -1,0 +1,117 @@
+---
+/**
+ * "어디까지 기록할지는 내가 정합니다."
+ * 왼쪽 목업은 타임라인을 만들기 전 기록을 확인하는 화면, 오른쪽은 약속 네 가지입니다.
+ */
+import PhoneFrame from '../PhoneFrame.astro';
+import ConsentScreen from '../ConsentScreen.astro';
+import { getLangFromUrl, useCopy } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const c = useCopy(lang);
+---
+
+<section class="privacy" id="privacy">
+  <div class="privacy__inner lm-page">
+    <div class="privacy__device">
+      <PhoneFrame width={412} height={620} cap={false} label={c.privacy.screen.title}>
+        <ConsentScreen screen={c.privacy.screen} />
+      </PhoneFrame>
+    </div>
+
+    <div class="privacy__copy">
+      <span class="lm-eyebrow">{c.privacy.eyebrow}</span>
+      <h2 class="lm-h2 privacy__title">
+        {c.privacy.titleLine1}<br />{c.privacy.titleLine2}
+      </h2>
+      <ul class="privacy__points">
+        {
+          c.privacy.points.map((point) => (
+            <li class="privacy__point">
+              <span class="privacy__dot" aria-hidden="true" />
+              {point}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .privacy__inner {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: clamp(40px, 5.5vw, 80px);
+    padding: var(--lm-section-y) var(--lm-gutter);
+  }
+
+  .privacy__device {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .privacy__copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .privacy__title {
+    margin-top: 20px;
+  }
+
+  .privacy__points {
+    list-style: none;
+    margin: 32px 0 0;
+    padding: 0;
+    max-width: 480px;
+  }
+
+  .privacy__point {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--lm-outline-2);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--lm-ink);
+    text-wrap: pretty;
+  }
+
+  .privacy__point:last-child {
+    border-bottom: 0;
+  }
+
+  .privacy__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--lm-green);
+    flex-shrink: 0;
+  }
+
+  /* 세로로 쌓일 때는 설명을 먼저 읽히게 하고 목업을 아래에 둡니다. */
+  @media (max-width: 900px) {
+    .privacy__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: clamp(36px, 5vw, 48px);
+    }
+
+    .privacy__device {
+      order: 2;
+    }
+
+    .privacy__copy {
+      order: 1;
+    }
+
+    .privacy__points {
+      max-width: none;
+    }
+  }
+</style>

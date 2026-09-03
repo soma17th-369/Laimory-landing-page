@@ -1,0 +1,56 @@
+---
+/**
+ * 데이터 소스 아이콘 배지. 동그란 바탕색 위에 아이콘 하나를 올립니다.
+ * 색 조합(tone)은 시안의 사진 · 캘린더 · 위치 · 알림 순서를 따릅니다.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from '../lib/icons';
+import type { Tone } from '../lib/sources';
+
+interface Props {
+  icon: IconName;
+  tone: Tone;
+  /** 배지 지름(px) */
+  size?: number;
+  /** 아이콘 크기(px) */
+  iconSize?: number;
+}
+
+const { icon, tone, size = 36, iconSize = 18 } = Astro.props;
+---
+
+<span class={`badge badge--${tone}`} style={`--badge-size: ${size}px`}>
+  <Icon name={icon} size={iconSize} />
+</span>
+
+<style>
+  .badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--badge-size);
+    height: var(--badge-size);
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  .badge--joy {
+    background: var(--lm-badge-joy);
+    color: var(--lm-badge-joy-ink);
+  }
+
+  .badge--calm {
+    background: var(--lm-badge-calm);
+    color: var(--lm-badge-calm-ink);
+  }
+
+  .badge--green {
+    background: var(--lm-badge-green);
+    color: var(--lm-badge-green-ink);
+  }
+
+  .badge--purple {
+    background: var(--lm-badge-purple);
+    color: var(--lm-badge-purple-ink);
+  }
+</style>
