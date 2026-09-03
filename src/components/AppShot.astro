@@ -1,0 +1,38 @@
+---
+/**
+ * 폰 목업 안에 넣는 앱 화면 캡처.
+ * 감싸는 PhoneFrame이 그림 전체의 설명(aria-label)을 맡으므로
+ * 이미지 자체는 장식으로 두어 두 번 읽히지 않게 합니다.
+ *
+ * width · height는 파일의 실제 픽셀 크기입니다. 레이아웃이 흔들리지 않도록
+ * 비율 계산에만 쓰이고, 표시 폭은 목업 화면 폭에 맞춰 늘어납니다.
+ */
+interface Props {
+  src: string;
+  width: number;
+  height: number;
+  /** 첫 화면에 보이는 캡처는 미리 받아 둡니다. */
+  eager?: boolean;
+}
+
+const { src, width, height, eager = false } = Astro.props;
+---
+
+<img
+  class="shot"
+  src={src}
+  alt=""
+  width={width}
+  height={height}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : undefined}
+  decoding="async"
+/>
+
+<style>
+  .shot {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

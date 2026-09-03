@@ -2,8 +2,9 @@
 
 Laimory를 소개하는 랜딩 페이지입니다. 반응형과 한/영 다국어(i18n)를 기본으로 지원합니다.
 
-화면은 Laimory 디자인 파일을 그대로 옮긴 것으로, 색·간격·아이콘·폰트가 시안과 1:1로 맞춰져
-있습니다.
+화면은 Laimory 랜딩 디자인 시안(v2)을 그대로 옮긴 것으로, 색·간격·아이콘·폰트가 시안과
+1:1로 맞춰져 있습니다. 폰 목업 안의 앱 화면은 실제 앱과 디자인 시스템 화면을 캡처한
+이미지입니다.
 
 ## 기술 스택
 
@@ -31,32 +32,36 @@ src/
 │  └─ Layout.astro           # 공통 HTML 뼈대 (head, meta, 폰트, Header/Footer)
 ├─ components/
 │  ├─ Header.astro           # 상단 바 (히어로와 이어지는 네이비)
-│  ├─ Footer.astro           # 하단 푸터 겸 다운로드 영역
+│  ├─ Footer.astro           # 마무리 CTA · 약관 6종 링크 · 사업자 정보
 │  ├─ LanguagePicker.astro   # 언어 전환 (KO / EN)
 │  ├─ Logo.astro             # Laimory 워드마크 (currentColor)
 │  ├─ Icon.astro             # 아이콘 한 개 렌더링
-│  ├─ MoodFace.astro         # 감정 얼굴 다섯 종
+│  ├─ SourceBadge.astro      # 데이터 소스 아이콘 배지 (사진 · 캘린더 · 위치 · 알림)
 │  ├─ PhoneFrame.astro       # 폰 목업 틀
-│  ├─ AppScreen.astro        # 목업 안에 들어가는 앱 화면
+│  ├─ AppShot.astro          # 목업 안에 들어가는 앱 화면 캡처
+│  ├─ ConsentScreen.astro    # 목업 안 '오늘 수집된 기록' 확인 화면
 │  └─ sections/
 │     ├─ Hero.astro          # 히어로 (첫 화면)
-│     ├─ Moments.astro       # "지난 주엔 뭘 하셨나요?"
-│     ├─ HowItWorks.astro    # 세 단계 설명
-│     ├─ Sources.astro       # 데이터 소스 4종
-│     ├─ Control.astro       # 기록 권한
-│     └─ MoodStrip.astro     # 감정 얼굴 띠
+│     ├─ Problem.astro       # "기억은 흐려지고, 기록은 자꾸 미뤄집니다"
+│     ├─ Result.astro        # 흩어진 기록 → 타임라인 · 일기 초안 데모
+│     ├─ HowItWorks.astro    # 세 단계 (연결 · 정리 · 마무리)
+│     └─ Privacy.astro       # "어디까지 기록할지는 내가 정합니다"
 ├─ i18n/
 │  ├─ ui.ts                  # 모든 문구(한/영) — 콘텐츠는 여기서 수정
 │  └─ utils.ts               # 언어 감지 · 문구 헬퍼
 ├─ lib/
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
-│  ├─ moods.ts               # 감정별 색·표정 정의
+│  ├─ sources.ts             # 데이터 소스 4종의 아이콘 · 배지 색
 │  ├─ links.ts               # 앱 다운로드 링크 · 약관 URL
 │  └─ business.ts            # 사업자 정보 (번호·이메일 등 언어 무관한 값)
 └─ styles/
    └─ global.css             # 디자인 토큰 + 공통 클래스
 
 public/
+├─ images/                    # 시안의 사진과 앱 화면 캡처 (WebP)
+│  ├─ app-*.webp              # 폰 목업 안 앱 화면 (settings · timeline · edit)
+│  ├─ problem-*.webp          # 문제 제기 섹션의 사진 두 장
+│  └─ frag-*.webp             # 데모 카드의 사진 조각
 └─ terms/                     # 약관 원문 HTML (Laimory-server에서 가져온 정적 파일)
    └─ {slug}/{version}.html   # 예: terms-of-service/1.0.html → /terms/terms-of-service/1.0
 ```
@@ -68,6 +73,7 @@ public/
 - **앱 다운로드 링크**: `src/lib/links.ts` 의 `DOWNLOAD_URL` — 지금은 푸터로 스크롤만 하는 자리표시자입니다.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/i18n/ui.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
+- **앱 화면 캡처 교체**: `public/images/app-*.webp` 를 바꾸고, `Hero.astro` · `HowItWorks.astro` 의 `width` · `height` 를 새 파일의 실제 픽셀 크기로 맞춥니다. 목업 안에서는 화면 폭에 맞춰 늘어나므로 비율만 맞으면 됩니다.
 - **섹션 추가/편집**: `src/components/sections/` 에 컴포넌트 추가 후 `pages/index.astro`, `pages/en/index.astro` 에 삽입
 - **아이콘 추가**: 디자인 파일에서 패스를 추출해 `src/lib/icons.ts` 에 추가
 

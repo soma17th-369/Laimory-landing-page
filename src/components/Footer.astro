@@ -1,4 +1,8 @@
 ---
+/**
+ * 마무리 CTA와 사이트 정보. 시안의 "오늘부터 하루를 남겨보세요" 아래에
+ * 약관 6종 링크와 사업자 정보를 그대로 이어 둡니다.
+ */
 import Logo from './Logo.astro';
 import { getLangFromUrl, useCopy } from '../i18n/utils';
 import { DOWNLOAD_URL, TERMS_URL, isExternal } from '../lib/links';
@@ -16,8 +20,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
 
 <footer class="footer" id="download">
   <div class="footer__inner lm-page">
-    <span class="footer__logo"><Logo width={200} /></span>
-    <p class="footer__tagline">{c.footer.tagline}</p>
+    <h2 class="footer__title">{c.footer.title}</h2>
     <a
       class="lm-btn lm-btn--primary footer__cta"
       href={DOWNLOAD_URL}
@@ -25,20 +28,26 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     >
       {c.footer.cta}
     </a>
-    <nav class="footer__legal" aria-label={c.footer.legal}>
-      {termsKeys.map((key) => (
-        <a href={TERMS_URL[key]} hreflang="ko">{c.footer.links[key]}</a>
-      ))}
-    </nav>
-    {c.footer.legalNote && <p class="footer__legal-note">{c.footer.legalNote}</p>}
-    <address class="footer__business" aria-label={c.footer.business.label}>
-      <span>{c.footer.business.ownerLabel} {c.footer.business.owner}</span>
-      <span>{c.footer.business.registrationLabel} {BUSINESS.registrationNumber}</span>
-      <span>{c.footer.business.addressLabel} {c.footer.business.address}</span>
-      <span>{c.footer.business.lbsLabel} {BUSINESS.lbsReportNumber}</span>
-      <span>{c.footer.business.privacyOfficerLabel} {c.footer.business.privacyOfficer}</span>
-      <span>{c.footer.business.contactLabel} <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></span>
-    </address>
+
+    <span class="footer__logo"><Logo width={150} /></span>
+
+    <div class="footer__info">
+      <nav class="footer__legal" aria-label={c.footer.legal}>
+        {termsKeys.map((key) => (
+          <a href={TERMS_URL[key]} hreflang="ko">{c.footer.links[key]}</a>
+        ))}
+      </nav>
+      {c.footer.legalNote && <p class="footer__legal-note">{c.footer.legalNote}</p>}
+      <address class="footer__business" aria-label={c.footer.business.label}>
+        <span>{c.footer.business.ownerLabel} {c.footer.business.owner}</span>
+        <span>{c.footer.business.registrationLabel} {BUSINESS.registrationNumber}</span>
+        <span>{c.footer.business.addressLabel} {c.footer.business.address}</span>
+        <span>{c.footer.business.lbsLabel} {BUSINESS.lbsReportNumber}</span>
+        <span>{c.footer.business.privacyOfficerLabel} {c.footer.business.privacyOfficer}</span>
+        <span>{c.footer.business.contactLabel} <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></span>
+      </address>
+    </div>
+
     <small class="footer__credit">{c.footer.credit}</small>
   </div>
 </footer>
@@ -54,29 +63,40 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     flex-direction: column;
     align-items: center;
     gap: 24px;
-    padding: clamp(64px, 6vw, 88px) var(--lm-gutter) clamp(56px, 5vw, 72px);
+    padding: clamp(64px, 6.7vw, 96px) var(--lm-gutter) clamp(56px, 5vw, 72px);
   }
 
-  .footer__logo {
-    display: block;
-    color: #ffffff;
-  }
-
-  .footer__tagline {
+  .footer__title {
     margin: 0;
-    max-width: 440px;
     text-align: center;
-    font-weight: 400;
-    font-size: clamp(15px, 1.4vw, 17px);
-    line-height: 1.8;
-    color: var(--lm-primary-soft);
+    font-family: var(--lm-font-heading);
+    font-weight: 700;
+    font-size: clamp(28px, 3.1vw, 44px);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: #ffffff;
     text-wrap: pretty;
   }
 
   .footer__cta {
-    margin-top: 20px;
-    padding: 16px 32px;
-    font-size: 16px;
+    margin-top: 12px;
+    padding: 18px 36px;
+    font-size: 17px;
+  }
+
+  .footer__logo {
+    display: block;
+    margin-top: 36px;
+    color: #ffffff;
+  }
+
+  /* 약관 · 사업자 정보 묶음 ─ 로고 아래에 조금 촘촘하게 */
+  .footer__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
   }
 
   .footer__legal {
@@ -85,7 +105,6 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     justify-content: center;
     align-items: center;
     gap: 6px 20px;
-    margin-top: 12px;
   }
 
   .footer__legal a {
@@ -115,7 +134,6 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     justify-content: center;
     gap: 2px 10px;
     max-width: 640px;
-    margin-top: 4px;
     font-style: normal;
     font-size: 12px;
     line-height: 1.8;
@@ -158,7 +176,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
   }
 
   .footer__credit {
-    margin-top: 12px;
+    margin-top: 8px;
     font-family: var(--lm-font-label);
     font-weight: 400;
     font-size: 12px;
@@ -169,7 +187,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
 
   @media (max-width: 480px) {
     .footer__logo :global(svg) {
-      width: 160px;
+      width: 128px;
     }
   }
 </style>

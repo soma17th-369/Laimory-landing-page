@@ -1,0 +1,178 @@
+---
+/**
+ * 목업 안의 '오늘 수집된 기록이에요' 확인 화면.
+ * 타임라인을 만들기 전에 어떤 기록이 들어갈지 보여 주고 끌 수 있다는 걸 표현합니다.
+ * 원본 시안(412px)의 간격을 옮기되 폭은 목업 화면에 맞춰 늘어납니다.
+ */
+import SourceBadge from './SourceBadge.astro';
+import { sourceLooks } from '../lib/sources';
+import type { SiteCopy } from '../i18n/ui';
+
+interface Props {
+  screen: SiteCopy['privacy']['screen'];
+}
+
+const { screen } = Astro.props;
+
+/** 시안에서는 마지막 항목(알림)만 꺼져 있습니다. */
+const enabled = [true, true, true, false];
+---
+
+<div class="screen">
+  <div class="screen__head">
+    <span class="screen__title">{screen.title}</span>
+    <span class="screen__body">{screen.bodyLine1}<br />{screen.bodyLine2}</span>
+  </div>
+
+  <ul class="screen__list">
+    {
+      screen.items.map((item, i) => (
+        <li class="screen__item">
+          <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={32} iconSize={16} />
+          <span class="screen__item-text">
+            <span class="screen__item-title">{item.title}</span>
+            <span class="screen__item-meta">{item.meta}</span>
+          </span>
+          <span class:list={['toggle', { 'toggle--on': enabled[i] }]} aria-hidden="true">
+            <span class="toggle__knob" />
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <span class="screen__note">{screen.note}</span>
+  <span class="screen__cta">{screen.cta}</span>
+</div>
+
+<style>
+  .screen {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    padding: 52px 24px 0;
+    box-sizing: border-box;
+    font-family: var(--lm-font-sans);
+  }
+
+  .screen__head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .screen__title {
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--lm-ink);
+  }
+
+  .screen__body {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--lm-ink-muted);
+  }
+
+  .screen__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .screen__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: var(--lm-surface);
+    box-shadow: inset 0 0 0 1px var(--lm-outline-2);
+  }
+
+  .screen__item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .screen__item-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--lm-ink);
+  }
+
+  .screen__item-meta {
+    font-family: var(--lm-font-label);
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1;
+    color: var(--lm-ink-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 토글 ─ 실제로 동작하지 않는 그림입니다. */
+  .toggle {
+    position: relative;
+    margin-left: auto;
+    width: 40px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--lm-outline-2);
+    flex-shrink: 0;
+  }
+
+  .toggle--on {
+    background: var(--lm-primary);
+  }
+
+  .toggle__knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--lm-surface);
+  }
+
+  .toggle--on .toggle__knob {
+    left: auto;
+    right: 3px;
+  }
+
+  .screen__note {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--lm-ink-faint);
+    text-align: center;
+  }
+
+  .screen__cta {
+    padding: 16px 0;
+    border-radius: 999px;
+    background: var(--lm-navy);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  @media (max-width: 400px) {
+    .screen {
+      padding: 40px 16px 0;
+      gap: 14px;
+    }
+  }
+</style>

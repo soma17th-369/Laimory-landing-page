@@ -1,6 +1,9 @@
 ---
+/**
+ * 히어로. 왼쪽은 한 줄 약속과 CTA, 오른쪽은 실제 앱의 타임라인 화면 캡처입니다.
+ */
 import PhoneFrame from '../PhoneFrame.astro';
-import AppScreen from '../AppScreen.astro';
+import AppShot from '../AppShot.astro';
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
 import { DOWNLOAD_URL, isExternal } from '../../lib/links';
 
@@ -29,17 +32,11 @@ const c = useCopy(lang);
           {c.hero.ctaSecondary}
         </a>
       </div>
-
-      <p class="hero__meta">
-        <span>{c.hero.metaSources}</span>
-        <span class="hero__meta-sep" aria-hidden="true"></span>
-        <span>{c.hero.metaConsent}</span>
-      </p>
     </div>
 
     <div class="hero__device">
-      <PhoneFrame height={560} label={c.meta.title}>
-        <AppScreen app={c.app} mood={c.mood} />
+      <PhoneFrame width={440} height={660} shadow label={c.hero.deviceAlt}>
+        <AppShot src="/images/app-timeline.webp" width={376} height={1282} eager />
       </PhoneFrame>
     </div>
   </div>
@@ -65,7 +62,7 @@ const c = useCopy(lang);
   .hero__copy {
     flex: 1;
     min-width: 0;
-    padding-top: clamp(0px, 2vw, 32px);
+    padding: clamp(0px, 2vw, 32px) 0 clamp(56px, 7vw, 104px);
   }
 
   .hero__eyebrow {
@@ -79,9 +76,10 @@ const c = useCopy(lang);
 
   .hero__title {
     margin: 26px 0 0;
+    font-family: var(--lm-font-heading);
     font-weight: 700;
-    font-size: clamp(32px, 4.3vw, 60px);
-    line-height: 1.3;
+    font-size: clamp(32px, 4.1vw, 58px);
+    line-height: 1.34;
     letter-spacing: -0.025em;
     color: #ffffff;
     text-wrap: pretty;
@@ -110,36 +108,24 @@ const c = useCopy(lang);
     font-size: clamp(15px, 1.3vw, 17px);
   }
 
-  .hero__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin: clamp(28px, 2.8vw, 36px) 0 0;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 1;
-    color: var(--lm-primary-dim);
-  }
-
-  .hero__meta-sep {
-    width: 1px;
-    height: 12px;
-    background: var(--lm-navy-line);
-  }
-
+  /* 목업은 글보다 아래에 맞춰 섹션 바닥에 붙습니다. */
   .hero__device {
     display: flex;
     justify-content: center;
     flex-shrink: 0;
+    align-self: flex-end;
   }
 
-  /* 세로로 쌓이면 목업이 아래 여백을 채우며 섹션 바닥에 붙습니다. */
+  /* 세로로 쌓이면 목업이 글 아래에서 섹션 바닥에 붙습니다. */
   @media (max-width: 900px) {
     .hero__inner {
       flex-direction: column;
       align-items: stretch;
-      gap: clamp(40px, 6vw, 56px);
+      gap: 0;
+    }
+
+    .hero__copy {
+      padding-bottom: clamp(40px, 6vw, 56px);
     }
 
     .hero__body {
@@ -147,7 +133,8 @@ const c = useCopy(lang);
     }
 
     .hero__device {
-      margin-inline: auto;
+      align-self: center;
+      width: min(440px, 100%);
     }
   }
 </style>
