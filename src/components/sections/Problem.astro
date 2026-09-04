@@ -10,12 +10,13 @@ const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
 
 /**
- * 사진은 시안대로 좌우를 뒤집어 씁니다.
+ * 퇴근길 사진은 시안대로 좌우를 뒤집어 인물이 이음새 반대편을 보게 합니다.
+ * 밤 사진은 뒤집으면 폰 화면의 '오늘의 일기' 글씨가 거울처럼 뒤집히므로 그대로 씁니다.
  * 밤 사진은 위쪽(휴대폰 화면)이 보여야 해서 위를 기준으로 자릅니다.
  */
 const photos = [
-  { src: '/images/problem-commute.webp', position: 'center' },
-  { src: '/images/problem-night.webp', position: 'center top' },
+  { src: '/images/problem-commute.webp', position: 'center', flip: true },
+  { src: '/images/problem-night.webp', position: 'center top', flip: false },
 ];
 ---
 
@@ -28,7 +29,7 @@ const photos = [
         c.problem.panels.map((panel, i) => (
           <figure class="problem__panel">
             <img
-              class="problem__photo"
+              class:list={['problem__photo', { 'problem__photo--flip': photos[i].flip }]}
               src={photos[i].src}
               alt={panel.alt}
               style={`object-position: ${photos[i].position}`}
@@ -100,6 +101,9 @@ const photos = [
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .problem__photo--flip {
     transform: scaleX(-1);
   }
 

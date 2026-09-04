@@ -129,7 +129,7 @@ const ko: SiteCopy = {
   hero: {
     eyebrow: 'LIFE + AI + MEMORY',
     titleLine1: '오늘 뭐 했는지,',
-    titleLine2: 'AI가 한눈에 정리해드려요',
+    titleLine2: '라이모리가 한눈에 정리해드려요',
     body: '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인과 일기 초안을 만들어드려요.',
     ctaPrimary: '앱 다운로드',
     ctaSecondary: '어떻게 작동하나요',
