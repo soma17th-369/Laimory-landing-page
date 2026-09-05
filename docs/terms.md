@@ -1,8 +1,17 @@
 # 약관 문서 운영 가이드
 
-약관 원문 HTML은 [Laimory-server](https://github.com/soma17th-369/Laimory-server)의
-`src/main/resources/terms-content/terms`가 원본입니다. 랜딩 페이지는 그 파일을 그대로
-정적 자산으로 두고 서빙만 담당합니다.
+약관 원문의 source of truth는
+[Laimory-server](https://github.com/soma17th-369/Laimory-server)의
+`docs/terms/drafts/*.md` Markdown이고, 게시용 HTML은
+`docs/terms/scripts/build-site.mjs`가 거기서 생성합니다. 스타일(`<style>` 블록)도 이
+스크립트 안에 있습니다. 랜딩 페이지는 생성된 HTML을 정적 자산으로 두고 서빙만 담당합니다.
+
+**HTML을 고칠 때는 build-site.mjs도 함께 고쳐야 합니다.** 그러지 않으면 다음에 약관을
+다시 생성할 때 되돌아갑니다.
+
+`src/main/resources/terms-content`는 더 이상 원본이 아닙니다. 2026-09-01
+Laimory-server PR #427 `약관 원문 서빙을 랜딩페이지로 이관`에서 HTML 6종과
+`TermContentController`가 함께 삭제되었고, Server는 catalog의 주소만 다룹니다.
 
 ## 현재 게시된 문서
 
@@ -69,8 +78,8 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 
 - 법률 문구는 건드리지 않고 잘못된 값만 바꿉니다. 되돌려서 원본과 대조해
   다른 변경이 섞이지 않았는지 확인하세요.
-- 원본인 Laimory-server의 terms-content도 함께 고쳐야 합니다. 그러지 않으면
-  다음에 약관을 다시 가져올 때 되돌아옵니다.
+- 원본인 Laimory-server의 `docs/terms/drafts/*.md`도 함께 고쳐야 합니다. 그러지
+  않으면 다음에 약관을 다시 생성할 때 되돌아옵니다.
 - `immutable` 때문에 **이미 페이지를 받아간 브라우저는 최대 1년간 옛 내용을
   그대로 보여줍니다.** 재배포하면 Vercel 엣지 캐시는 갱신되지만 개별 브라우저
   캐시는 손댈 수 없습니다. 노출 기간이 길었다면 새 버전 주소로 옮기는 편이
@@ -87,14 +96,18 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 
 - **법률 문구·구조는 건드리지 않습니다.** `git diff`로 `<style>` 밖의 변경이 섞이지
   않았는지 확인하세요.
-- 원본인 Laimory-server의 terms-content도 함께 고쳐야 합니다. 그러지 않으면 다음에
-  약관을 다시 가져올 때 되돌아옵니다.
+- 스타일은 Laimory-server의 `docs/terms/scripts/build-site.mjs` 안에 있습니다. 거기도
+  함께 고쳐야 다음에 약관을 다시 생성할 때 되돌아오지 않습니다.
 - `immutable` 때문에 이미 페이지를 받아간 브라우저는 최대 1년간 옛 CSS로 봅니다.
   다만 표시가 어색할 뿐 약관 내용을 잘못 알리지는 않으므로, 잘못된 개인정보와 달리
   새 버전으로 옮길 이유가 되지 않습니다.
 
 ### 기록
 
+- 2026-09-06: 넓은 화면(1320px 이상)에서 `.table-scroll`을 본문 좌우로 340px 넓혀,
+  열이 많은 표가 가로 스크롤 없이 들어가게 했습니다. 본문 글줄 폭은 880px 그대로입니다.
+  표 글씨를 줄이는 방법도 검토했으나 13px까지 줄여도 표가 1023px이라 본문 폭 880px에
+  들어가지 않았고, 표 본문 15px은 원본 문서에 기록된 결정이라 택하지 않았습니다.
 - 2026-09-06: 표의 `th, td`에 `overflow-wrap: break-word` 추가. `body`의
   `overflow-wrap: anywhere`가 표 칸의 최소 폭을 글자 하나로 계산하게 만들어,
   열이 많은 표에서 `Amazon Web Services, Inc.`가 `Am / azo / n / We / b …`처럼
@@ -121,7 +134,9 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 - [ ] 응답 헤더의 `Content-Type`이 `text/html; charset=utf-8`
 - [ ] 응답 헤더의 `Cache-Control`이 `public, max-age=31536000, immutable`
 - [ ] 모바일 화면에서 핀치 줌으로 확대됨
-- [ ] 넓은 표가 가로로 스크롤되고, 페이지 자체는 가로로 넘치지 않음
+- [ ] 넓은 화면(1320px 이상)에서 열이 많은 표가 가로 스크롤 없이 다 보임
+- [ ] 좁은 화면에서 넓은 표가 가로로 스크롤되고, 페이지 자체는 가로로 넘치지 않음
+- [ ] 표 안에서 `Amazon Web Services, Inc.` 같은 단어가 중간에서 잘리지 않음
 - [ ] 개발자 도구 Network에 외부 스크립트·분석 도구 요청이 없음
 - [ ] 랜딩 페이지 푸터의 이용약관 · 개인정보 처리방침 링크가 열림 (한국어 `/`, 영어 `/en/`)
 
