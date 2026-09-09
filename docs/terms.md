@@ -1,17 +1,10 @@
 # 약관 문서 운영 가이드
 
-약관 원문의 source of truth는
-[Laimory-server](https://github.com/soma17th-369/Laimory-server)의
-`docs/terms/drafts/*.md` Markdown이고, 게시용 HTML은
-`docs/terms/scripts/build-site.mjs`가 거기서 생성합니다. 스타일(`<style>` 블록)도 이
-스크립트 안에 있습니다. 랜딩 페이지는 생성된 HTML을 정적 자산으로 두고 서빙만 담당합니다.
+약관 본문의 관리 기준은 이 저장소의 **`public/terms/**/*.html`**입니다.
+본문과 스타일(`<style>` 블록)을 해당 HTML에서 직접 수정하고, 검토·게시도 이 저장소의 PR로 관리합니다.
 
-**HTML 본문은 서버의 Markdown 원문을, 스타일은 build-site.mjs를 먼저 고친 뒤 다시 생성합니다.**
-그러지 않으면 다음에 약관을 다시 생성할 때 되돌아갑니다.
-
-`src/main/resources/terms-content`는 더 이상 원본이 아닙니다. 2026-09-01
-Laimory-server PR #427 `약관 원문 서빙을 랜딩페이지로 이관`에서 HTML 6종과
-`TermContentController`가 함께 삭제되었고, Server는 catalog의 주소만 다룹니다.
+서버는 catalog의 문서 종류·버전·URL을 관리합니다. 약관 본문 관리는 랜딩페이지로 이관되었으며,
+서버에 남아 있는 과거 Markdown·생성기와 동기화하거나 그 결과로 현재 HTML을 덮어쓰지 않습니다.
 
 ## 현재 게시된 문서
 
@@ -24,20 +17,18 @@ Laimory-server PR #427 `약관 원문 서빙을 랜딩페이지로 이관`에서
 | 국외 이전 동의 | `public/terms/cross-border-transfer-consent/1.0.html` | `https://www.laimory.app/terms/cross-border-transfer-consent/1.0` |
 | 위치기반서비스 이용약관 | `public/terms/location-based-service-terms/1.0.html` | `https://www.laimory.app/terms/location-based-service-terms/1.0` |
 
-## 원본에서 달라지는 부분
+## HTML 작성 기준
 
-원본 HTML에서 **canonical origin 한 줄만** 바꿉니다. 법률 본문, 스타일, 시행일은
-수정하지 않습니다.
+각 문서의 canonical은 게시 주소와 일치시킵니다.
 
 ```
-- <link rel="canonical" href="https://laimory.app/terms/{slug}/{version}">
-+ <link rel="canonical" href="https://www.laimory.app/terms/{slug}/{version}">
+<link rel="canonical" href="https://www.laimory.app/terms/{slug}/{version}">
 ```
 
 랜딩 페이지 운영 도메인이 `www.laimory.app`이므로 (`astro.config.mjs`의 `site`와 동일),
 canonical도 같은 origin을 가리켜야 합니다.
 
-원본과의 바이트 비교가 가능하도록 `.gitattributes`에서 `public/terms/**/*.html`을
+플랫폼 간 줄바꿈 차이가 생기지 않도록 `.gitattributes`에서 `public/terms/**/*.html`을
 LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 바뀌지 않습니다.
 
 ## 확장자 없는 주소로 서빙되는 방식
@@ -77,8 +68,7 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 
 - 법률 문구는 건드리지 않고 잘못된 값만 바꿉니다. 되돌려서 원본과 대조해
   다른 변경이 섞이지 않았는지 확인하세요.
-- 원본인 Laimory-server의 `docs/terms/drafts/*.md`도 함께 고쳐야 합니다. 그러지
-  않으면 다음에 약관을 다시 생성할 때 되돌아옵니다.
+- 같은 값이 다른 문서에도 있는지 확인하고, 필요한 HTML을 이 저장소에서 함께 수정합니다.
 - `immutable` 때문에 **이미 페이지를 받아간 브라우저는 최대 1년간 옛 내용을
   그대로 보여줍니다.** 재배포하면 Vercel 엣지 캐시는 갱신되지만 개별 브라우저
   캐시는 손댈 수 없습니다. 노출 기간이 길었다면 새 버전 주소로 옮기는 편이
@@ -95,8 +85,8 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 
 - **법률 문구·구조는 건드리지 않습니다.** `git diff`로 `<style>` 밖의 변경이 섞이지
   않았는지 확인하세요.
-- 스타일은 Laimory-server의 `docs/terms/scripts/build-site.mjs` 안에 있습니다. 거기도
-  함께 고쳐야 다음에 약관을 다시 생성할 때 되돌아오지 않습니다.
+- 스타일은 각 HTML의 `<style>` 안에 있습니다. 공통 스타일을 바꿀 때는 영향을 받는
+  문서의 같은 규칙을 함께 수정하고 본문 변경이 섞이지 않았는지 확인합니다.
 - `immutable` 때문에 이미 페이지를 받아간 브라우저는 최대 1년간 옛 CSS로 봅니다.
   다만 표시가 어색할 뿐 약관 내용을 잘못 알리지는 않으므로, 잘못된 개인정보와 달리
   새 버전으로 옮길 이유가 되지 않습니다.
@@ -120,9 +110,10 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 ## 예외 — 앱 최초 출시 전 개인정보 처리방침 1.0 보완
 
 이번 Firebase Crashlytics 공개사항은 앱 최초 출시 전 보완으로, 기존 개인정보 처리방침
-`1.0`의 버전·시행일·URL을 유지합니다. 서버 원문에서 생성한 개인정보 처리방침 HTML만 반영하며,
+`1.0`의 버전·시행일·URL을 유지합니다. `public/terms/privacy-policy/1.0.html`을 수정하며,
 DB/catalog는 변경하지 않습니다. 진행 상태와 게시 전 삭제 처리 절차 확인은
-[서버 이슈 #468](https://github.com/soma17th-369/Laimory-server/issues/468)에서 추적합니다.
+[이슈 #22](https://github.com/soma17th-369/Laimory-landing-page/issues/22)에서 추적하고,
+수집 항목·국가·법적 근거 대조는 [검토 문서](crashlytics-privacy-review.md)에 기록합니다.
 
 이 예외는 출시 후 약관 개정에 적용하지 않습니다. 기존 `immutable` 정책으로 이미 문서를 열었던
 브라우저에는 옛 내용이 남을 수 있으므로, 게시 후에는 새 세션에서 URL과 수정 본문을 확인합니다.
@@ -131,8 +122,8 @@ DB/catalog는 변경하지 않습니다. 진행 상태와 게시 전 삭제 처�
 
 위 예외를 제외하면 배포된 버전 파일은 수정하지 않습니다. 새 버전 주소를 추가합니다.
 
-1. Laimory-server에서 새 버전 HTML을 받습니다. 예: `terms-of-service/1.1`
-2. `public/terms/terms-of-service/1.1.html`로 저장합니다.
+1. 이 저장소의 기존 HTML을 복사해 새 버전 파일을 만듭니다. 예: `public/terms/terms-of-service/1.1.html`
+2. 새 파일의 본문·문서 버전·시행일을 확정한 내용으로 수정합니다.
 3. canonical을 `https://www.laimory.app/terms/terms-of-service/1.1`로 바꿉니다.
 4. `vercel.json`의 `rewrites`에 `1.1` 항목을 추가합니다. **`1.0` 항목은 남겨 둡니다.**
    기존 버전에 동의한 사용자가 자신이 동의한 문서를 계속 열 수 있어야 합니다.

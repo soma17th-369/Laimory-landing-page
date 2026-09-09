@@ -62,7 +62,7 @@ public/
 │  ├─ app-*.webp              # 폰 목업 안 앱 화면 (settings · timeline · edit)
 │  ├─ problem-*.webp          # 문제 제기 섹션의 사진 두 장
 │  └─ frag-*.webp             # 데모 카드의 사진 조각
-└─ terms/                     # 약관 원문 HTML (Laimory-server에서 가져온 정적 파일)
+└─ terms/                     # 이 저장소에서 직접 관리·게시하는 약관 원문 HTML
    └─ {slug}/{version}.html   # 예: terms-of-service/1.0.html → /terms/terms-of-service/1.0
 ```
 
