@@ -113,7 +113,7 @@ LF로 고정했습니다. Windows에서 체크아웃해도 줄바꿈이 CRLF로 
 
 이번 Firebase Crashlytics 공개사항은 앱 최초 출시 전 보완으로, 기존 개인정보 처리방침
 `1.0`의 버전·시행일·URL을 유지합니다. `public/terms/privacy-policy/1.0.html`을 수정하며,
-DB/catalog는 변경하지 않습니다. 진행 상태와 게시 전 삭제 처리 절차 확인은
+DB/catalog는 변경하지 않습니다. 게시 상태와 운영팀이 맡은 삭제 수단 구현·검증 후속 작업은
 [이슈 #22](https://github.com/soma17th-369/Laimory-landing-page/issues/22)에서 추적하고,
 수집 항목·국가·법적 근거 대조는 [검토 문서](crashlytics-privacy-review.md)에 기록합니다.
 
