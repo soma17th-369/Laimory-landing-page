@@ -32,6 +32,46 @@
 
 따라서 이번 추가 조사에서 Geocoder의 국가·보유기준 필드를 확정하지 못했다. `미국`, `30일`, `90일`, `6개월` 등의 값을 추정하여 공개 HTML에 넣지 않는다. 이는 Google의 회신이 법정 필수절차라는 뜻이 아니라, 해당 필드에 적용할 근거를 현재 확보하지 못했다는 뜻이다.
 
+### 공개 정책의 적용 범위와 조사 결론
+
+[Google 개인정보처리방침의 적용 범위](https://policies.google.com/privacy?hl=ko)는 Android와 Google LLC·계열사의 서비스를 포함하며, 별도 방침이 있는 서비스는 예외로 둔다. 따라서 Google이 제공하는 Geocoder라는 운영 전제에서 공통 방침은 참고할 수 있다. 다만 공통 방침의 적용과 Maps 제품별 보안 문서의 적용은 별개다.
+
+[Google의 위치정보 보관 안내](https://policies.google.com/technologies/location-data?hl=ko)는 데이터 내용·사용 방식·기기 및 계정 설정에 따라 보관기간이 달라진다고 설명한다. 사용자 삭제까지 보유하는 정보, 일정 기간 후 만료하는 정보, 보안·법적 목적에 따라 장기간 보유하는 정보를 구분하지만, 기본 Geocoder 요청을 어느 범주로 처리하는지는 명시하지 않는다. 이 일반 설명을 Geocoder 요청의 특정 보유기간이나 삭제 수단이 확인되었다는 근거로 사용하지 않는다.
+
+[Google의 EU 표준계약조항 Annex I.B](https://business.safety.google/gdprcontrollerterms/sccs/eu-c2c/)도 수입자의 개인정보·데이터 보관 정책에 따라 기간을 정하는 방식으로 설명한다. 이는 고정된 일수만이 유일한 표기 방식은 아니라는 참고 자료이며, 기본 Geocoder에 대한 계약 적용이나 한국법상 고지의 충족 여부를 확정하는 자료는 아니다.
+
+[개인정보위 2026년 4월 처리방침 작성지침](https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&mCode=G010030030&nttId=12018) 31쪽은 보유기간을 특정할 수 없으면 결정 기준을 기재할 수 있다고 설명한다. 45쪽은 여러 국가로 이전되는 경우 해당 국가를 모두 기재하도록 안내한다. Google 개별 회신이나 고정된 최대 일수가 반드시 필요하다는 의미는 아니며, 실제로 적용할 국가·보유기준의 근거가 필요하다.
+
+**공개 자료 조사와 게시 문구 확정을 구분한다.** Maps의 보유기준은 위 초안처럼 작성할 수 있다. Maps의 전체 이전 국가 범위와 기본 Geocoder의 국가·보유기준은 이번에 확인한 공개 자료만으로 확정하지 못했다. 운영팀이 임의의 국가나 기간을 선택하거나, 타사의 문구를 승인하는 것으로 이 사실 확인을 대신하지 않는다.
+
+### 다른 앱의 공개 문구와 비교
+
+아래는 2026-09-13 확인한 각 운영자의 공개 안내다. 타사의 실제 처리·계약 또는 법적 적정성을 검증한 결과가 아니며, Laimory 고지값의 근거로 복사하지 않는다.
+
+| 앱 | 명시된 서비스 | 국가·보유 관련 안내 | 적용 한계 |
+| --- | --- | --- | --- |
+| [SeizeG](https://seizeglobal.buttle.co.kr/privacy.html) | Google Maps SDK for iOS/Android | 미국, Google 정책·계약·법령에 따른 보유 | 문서에 작성 안내성 문구도 남아 있어 완성된 표준 문안으로 취급하지 않는다. |
+| [Somewhere](https://npsomewhere.com/privacy.html) | Google Maps·Places 등 | 미국과 Google 서버 운영 국가, Google 정책 및 운영·법령상 필요한 기간 | 여러 Google 서비스를 묶은 안내이며 Geocoder의 개별 처리 조건을 보여주지 않는다. |
+| [스마트 주차 매니저](https://linkstart.ai.kr/privacy_policy.html) | Android Geocoder | 공통 국외이전 안내는 미국 등으로 표시. Geocoder의 별도 보유기간은 제시하지 않음 | 앱 내부 기록 삭제와 Google의 요청정보 보유를 구분해야 한다. |
+
+### 추가 자료가 필요한 두 질문
+
+현재 구현을 기준으로 게시 문구를 확정하려면 아래 사실을 뒷받침하는 자료가 필요하다. 같은 범위를 명시한 공식 공개 자료나 적용 계약도 사용할 수 있으며, 개별 문의만을 필수절차로 두지 않는다.
+
+1. **이전 국가:** Google 제공 Android 기본 `android.location.Geocoder`와 Maps SDK for Android의 요청정보·로그가 처리되는 국가 범위는 각각 무엇인가? Maps 보안 문서의 7개국 목록과 EEA·영국 설명을 함께 고려했을 때 전체 이전 국가를 어떻게 특정하는가?
+2. **기본 Geocoder 보유기준:** 과거 체류·이동 좌표를 `getFromLocation`에 전달할 때 Google이 받는 좌표 및 요청정보·로그에 적용되는 보유기간 또는 구체적인 보유 결정·삭제 기준은 무엇인가? Maps의 로그 보유 설명을 적용할 수 있다면 그 적용 근거는 무엇인가?
+
+문의가 필요한 경우 사용할 수 있도록 아래 본문을 준비했다. **발송하지 않은 초안**이며, 문의처는 [Google 한국어 개인정보처리방침](https://policies.google.com/privacy?hl=ko)에 공개된 `googlekrsupport@google.com`이다. 이 창구가 개발자용 Geocoder 문의를 직접 처리한다고 확인한 것은 아니므로 담당 팀 안내를 함께 요청한다.
+
+> 제목: Android 기본 Geocoder 및 Maps SDK의 개인정보 처리 국가·보유기준 확인 요청
+>
+> 안녕하세요. 한국 이용자를 대상으로 하는 Laimory 앱의 개인정보 고지를 준비하고 있습니다. 앱은 Maps SDK for Android로 지도를 표시하고, 별도로 Android 기본 `android.location.Geocoder.getFromLocation`에 과거 체류·이동 지점의 위도·경도를 전달해 주소를 얻습니다. Geocoder 호출에는 Maps API 키를 전달하지 않으며 Geocoding REST API를 직접 호출하지 않습니다. Google이 Geocoder를 제공하는 Android 기기를 전제로 아래 두 사항을 확인 부탁드립니다.
+>
+> 1. 두 서비스의 요청정보·로그가 보관 또는 처리되는 국가 범위와 근거 문서를 각각 알려 주세요. Maps 보안 문서의 7개국 목록 외에 EEA·영국 등 추가 처리 국가가 포함되는지도 확인 부탁드립니다.
+> 2. 기본 Geocoder의 좌표 및 요청정보·로그에 적용되는 보유기간 또는 구체적인 보유 결정·삭제 기준을 알려 주세요. Maps 보안 문서의 로그 보유 기준이 기본 Geocoder에도 적용되는 경우 그 근거를 부탁드립니다. 개발자가 반환된 주소를 캐시할 수 있는 기간이 아닌 Google의 요청정보 보유에 관한 질문입니다.
+>
+> 담당 팀이 다르다면 적절한 문의 창구 또는 공개 자료를 안내해 주세요. 감사합니다.
+
 ## 코드로 확인한 처리
 
 Android `develop`의 `b676204dffbf12b1b6ba722bf195dddb7031610b`를 기준으로 확인했다. 이전 조사 커밋 `d2e3a7df3c73e176e61db1f8db20becfd2aac4af` 이후 지도·주소 변환 경로에는 변경이 없었다. Google이 제공하는 Geocoder를 사용하는 환경이라는 운영 전제를 적용한다.
