@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getLangFromUrl, useCopy } from '../i18n/utils';
+import { BUSINESS } from '../lib/business';
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
@@ -10,12 +11,66 @@ const c = useCopy(lang);
 const title = c.meta.title;
 const description = c.meta.description;
 
-/** 정규 주소와 언어별 대체 주소 */
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+/**
+ * 정규 주소와 언어별 대체 주소.
+ * 정적 빌드에서는 같은 페이지가 /en 과 /en/ 두 주소로 열릴 수 있어
+ * 항상 뒷슬래시가 붙은 쪽을 정규 주소로 통일합니다.
+ * (vercel.json의 trailingSlash: true가 /en → /en/ 으로 보내는 것과 같은 형태)
+ */
+const pathname = Astro.url.pathname.endsWith('/')
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`;
+const canonical = new URL(pathname, Astro.site ?? Astro.url.origin);
 const alternates = [
   { hreflang: 'ko', href: new URL('/', Astro.site ?? Astro.url.origin).href },
   { hreflang: 'en', href: new URL('/en/', Astro.site ?? Astro.url.origin).href },
 ];
+
+/** SNS 공유 이미지. 로고 중심이라 언어 구분 없이 한 장을 씁니다. */
+const ogImage = new URL('/og/og.png', Astro.site ?? Astro.url.origin);
+
+/**
+ * 구조화 데이터(JSON-LD): 조직 + 웹사이트.
+ * - 사이트 내 검색이 없어 potentialAction(SearchAction)은 넣지 않습니다.
+ * - 앱 스토어 출시 전이라 SoftwareApplication도 아직 넣지 않습니다.
+ *   (links.ts의 DOWNLOAD_URL이 실제 주소가 되면 추가하세요.)
+ */
+const siteUrl = new URL('/', Astro.site ?? Astro.url.origin).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}#organization`,
+      name: 'Laimory',
+      alternateName: '라이모리',
+      url: siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: new URL('/brand/logo-512.png', siteUrl).href,
+        width: 512,
+        height: 512,
+      },
+      email: BUSINESS.email,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer support',
+        email: BUSINESS.email,
+        availableLanguage: ['Korean', 'English'],
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}#website`,
+      url: siteUrl,
+      name: 'Laimory',
+      alternateName: '라이모리',
+      description,
+      inLanguage: lang,
+      publisher: { '@id': `${siteUrl}#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -40,9 +95,23 @@ const alternates = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content={lang === 'ko' ? 'ko_KR' : 'en_US'} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:locale:alternate" content={lang === 'ko' ? 'en_US' : 'ko_KR'} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={c.meta.ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+    <meta name="twitter:image:alt" content={c.meta.ogImageAlt} />
+
+    <!-- 구조화 데이터 (schema.org) — 검색엔진에게 조직·사이트 정보를 알립니다 -->
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
+    />
 
     <!--
       본문은 원본 디자인과 같은 Pretendard, 큰 제목은 Noto Sans KR,

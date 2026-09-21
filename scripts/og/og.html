@@ -1,0 +1,36 @@
+<!doctype html>
+<!--
+  SNS 공유 이미지(og:image) 원본.
+  로고(흰 배경)를 가운데 두고 흰색을 1200×630 캔버스로 넓혀 채웁니다.
+  생성 방법은 generate.sh 참고.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #ffffff;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      /* 로고 원본(1024²)은 여백이 넉넉해 캔버스보다 크게 두고
+         가운데 워드마크만 보이게 합니다. 넘치는 부분은 전부 흰 여백입니다. */
+      img {
+        width: 800px;
+        height: 800px;
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="logo-1024.png" alt="" />
+  </body>
+</html>

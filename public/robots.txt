@@ -1,0 +1,7 @@
+# www.laimory.app 검색로봇 접근 규칙
+# 모든 로봇에게 공개 페이지 전체 크롤링을 허용합니다.
+# (프리뷰 배포는 Vercel이 X-Robots-Tag: noindex를 자동으로 붙입니다.)
+User-agent: *
+Allow: /
+
+Sitemap: https://www.laimory.app/sitemap-index.xml
