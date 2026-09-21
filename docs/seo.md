@@ -33,8 +33,8 @@ SEO 발표 키노트 체크리스트를 기준으로 적용한 내용과 운영 
 
 ### 검색엔진 제출 (배포 후 수동, 1회)
 
-1. **Google Search Console** — [search.google.com/search-console](https://search.google.com/search-console)에서 도메인 속성(`laimory.app`)으로 등록. 소유 확인은 Route 53에 TXT 레코드 추가(DNS는 `docs/deployment.md` 참고). 등록 후 Sitemaps 메뉴에 `https://www.laimory.app/sitemap-index.xml` 제출.
-2. **네이버 서치어드바이저** — [searchadvisor.naver.com](https://searchadvisor.naver.com)에서 `https://www.laimory.app` 등록. 소유 확인은 HTML 파일 방식이면 받은 파일을 `public/`에 넣고 배포. 이후 요청 > 사이트맵 제출에 같은 주소 제출.
+1. **Google Search Console** — ✅ 완료 (2026-09-21). URL 접두어 속성 `https://www.laimory.app/`을 windseed71 계정에 등록. 소유 확인은 `Layout.astro`의 `google-site-verification` 메타태그 — **삭제하면 확인이 풀리므로 유지할 것**. `sitemap-index.xml` 제출 완료.
+2. **네이버 서치어드바이저** — [searchadvisor.naver.com](https://searchadvisor.naver.com)에서 `https://www.laimory.app` 등록. 소유 확인은 메타태그 방식 권장(`naver-site-verification` 메타태그를 `Layout.astro`에 추가 후 배포). 이후 요청 > 사이트맵 제출에 `https://www.laimory.app/sitemap-index.xml` 제출.
 3. **Bing Webmaster Tools**(선택) — GSC 가져오기 기능으로 간단히 연동됩니다.
 
 제출 후 1주쯤 뒤 수집 상태가 "성공"인지, hreflang이 인식됐는지 확인하세요.
