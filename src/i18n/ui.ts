@@ -21,7 +21,12 @@ export interface SourceItem {
 }
 
 export interface SiteCopy {
-  meta: { title: string; description: string };
+  meta: {
+    title: string;
+    description: string;
+    /** SNS 공유 이미지(og:image)의 접근성 설명 */
+    ogImageAlt: string;
+  };
   nav: { problem: string; how: string; privacy: string; download: string };
   hero: {
     eyebrow: string;
@@ -117,6 +122,7 @@ const ko: SiteCopy = {
     title: 'Laimory — 나의 삶을 기억하는 AI',
     description:
       '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인과 일기 초안을 만들어 주는 기록 앱, Laimory.',
+    ogImageAlt: '흰 바탕 위의 Laimory 로고',
   },
 
   nav: {
@@ -259,6 +265,7 @@ const en: SiteCopy = {
     title: 'Laimory — the AI that remembers your life',
     description:
       'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day and a draft journal entry.',
+    ogImageAlt: 'Laimory logo on a white background',
   },
 
   nav: {

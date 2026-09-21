@@ -7,6 +7,51 @@
     "deploymentEnabled": false
   },
 
+  "trailingSlash": true,
+
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en/index.html",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/terms/terms-of-service/1.0.html",
+      "destination": "/terms/terms-of-service/1.0",
+      "permanent": true
+    },
+    {
+      "source": "/terms/privacy-policy/1.0.html",
+      "destination": "/terms/privacy-policy/1.0",
+      "permanent": true
+    },
+    {
+      "source": "/terms/sensitive-information-consent/1.0.html",
+      "destination": "/terms/sensitive-information-consent/1.0",
+      "permanent": true
+    },
+    {
+      "source": "/terms/third-party-provision-consent/1.0.html",
+      "destination": "/terms/third-party-provision-consent/1.0",
+      "permanent": true
+    },
+    {
+      "source": "/terms/cross-border-transfer-consent/1.0.html",
+      "destination": "/terms/cross-border-transfer-consent/1.0",
+      "permanent": true
+    },
+    {
+      "source": "/terms/location-based-service-terms/1.0.html",
+      "destination": "/terms/location-based-service-terms/1.0",
+      "permanent": true
+    }
+  ],
+
   "rewrites": [
     {
       "source": "/terms/terms-of-service/1.0",
