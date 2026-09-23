@@ -102,14 +102,6 @@ body {
   text-wrap: pretty;
 }
 
-.lm-body {
-  font-weight: 400;
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.85;
-  color: var(--lm-ink-muted);
-  text-wrap: pretty;
-}
-
 /* 흰 카드 ─ 얇은 테두리는 레이아웃을 밀지 않도록 inset 그림자로 그립니다 */
 .lm-card {
   background: var(--lm-surface);
