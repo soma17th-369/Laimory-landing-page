@@ -29,7 +29,6 @@ export interface SiteCopy {
   };
   nav: { problem: string; how: string; privacy: string; download: string };
   hero: {
-    eyebrow: string;
     titleLine1: string;
     titleLine2: string;
     body: string;
@@ -45,7 +44,6 @@ export interface SiteCopy {
     bridge: string;
   };
   result: {
-    eyebrow: string;
     titleLine1: string;
     titleLine2: string;
     /** 왼쪽에 나열되는 '모아 오는 기록' 네 가지 */
@@ -62,7 +60,6 @@ export interface SiteCopy {
       draftLabel: string;
       draft: string;
     };
-    outro: string;
   };
   how: {
     title: string;
@@ -70,7 +67,6 @@ export interface SiteCopy {
     steps: { title: string; body: string; alt: string }[];
   };
   privacy: {
-    eyebrow: string;
     titleLine1: string;
     titleLine2: string;
     points: string[];
@@ -119,7 +115,7 @@ export interface SiteCopy {
 
 const ko: SiteCopy = {
   meta: {
-    title: 'Laimory — 나의 삶을 기억하는 AI',
+    title: 'Laimory - 나의 삶을 기억하는 AI',
     description:
       '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인과 일기 초안을 만들어 주는 기록 앱, Laimory.',
     ogImageAlt: '흰 바탕 위의 Laimory 로고',
@@ -133,7 +129,6 @@ const ko: SiteCopy = {
   },
 
   hero: {
-    eyebrow: 'LIFE + AI + MEMORY',
     titleLine1: '오늘 뭐 했는지,',
     titleLine2: '라이모리가 한눈에 정리해드려요',
     body: '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인과 일기 초안을 만들어드려요.',
@@ -160,7 +155,6 @@ const ko: SiteCopy = {
   },
 
   result: {
-    eyebrow: 'RESULT',
     titleLine1: '흩어진 순간을,',
     titleLine2: '다시 읽을 수 있는 하루로.',
     inputs: ['찍었던 사진들', '캘린더에 등록된 일정들', '수집된 GPS 위치 정보들', '저장된 알림들'],
@@ -182,7 +176,6 @@ const ko: SiteCopy = {
       draftLabel: 'AI 일기 초안',
       draft: '오랜만에 팀이 다 모였다. 성수까지 오간 길이 길었지만, 돌아보니 꽉 찬 하루였다.',
     },
-    outro: '흩어져 있던 기록이 모여, 다시 읽을 수 있는 하루와 일기 초안이 됩니다.',
   },
 
   how: {
@@ -207,7 +200,6 @@ const ko: SiteCopy = {
   },
 
   privacy: {
-    eyebrow: 'PRIVACY',
     titleLine1: '어디까지 기록할지는',
     titleLine2: '내가 정합니다.',
     points: [
@@ -262,7 +254,7 @@ const ko: SiteCopy = {
 
 const en: SiteCopy = {
   meta: {
-    title: 'Laimory — the AI that remembers your life',
+    title: 'Laimory - the AI that remembers your life',
     description:
       'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day and a draft journal entry.',
     ogImageAlt: 'Laimory logo on a white background',
@@ -276,7 +268,6 @@ const en: SiteCopy = {
   },
 
   hero: {
-    eyebrow: 'LIFE + AI + MEMORY',
     titleLine1: 'Everything you did today,',
     titleLine2: 'laid out at a glance',
     body: 'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day and a draft journal entry.',
@@ -303,30 +294,28 @@ const en: SiteCopy = {
   },
 
   result: {
-    eyebrow: 'RESULT',
     titleLine1: 'Scattered moments,',
     titleLine2: 'turned into a day you can read again.',
     inputs: ['The photos you took', 'Events on your calendar', 'GPS location history', 'Saved notifications'],
     demoLabel: 'Example of scattered records becoming a timeline of the day and a draft journal entry',
     sources: [
       { title: '3 photos', meta: '09:12 · Seongsu' },
-      { title: 'Team meeting', meta: '14:00–15:00' },
+      { title: 'Team meeting', meta: '14:00-15:00' },
       { title: 'Gangnam → Seongsu', meta: 'Line 7 · 18:40' },
       { title: '5 notifications', meta: 'Messages · Booking confirmed' },
     ],
     timeline: {
-      label: 'TODAY’S TIMELINE',
+      label: 'Today’s timeline',
       date: 'Thursday, Sep 4',
       entries: [
         { time: '09:12', title: 'Morning at a café in Seongsu' },
-        { time: '14:00', title: 'Team meeting', meta: '14:00–15:00' },
+        { time: '14:00', title: 'Team meeting', meta: '14:00-15:00' },
         { time: '18:40', title: 'Commute home, Line 7', meta: 'Gangnam → Seongsu' },
       ],
-      draftLabel: 'AI DRAFT',
+      draftLabel: 'AI draft',
       draft:
         'The whole team was together for the first time in a while. The trip to Seongsu and back was long, but looking back, it was a full day.',
     },
-    outro: 'Scattered records come together into a day you can read again, and a draft of your journal.',
   },
 
   how: {
@@ -351,7 +340,6 @@ const en: SiteCopy = {
   },
 
   privacy: {
-    eyebrow: 'PRIVACY',
     titleLine1: 'How much gets recorded',
     titleLine2: 'is up to me.',
     points: [
@@ -365,7 +353,7 @@ const en: SiteCopy = {
       bodyLine1: 'Review them before the timeline is built.',
       bodyLine2: 'Anything you want to leave out can be turned off now.',
       items: [
-        { title: '23 photos', meta: 'Today 09:00–19:20' },
+        { title: '23 photos', meta: 'Today 09:00-19:20' },
         { title: '3 events', meta: 'Calendar' },
         { title: '2 trips', meta: 'Gangnam → Seongsu · Line 7' },
         { title: '5 notifications', meta: 'Messages · Booking confirmed' },

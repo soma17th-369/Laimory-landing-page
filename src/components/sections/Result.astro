@@ -1,9 +1,8 @@
 ---
 /**
  * "흩어진 순간을, 다시 읽을 수 있는 하루로."
- * 왼쪽은 모아 오는 기록 네 가지, 오른쪽은 기록 카드 → 타임라인 카드 데모입니다.
+ * 왼쪽은 모아 오는 기록 네 가지(데모의 소스 아이콘과 같은 순서), 오른쪽은 기록 카드 → 타임라인 카드 데모입니다.
  */
-import Icon from '../Icon.astro';
 import SourceBadge from '../SourceBadge.astro';
 import { sourceLooks } from '../../lib/sources';
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
@@ -18,15 +17,14 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
 <section class="result" id="result">
   <div class="result__inner lm-page">
     <div class="result__copy">
-      <span class="lm-eyebrow">{c.result.eyebrow}</span>
       <h2 class="lm-h2 result__title">
         {c.result.titleLine1}<br />{c.result.titleLine2}
       </h2>
       <ul class="result__inputs">
         {
-          c.result.inputs.map((item) => (
-            <li class="lm-card result__input">
-              <span class="result__dot" aria-hidden="true" />
+          c.result.inputs.map((item, i) => (
+            <li class="result__input">
+              <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={30} iconSize={15} />
               {item}
             </li>
           ))
@@ -68,10 +66,7 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
 
       <div class="demo__card">
         <div class="demo__card-head">
-          <span class="demo__card-label">
-            <Icon name="sparkle" size={16} />
-            {c.result.timeline.label}
-          </span>
+          <span class="demo__card-label">{c.result.timeline.label}</span>
           <span class="demo__card-date">{c.result.timeline.date}</span>
         </div>
 
@@ -100,17 +95,12 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
         </ol>
 
         <div class="demo__draft">
-          <span class="demo__draft-label">
-            <Icon name="sparkle" size={14} />
-            {c.result.timeline.draftLabel}
-          </span>
+          <span class="demo__draft-label">{c.result.timeline.draftLabel}</span>
           <p class="demo__draft-text">{c.result.timeline.draft}</p>
         </div>
       </div>
     </div>
   </div>
-
-  <p class="result__outro">{c.result.outro}</p>
 </section>
 
 <style>
@@ -119,7 +109,7 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     display: flex;
     align-items: center;
     gap: clamp(40px, 5.5vw, 80px);
-    padding: var(--lm-section-y) var(--lm-gutter) clamp(40px, 3.9vw, 56px);
+    padding: var(--lm-section-y) var(--lm-gutter);
   }
 
   .result__copy {
@@ -127,17 +117,11 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     min-width: 0;
   }
 
-  .result__title {
-    margin-top: 20px;
-  }
-
+  /* 모아 오는 기록 ─ 데모와 같은 소스 아이콘을 앞에 두고 얇은 줄로 나눕니다. */
   .result__inputs {
     list-style: none;
-    margin: 36px 0 0;
+    margin: 32px 0 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
     max-width: 460px;
   }
 
@@ -145,20 +129,17 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 18px 22px;
-    border-radius: 14px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--lm-outline-2);
     font-weight: 500;
     font-size: 16px;
     line-height: 1.5;
     color: var(--lm-ink);
+    text-wrap: pretty;
   }
 
-  .result__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: var(--lm-primary);
-    flex-shrink: 0;
+  .result__input:last-child {
+    border-bottom: 0;
   }
 
   /* 데모 ─ 기록 카드 → 타임라인 카드 */
@@ -257,20 +238,10 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
   }
 
   .demo__card-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--lm-font-label);
     font-weight: 600;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
-    letter-spacing: 0.1em;
     color: var(--lm-primary-faint);
-  }
-
-  .demo__card-label :global(svg),
-  .demo__draft-label :global(svg) {
-    color: var(--lm-on-primary-container);
   }
 
   .demo__card-date {
@@ -363,15 +334,11 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
   }
 
   .demo__draft-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: block;
     margin-bottom: 8px;
-    font-family: var(--lm-font-label);
     font-weight: 600;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1;
-    letter-spacing: 0.1em;
     color: var(--lm-primary-faint);
   }
 
@@ -381,19 +348,6 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     font-size: 14px;
     line-height: 1.75;
     color: var(--lm-on-primary-container);
-  }
-
-  .result__outro {
-    margin: 0 auto;
-    max-width: var(--lm-page-max);
-    box-sizing: border-box;
-    padding: 0 var(--lm-gutter) clamp(64px, 6.7vw, 96px);
-    text-align: center;
-    font-weight: 600;
-    font-size: clamp(18px, 1.8vw, 26px);
-    line-height: 1.6;
-    color: var(--lm-on-primary-container);
-    text-wrap: pretty;
   }
 
   /* 데모가 들어갈 자리가 없으면 설명 아래로 내립니다. */
@@ -412,14 +366,46 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     }
   }
 
-  /* 아주 좁으면 기록 카드 → 화살표 → 타임라인을 세로로 세웁니다. */
+  /*
+   * 아주 좁으면 기록 카드 → 화살표 → 타임라인을 세로로 세웁니다.
+   * 폰에서는 왼쪽 목록과 데모 카드가 위아래로 붙어 같은 내용이 두 번 나오므로
+   * 목록은 감추고, 카드 4장을 2×2로 눕혀 '흩어진 기록 → 하루 한 장'이
+   * 한 화면 안에 들어오게 합니다.
+   */
   @media (max-width: 600px) {
+    .result__inputs {
+      display: none;
+    }
+
     .demo {
       flex-direction: column;
       align-items: stretch;
+      gap: 12px;
+      margin-top: 28px;
     }
 
-    .demo__sources,
+    .demo__sources {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      flex: none;
+    }
+
+    /* 2×2에서는 아이콘과 제목만 ─ 시간·장소와 사진 조각은 타임라인 카드가 보여 줍니다. */
+    .demo__source {
+      gap: 10px;
+      padding: 14px 12px;
+    }
+
+    .demo__source-title {
+      white-space: normal;
+    }
+
+    .demo__source-meta,
+    .demo__thumbs {
+      display: none;
+    }
+
     .demo__card {
       flex: none;
     }
