@@ -5,7 +5,7 @@
 import Logo from './Logo.astro';
 import LanguagePicker from './LanguagePicker.astro';
 import { getLangFromUrl, useCopy, getLocalizedHome } from '../i18n/utils';
-import { DOWNLOAD_URL, isExternal } from '../lib/links';
+import { DOWNLOAD_URL, externalLinkAttrs } from '../lib/links';
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
@@ -33,7 +33,7 @@ const links = [
       <a
         class="lm-btn lm-btn--primary header__cta"
         href={DOWNLOAD_URL}
-        rel={isExternal(DOWNLOAD_URL) ? "noopener" : undefined}
+        {...externalLinkAttrs(DOWNLOAD_URL)}
       >
         {c.nav.download}
       </a>

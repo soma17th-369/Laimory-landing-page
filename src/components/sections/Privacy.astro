@@ -26,7 +26,10 @@ const c = useCopy(lang);
       <ul class="privacy__points">
         {
           c.privacy.points.map((point) => (
-            <li class="privacy__point">{point}</li>
+            <li class="privacy__point">
+              <span class="privacy__when">{point.label}</span>
+              <span class="privacy__promise">{point.body}</span>
+            </li>
           ))
         }
       </ul>
@@ -54,25 +57,42 @@ const c = useCopy(lang);
     min-width: 0;
   }
 
+  /*
+   * 두 문장뿐이라 구분선 대신 여백으로 뗍니다.
+   * 문장 안 줄간격(24px)보다 확실히 넓어야 두 문장으로 읽힙니다.
+   */
   .privacy__points {
     list-style: none;
     margin: 32px 0 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
     max-width: 480px;
   }
 
   .privacy__point {
-    padding: 16px 4px;
-    border-bottom: 1px solid var(--lm-outline-2);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 4px;
+  }
+
+  /* 약속이 적용되는 시점 ─ 본문보다 작고 흐리게 */
+  .privacy__when {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--lm-ink-quiet);
+  }
+
+  .privacy__promise {
     font-weight: 500;
     font-size: 16px;
     line-height: 1.5;
     color: var(--lm-ink);
     text-wrap: pretty;
-  }
-
-  .privacy__point:last-child {
-    border-bottom: 0;
+    word-break: keep-all;
   }
 
   /* 세로로 쌓일 때는 설명을 먼저 읽히게 하고 목업을 아래에 둡니다. */

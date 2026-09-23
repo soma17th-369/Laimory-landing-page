@@ -45,7 +45,7 @@ src/
 │     ├─ Hero.astro          # 히어로 (첫 화면)
 │     ├─ Problem.astro       # "기억은 흐려지고, 기록은 자꾸 미뤄집니다"
 │     ├─ Result.astro        # 흩어진 기록 → 타임라인 · 일기 초안 데모
-│     ├─ HowItWorks.astro    # 세 단계 (연결 · 정리 · 마무리)
+│     ├─ HowItWorks.astro    # 한 번 연결해두면 알아서 모인다 (설정 화면 한 장)
 │     └─ Privacy.astro       # "어디까지 기록할지는 내가 정합니다"
 ├─ i18n/
 │  ├─ ui.ts                  # 모든 문구(한/영) — 콘텐츠는 여기서 수정
@@ -60,7 +60,7 @@ src/
 
 public/
 ├─ images/                    # 시안의 사진과 앱 화면 캡처 (WebP)
-│  ├─ app-*.webp              # 폰 목업 안 앱 화면 (settings · timeline · edit)
+│  ├─ app-*.webp              # 폰 목업 안 앱 화면 (settings · timeline)
 │  ├─ problem-*.webp          # 문제 제기 섹션의 사진 두 장
 │  └─ frag-*.webp             # 데모 카드의 사진 조각
 └─ terms/                     # 이 저장소에서 직접 관리·게시하는 약관 원문 HTML

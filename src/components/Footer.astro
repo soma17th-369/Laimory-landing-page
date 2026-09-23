@@ -5,7 +5,7 @@
  */
 import Logo from './Logo.astro';
 import { getLangFromUrl, useCopy } from '../i18n/utils';
-import { DOWNLOAD_URL, TERMS_URL, isExternal } from '../lib/links';
+import { DOWNLOAD_URL, TERMS_URL, externalLinkAttrs } from '../lib/links';
 import { BUSINESS } from '../lib/business';
 
 const lang = getLangFromUrl(Astro.url);
@@ -24,7 +24,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     <a
       class="lm-btn lm-btn--primary footer__cta"
       href={DOWNLOAD_URL}
-      rel={isExternal(DOWNLOAD_URL) ? "noopener" : undefined}
+      {...externalLinkAttrs(DOWNLOAD_URL)}
     >
       {c.footer.cta}
     </a>

@@ -63,13 +63,15 @@ export interface SiteCopy {
   };
   how: {
     title: string;
-    /** alt는 각 단계의 앱 화면 캡처 설명 */
-    steps: { title: string; body: string; alt: string }[];
+    body: string;
+    /** 폰 목업(설정 화면 캡처)의 접근성 설명 */
+    alt: string;
   };
   privacy: {
     titleLine1: string;
     titleLine2: string;
-    points: string[];
+    /** label은 약속이 적용되는 시점, body는 그 시점의 약속 */
+    points: { label: string; body: string }[];
     /** 목업 안의 '오늘 수집된 기록' 확인 화면 */
     screen: {
       title: string;
@@ -117,7 +119,7 @@ const ko: SiteCopy = {
   meta: {
     title: 'Laimory - 나의 삶을 기억하는 AI',
     description:
-      '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인과 일기 초안을 만들어 주는 기록 앱, Laimory.',
+      '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인을 만들어 주는 기록 앱, Laimory.',
     ogImageAlt: '흰 바탕 위의 Laimory 로고',
   },
 
@@ -131,7 +133,7 @@ const ko: SiteCopy = {
   hero: {
     titleLine1: '오늘 뭐 했는지,',
     titleLine2: '라이모리가 한눈에 정리해드려요',
-    body: '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인과 일기 초안을 만들어드려요.',
+    body: '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인을 만들어드려요.',
     ctaPrimary: '앱 다운로드',
     ctaSecondary: '어떻게 작동하나요',
     deviceAlt: 'Laimory 앱의 오늘의 타임라인 화면',
@@ -158,7 +160,7 @@ const ko: SiteCopy = {
     titleLine1: '흩어진 순간을,',
     titleLine2: '다시 읽을 수 있는 하루로.',
     inputs: ['찍었던 사진들', '캘린더에 등록된 일정들', '수집된 GPS 위치 정보들', '저장된 알림들'],
-    demoLabel: '흩어진 기록이 오늘의 타임라인과 일기 초안이 되는 예시',
+    demoLabel: '흩어진 기록이 오늘의 타임라인이 되는 예시',
     sources: [
       { title: '사진 3장', meta: '09:12 · 성수동' },
       { title: '팀 미팅', meta: '14:00~15:00' },
@@ -179,34 +181,20 @@ const ko: SiteCopy = {
   },
 
   how: {
-    title: '모으고, 정리하고, 내가 마무리합니다.',
-    steps: [
-      {
-        title: '연결합니다',
-        body: '사진 · 캘린더 · 위치 · 활동 중 원하는 기록만 연결합니다.',
-        alt: 'Laimory 앱의 데이터 소스 설정 화면',
-      },
-      {
-        title: '정리합니다',
-        body: 'AI가 기록을 시간순으로 묶고 일기 초안을 만듭니다.',
-        alt: 'Laimory 앱의 오늘의 타임라인 화면',
-      },
-      {
-        title: '마무리합니다',
-        body: '내용을 확인하고 고치거나 지우면 하루가 완성됩니다.',
-        alt: 'Laimory 앱의 타임라인 편집 화면',
-      },
-    ],
+    title: '한 번 연결해두면, 그다음은 알아서 모입니다.',
+    body: '처음에 사진 · 캘린더 · 위치 · 활동 중 원하는 것만 고르면, 이후로는 AI가 매일 정리해서 타임라인을 만듭니다.',
+    alt: 'Laimory 앱의 데이터 소스 설정 화면',
   },
 
   privacy: {
     titleLine1: '어디까지 기록할지는',
     titleLine2: '내가 정합니다.',
     points: [
-      '타임라인을 만들기 전, 수집된 기록을 먼저 확인합니다',
-      '저장된 기록은 작성자를 식별할 수 없는 형태로 보관됩니다',
-      '원하지 않는 기록은 만들기 전에 뺄 수 있습니다',
-      '모든 기록은 언제든 통째로 삭제할 수 있습니다',
+      { label: '만들기 전', body: '무엇이 담길지 확인하고 뺄 수 있습니다' },
+      {
+        label: '저장된 뒤',
+        body: '누가 쓴 것인지 알 수 없는 형태로 보관되고, 언제든 삭제할 수 있습니다',
+      },
     ],
     screen: {
       title: '오늘 수집된 기록이에요',
@@ -256,7 +244,7 @@ const en: SiteCopy = {
   meta: {
     title: 'Laimory - the AI that remembers your life',
     description:
-      'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day and a draft journal entry.',
+      'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day.',
     ogImageAlt: 'Laimory logo on a white background',
   },
 
@@ -270,7 +258,7 @@ const en: SiteCopy = {
   hero: {
     titleLine1: 'Everything you did today,',
     titleLine2: 'laid out at a glance',
-    body: 'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day and a draft journal entry.',
+    body: 'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day.',
     ctaPrimary: 'Download the app',
     ctaSecondary: 'See how it works',
     deviceAlt: 'The daily timeline screen of the Laimory app',
@@ -297,7 +285,7 @@ const en: SiteCopy = {
     titleLine1: 'Scattered moments,',
     titleLine2: 'turned into a day you can read again.',
     inputs: ['The photos you took', 'Events on your calendar', 'GPS location history', 'Saved notifications'],
-    demoLabel: 'Example of scattered records becoming a timeline of the day and a draft journal entry',
+    demoLabel: 'Example of scattered records becoming a timeline of the day',
     sources: [
       { title: '3 photos', meta: '09:12 · Seongsu' },
       { title: 'Team meeting', meta: '14:00-15:00' },
@@ -319,34 +307,20 @@ const en: SiteCopy = {
   },
 
   how: {
-    title: 'Gather, arrange, and you finish.',
-    steps: [
-      {
-        title: 'Connect',
-        body: 'Connect only the records you want: photos, calendar, places, activity.',
-        alt: 'The data source settings screen of the Laimory app',
-      },
-      {
-        title: 'Arrange',
-        body: 'AI groups the records in order and drafts the journal entry.',
-        alt: 'The daily timeline screen of the Laimory app',
-      },
-      {
-        title: 'Finish',
-        body: 'Check, fix or remove what you like, and the day is complete.',
-        alt: 'The timeline editing screen of the Laimory app',
-      },
-    ],
+    title: 'Connect once, and it gathers on its own.',
+    body: 'Pick what you want at the start: photos, calendar, places, activity. After that Laimory sorts out each day into a timeline.',
+    alt: 'The data source settings screen of the Laimory app',
   },
 
   privacy: {
     titleLine1: 'How much gets recorded',
     titleLine2: 'is up to me.',
     points: [
-      'You review the collected records before the timeline is built',
-      'Stored records are kept in a form that cannot identify who wrote them',
-      'Anything you do not want can be left out before it is built',
-      'Everything can be deleted at once, whenever you like',
+      { label: 'Before it is built', body: 'You see what will go in, and can leave anything out' },
+      {
+        label: 'Once it is stored',
+        body: 'It is kept in a form that does not identify who wrote it, and can be deleted at any time',
+      },
     ],
     screen: {
       title: 'Records collected today',

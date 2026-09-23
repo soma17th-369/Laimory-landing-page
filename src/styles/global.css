@@ -31,6 +31,8 @@
   /* 잉크(텍스트) */
   --lm-ink: #1f1c18;
   --lm-ink-muted: #6e665a;
+  /* 작은 라벨용. --lm-ink-faint는 더 흐리지만 작은 글씨 대비(4.5:1)에 못 미칩니다. */
+  --lm-ink-quiet: #786f65;
   --lm-ink-faint: #928a7c;
   --lm-outline: #d6cfc4;
   --lm-outline-2: #e7e2da;
