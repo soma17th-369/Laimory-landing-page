@@ -5,7 +5,7 @@
 import PhoneFrame from '../PhoneFrame.astro';
 import AppShot from '../AppShot.astro';
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
-import { DOWNLOAD_URL, isExternal } from '../../lib/links';
+import { DOWNLOAD_URL, externalLinkAttrs } from '../../lib/links';
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
@@ -23,7 +23,7 @@ const c = useCopy(lang);
         <a
           class="lm-btn lm-btn--primary hero__cta"
           href={DOWNLOAD_URL}
-          rel={isExternal(DOWNLOAD_URL) ? "noopener" : undefined}
+          {...externalLinkAttrs(DOWNLOAD_URL)}
         >
           {c.hero.ctaPrimary}
         </a>

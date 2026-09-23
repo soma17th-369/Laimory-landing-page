@@ -1,14 +1,21 @@
 /**
  * 바깥으로 나가는 링크를 한곳에 모아 둡니다.
  *
- * 앱 스토어 주소가 나오면 DOWNLOAD_URL만 실제 주소로 바꾸면
- * 헤더 · 히어로 · 푸터의 '앱 다운로드' 버튼이 모두 함께 바뀝니다.
- * 지금은 주소가 없어 푸터의 다운로드 영역으로 스크롤만 시킵니다.
+ * DOWNLOAD_URL 하나만 바꾸면 헤더 · 히어로 · 푸터의
+ * '앱 다운로드' 버튼이 모두 함께 바뀝니다.
  */
-export const DOWNLOAD_URL = '#download';
+export const DOWNLOAD_URL =
+  'https://play.google.com/store/apps/details?id=com.soma369.laimory';
 
-/** 외부 주소로 바뀌면 새 탭으로 열도록 속성을 함께 넘깁니다. */
+/** 외부 주소는 새 탭으로 엽니다. 같은 페이지 앵커(#...)는 그대로 둡니다. */
 export const isExternal = (href: string) => /^https?:\/\//.test(href);
+
+/**
+ * 외부 링크에 붙일 속성. 새 탭으로 열고, 여는 쪽 창을 넘겨주지 않습니다.
+ * 앵커 링크에는 아무것도 붙지 않도록 undefined를 돌려줍니다.
+ */
+export const externalLinkAttrs = (href: string) =>
+  isExternal(href) ? { target: '_blank', rel: 'noopener' } : {};
 
 /**
  * 약관 문서 주소.
