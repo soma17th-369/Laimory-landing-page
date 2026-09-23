@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getLangFromUrl, useCopy } from '../i18n/utils';
 import { BUSINESS } from '../lib/business';
+import { DOWNLOAD_URL } from '../lib/links';
 
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
@@ -30,10 +31,10 @@ const alternates = [
 const ogImage = new URL('/og/og.png', Astro.site ?? Astro.url.origin);
 
 /**
- * 구조화 데이터(JSON-LD): 조직 + 웹사이트.
+ * 구조화 데이터(JSON-LD): 조직 + 웹사이트 + 앱.
  * - 사이트 내 검색이 없어 potentialAction(SearchAction)은 넣지 않습니다.
- * - 앱 스토어 출시 전이라 SoftwareApplication도 아직 넣지 않습니다.
- *   (links.ts의 DOWNLOAD_URL이 실제 주소가 되면 추가하세요.)
+ * - 별점(aggregateRating)은 실제 값이 없으면 넣지 않습니다. 지어내면 안 됩니다.
+ *   스토어 평점이 쌓이면 그때 실제 값으로 추가하세요.
  */
 const siteUrl = new URL('/', Astro.site ?? Astro.url.origin).href;
 const jsonLd = {
@@ -68,6 +69,25 @@ const jsonLd = {
       description,
       inLanguage: lang,
       publisher: { '@id': `${siteUrl}#organization` },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${siteUrl}#app`,
+      name: 'Laimory',
+      alternateName: '라이모리',
+      description,
+      applicationCategory: 'LifestyleApplication',
+      operatingSystem: 'Android',
+      url: siteUrl,
+      downloadUrl: DOWNLOAD_URL,
+      installUrl: DOWNLOAD_URL,
+      inLanguage: ['ko', 'en'],
+      publisher: { '@id': `${siteUrl}#organization` },
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'KRW',
+      },
     },
   ],
 };
