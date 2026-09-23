@@ -20,17 +20,13 @@ const c = useCopy(lang);
     </div>
 
     <div class="privacy__copy">
-      <span class="lm-eyebrow">{c.privacy.eyebrow}</span>
       <h2 class="lm-h2 privacy__title">
         {c.privacy.titleLine1}<br />{c.privacy.titleLine2}
       </h2>
       <ul class="privacy__points">
         {
           c.privacy.points.map((point) => (
-            <li class="privacy__point">
-              <span class="privacy__dot" aria-hidden="true" />
-              {point}
-            </li>
+            <li class="privacy__point">{point}</li>
           ))
         }
       </ul>
@@ -58,10 +54,6 @@ const c = useCopy(lang);
     min-width: 0;
   }
 
-  .privacy__title {
-    margin-top: 20px;
-  }
-
   .privacy__points {
     list-style: none;
     margin: 32px 0 0;
@@ -70,10 +62,7 @@ const c = useCopy(lang);
   }
 
   .privacy__point {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 18px 4px;
+    padding: 16px 4px;
     border-bottom: 1px solid var(--lm-outline-2);
     font-weight: 500;
     font-size: 16px;
@@ -84,14 +73,6 @@ const c = useCopy(lang);
 
   .privacy__point:last-child {
     border-bottom: 0;
-  }
-
-  .privacy__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: var(--lm-green);
-    flex-shrink: 0;
   }
 
   /* 세로로 쌓일 때는 설명을 먼저 읽히게 하고 목업을 아래에 둡니다. */

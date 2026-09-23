@@ -14,7 +14,6 @@ const c = useCopy(lang);
 <section class="hero">
   <div class="hero__inner">
     <div class="hero__copy">
-      <span class="hero__eyebrow">{c.hero.eyebrow}</span>
       <h1 class="hero__title lm-rise">
         {c.hero.titleLine1}<br />{c.hero.titleLine2}
       </h1>
@@ -34,7 +33,7 @@ const c = useCopy(lang);
       </div>
     </div>
 
-    <div class="hero__device">
+    <div class="hero__device lm-rise lm-rise--after">
       <PhoneFrame width={440} height={660} shadow label={c.hero.deviceAlt}>
         <AppShot src="/images/app-timeline.webp" width={376} height={1282} eager />
       </PhoneFrame>
@@ -65,17 +64,8 @@ const c = useCopy(lang);
     padding: clamp(0px, 2vw, 32px) 0 clamp(56px, 7vw, 104px);
   }
 
-  .hero__eyebrow {
-    font-family: var(--lm-font-label);
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 1;
-    letter-spacing: 0.2em;
-    color: var(--lm-primary);
-  }
-
   .hero__title {
-    margin: 26px 0 0;
+    margin: 0;
     font-family: var(--lm-font-heading);
     font-weight: 700;
     font-size: clamp(32px, 4.1vw, 58px);

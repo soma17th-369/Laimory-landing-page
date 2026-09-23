@@ -1,7 +1,9 @@
 ---
 /**
  * "모으고, 정리하고, 내가 마무리합니다."
- * 세 단계마다 실제 앱 화면 캡처를 작은 목업에 담아 보여 줍니다.
+ * 세 단계마다 실제 앱 화면 캡처를 작은 목업에 담고, 설명은 그 아래에 캡션처럼 붙입니다.
+ * 넓은 화면에서는 세 대가 나란히, 좁은 화면에서는 옆으로 넘겨 보는 스트립이 됩니다.
+ * (인스타그램에서 폰으로 들어오는 방문자가 대부분이라 세로로 길게 쌓지 않습니다.)
  */
 import PhoneFrame from '../PhoneFrame.astro';
 import AppShot from '../AppShot.astro';
@@ -25,19 +27,16 @@ const shots = [
   <div class="how__inner lm-page">
     <h2 class="lm-h2 how__title">{c.how.title}</h2>
 
-    <ol class="how__grid">
+    <ol class="how__steps">
       {
         c.how.steps.map((step, i) => (
           <li class="how__step">
+            <PhoneFrame width={360} height={400} size="sm" label={step.alt}>
+              <AppShot src={shots[i].src} width={shots[i].width} height={shots[i].height} />
+            </PhoneFrame>
             <div class="how__text">
-              <span class="how__num">{String(i + 1).padStart(2, '0')}</span>
               <h3 class="how__heading">{step.title}</h3>
               <p class="how__body">{step.body}</p>
-            </div>
-            <div class="how__device">
-              <PhoneFrame width={360} height={420} size="sm" label={step.alt}>
-                <AppShot src={shots[i].src} width={shots[i].width} height={shots[i].height} />
-              </PhoneFrame>
             </div>
           </li>
         ))
@@ -55,16 +54,19 @@ const shots = [
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: clamp(36px, 3.9vw, 56px);
     padding: clamp(64px, 6.7vw, 96px) var(--lm-gutter) var(--lm-section-y);
   }
 
+  /* 두 줄 정도로 왼쪽에 모아 두되, 한글 단어 중간에서는 끊지 않습니다. */
   .how__title {
-    text-align: center;
+    max-width: 15em;
+    word-break: keep-all;
   }
 
-  .how__grid {
+  /* 넓은 화면 ─ 폰 세 대를 윗선 기준으로 나란히 */
+  .how__steps {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -77,27 +79,28 @@ const shots = [
   .how__step {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    gap: 22px;
   }
 
+  /* 목업 아래가 잘린 자리를 흐리게 풀어, 잘린 그림이 아니라 이어지는 화면으로 읽히게 */
+  .how__step :global(.phone) {
+    -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent);
+    mask-image: linear-gradient(to bottom, #000 68%, transparent);
+  }
+
+  /* 설명은 폰 아래 캡션 ─ 폰과 왼쪽 선을 맞춥니다 */
   .how__text {
+    width: min(360px, 100%);
     display: flex;
     flex-direction: column;
-    gap: 12px;
-  }
-
-  .how__num {
-    font-family: var(--lm-font-label);
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 1;
-    color: var(--lm-ink-faint);
+    gap: 8px;
   }
 
   .how__heading {
     margin: 0;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 20px;
     line-height: 1.4;
     color: var(--lm-ink);
   }
@@ -106,23 +109,39 @@ const shots = [
     margin: 0;
     font-weight: 400;
     font-size: 15px;
-    line-height: 1.8;
+    line-height: 1.7;
     color: var(--lm-ink-muted);
     text-wrap: pretty;
+    word-break: keep-all;
   }
 
-  /* 설명 길이가 달라도 목업의 윗선이 나란히 오도록 */
-  .how__device {
-    display: flex;
-    justify-content: center;
-    margin-top: auto;
-  }
-
+  /*
+   * 좁은 화면 ─ 옆으로 넘겨 보는 스트립.
+   * 양옆 여백을 뚫고 화면 끝까지 이어지되 첫 카드는 제목과 왼쪽 선을 맞추고,
+   * 다음 카드가 살짝 보여서 넘길 수 있다는 걸 알립니다.
+   */
   @media (max-width: 960px) {
-    .how__grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 48px;
-      max-width: 420px;
+    .how__steps {
+      display: flex;
+      gap: 16px;
+      width: auto;
+      align-self: stretch;
+      margin-inline: calc(-1 * var(--lm-gutter));
+      padding-inline: var(--lm-gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--lm-gutter);
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+
+    .how__steps::-webkit-scrollbar {
+      display: none;
+    }
+
+    .how__step {
+      flex: 0 0 min(78vw, 360px);
+      scroll-snap-align: start;
     }
   }
 </style>
