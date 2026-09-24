@@ -146,10 +146,10 @@ const ko: SiteCopy = {
     body: '언제 어디에 있었고 무엇을 했는지가 사진과 함께 시간순으로 남습니다.',
     demoLabel: '흩어진 기록이 오늘의 타임라인이 되는 예시',
     sources: [
-      { title: '사진 3장', meta: '09:12 · 성수동' },
-      { title: '팀 미팅', meta: '14:00~15:00' },
-      { title: '강남역 → 성수역', meta: '7호선 · 18:40' },
-      { title: '알림 5건', meta: '메시지 · 예약 확인' },
+      { title: '사진 1장', meta: '12:00 · 마포' },
+      { title: '팀 작업', meta: '13:19~18:30' },
+      { title: '용인 → 마포', meta: '09:13 · 46.1km' },
+      { title: '결제 알림', meta: '복성각 · 17:25' },
     ],
   },
 
@@ -248,10 +248,10 @@ const en: SiteCopy = {
     body: 'Where you were and what you did, kept in order with the photos you took.',
     demoLabel: 'Example of scattered records becoming a timeline of the day',
     sources: [
-      { title: '3 photos', meta: '09:12 · Seongsu' },
-      { title: 'Team meeting', meta: '14:00-15:00' },
-      { title: 'Gangnam → Seongsu', meta: 'Line 7 · 18:40' },
-      { title: '5 notifications', meta: 'Messages · Booking confirmed' },
+      { title: '1 photo', meta: '12:00 · Mapo' },
+      { title: 'Team work', meta: '13:19-18:30' },
+      { title: 'Yongin → Mapo', meta: '09:13 · 46.1km' },
+      { title: 'Payment alert', meta: 'Bokseonggak · 17:25' },
     ],
   },
 
