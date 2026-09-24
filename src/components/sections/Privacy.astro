@@ -1,10 +1,10 @@
 ---
 /**
  * "어디까지 기록할지는 내가 정합니다."
- * 왼쪽 목업은 타임라인을 만들기 전 기록을 확인하는 화면, 오른쪽은 약속 네 가지입니다.
+ * 왼쪽 목업은 수집된 위치 중 무엇을 보낼지 고르는 화면, 오른쪽은 약속 두 가지입니다.
+ *
+ * 목업에 기기 테두리가 들어 있고 배경이 투명해서 이미지를 그대로 얹습니다.
  */
-import PhoneFrame from '../PhoneFrame.astro';
-import ConsentScreen from '../ConsentScreen.astro';
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -14,9 +14,15 @@ const c = useCopy(lang);
 <section class="privacy" id="privacy">
   <div class="privacy__inner lm-page">
     <div class="privacy__device">
-      <PhoneFrame width={412} height={620} cap={false} label={c.privacy.screen.title}>
-        <ConsentScreen screen={c.privacy.screen} />
-      </PhoneFrame>
+      <img
+        class="privacy__phone"
+        src="/images/privacy-phone.webp"
+        alt={c.privacy.alt}
+        width="843"
+        height="1269"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
 
     <div class="privacy__copy">
@@ -50,6 +56,21 @@ const c = useCopy(lang);
     display: flex;
     justify-content: center;
     flex-shrink: 0;
+    width: min(412px, 100%);
+  }
+
+  /*
+   * 목업에 기기 테두리가 들어 있어 그림자만 더합니다.
+   * 체류한 장소 다섯 곳과 '이동 기록' 머리말까지는 또렷하게 두고(86%),
+   * 첫 이동 카드(88%~)부터 흐려집니다.
+   */
+  .privacy__phone {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 18px 40px rgb(31 28 23 / 18%));
+    -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
   }
 
   .privacy__copy {

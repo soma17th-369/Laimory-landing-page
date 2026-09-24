@@ -46,20 +46,11 @@ export interface SiteCopy {
   result: {
     titleLine1: string;
     titleLine2: string;
-    /** 왼쪽에 나열되는 '모아 오는 기록' 네 가지 */
-    inputs: string[];
+    body: string;
     /** 데모(기록 카드 → 타임라인) 묶음의 접근성 레이블 */
     demoLabel: string;
     /** 데모 왼쪽의 기록 카드 4장. 순서는 lib/sources.ts를 따릅니다. */
     sources: SourceItem[];
-    timeline: {
-      label: string;
-      date: string;
-      /** 첫 항목에만 사진 조각이 붙습니다. */
-      entries: { time: string; title: string; meta?: string }[];
-      draftLabel: string;
-      draft: string;
-    };
   };
   how: {
     title: string;
@@ -72,15 +63,8 @@ export interface SiteCopy {
     titleLine2: string;
     /** label은 약속이 적용되는 시점, body는 그 시점의 약속 */
     points: { label: string; body: string }[];
-    /** 목업 안의 '오늘 수집된 기록' 확인 화면 */
-    screen: {
-      title: string;
-      bodyLine1: string;
-      bodyLine2: string;
-      items: SourceItem[];
-      note: string;
-      cta: string;
-    };
+    /** 폰 목업(위치 기록 화면 캡처)의 접근성 설명 */
+    alt: string;
   };
   footer: {
     title: string;
@@ -159,7 +143,7 @@ const ko: SiteCopy = {
   result: {
     titleLine1: '흩어진 순간을,',
     titleLine2: '다시 읽을 수 있는 하루로.',
-    inputs: ['찍었던 사진들', '캘린더에 등록된 일정들', '수집된 GPS 위치 정보들', '저장된 알림들'],
+    body: '언제 어디에 있었고 무엇을 했는지가 사진과 함께 시간순으로 남습니다.',
     demoLabel: '흩어진 기록이 오늘의 타임라인이 되는 예시',
     sources: [
       { title: '사진 3장', meta: '09:12 · 성수동' },
@@ -167,17 +151,6 @@ const ko: SiteCopy = {
       { title: '강남역 → 성수역', meta: '7호선 · 18:40' },
       { title: '알림 5건', meta: '메시지 · 예약 확인' },
     ],
-    timeline: {
-      label: '오늘의 타임라인',
-      date: '9월 4일 목요일',
-      entries: [
-        { time: '09:12', title: '성수동 카페에서 오전' },
-        { time: '14:00', title: '팀 미팅', meta: '14:00~15:00' },
-        { time: '18:40', title: '퇴근길, 7호선', meta: '강남 → 성수' },
-      ],
-      draftLabel: 'AI 일기 초안',
-      draft: '오랜만에 팀이 다 모였다. 성수까지 오간 길이 길었지만, 돌아보니 꽉 찬 하루였다.',
-    },
   },
 
   how: {
@@ -196,19 +169,7 @@ const ko: SiteCopy = {
         body: '누가 쓴 것인지 알 수 없는 형태로 보관되고, 언제든 삭제할 수 있습니다',
       },
     ],
-    screen: {
-      title: '오늘 수집된 기록이에요',
-      bodyLine1: '타임라인을 만들기 전에 확인해 주세요.',
-      bodyLine2: '빼고 싶은 기록은 지금 끌 수 있어요.',
-      items: [
-        { title: '사진 23장', meta: '오늘 09:00~19:20' },
-        { title: '일정 3건', meta: '캘린더' },
-        { title: '이동 경로 2건', meta: '강남역 → 성수역 · 7호선' },
-        { title: '알림 5건', meta: '메시지 · 예약 확인' },
-      ],
-      note: '이 기록은 작성자를 알 수 없는 형태로 저장돼요.',
-      cta: '이 내용으로 타임라인 만들기',
-    },
+    alt: 'Laimory 앱의 위치 기록 화면. 수집된 장소 가운데 보낼 것만 고를 수 있습니다.',
   },
 
   footer: {
@@ -284,7 +245,7 @@ const en: SiteCopy = {
   result: {
     titleLine1: 'Scattered moments,',
     titleLine2: 'turned into a day you can read again.',
-    inputs: ['The photos you took', 'Events on your calendar', 'GPS location history', 'Saved notifications'],
+    body: 'Where you were and what you did, kept in order with the photos you took.',
     demoLabel: 'Example of scattered records becoming a timeline of the day',
     sources: [
       { title: '3 photos', meta: '09:12 · Seongsu' },
@@ -292,18 +253,6 @@ const en: SiteCopy = {
       { title: 'Gangnam → Seongsu', meta: 'Line 7 · 18:40' },
       { title: '5 notifications', meta: 'Messages · Booking confirmed' },
     ],
-    timeline: {
-      label: 'Today’s timeline',
-      date: 'Thursday, Sep 4',
-      entries: [
-        { time: '09:12', title: 'Morning at a café in Seongsu' },
-        { time: '14:00', title: 'Team meeting', meta: '14:00-15:00' },
-        { time: '18:40', title: 'Commute home, Line 7', meta: 'Gangnam → Seongsu' },
-      ],
-      draftLabel: 'AI draft',
-      draft:
-        'The whole team was together for the first time in a while. The trip to Seongsu and back was long, but looking back, it was a full day.',
-    },
   },
 
   how: {
@@ -322,19 +271,7 @@ const en: SiteCopy = {
         body: 'It is kept in a form that does not identify who wrote it, and can be deleted at any time',
       },
     ],
-    screen: {
-      title: 'Records collected today',
-      bodyLine1: 'Review them before the timeline is built.',
-      bodyLine2: 'Anything you want to leave out can be turned off now.',
-      items: [
-        { title: '23 photos', meta: 'Today 09:00-19:20' },
-        { title: '3 events', meta: 'Calendar' },
-        { title: '2 trips', meta: 'Gangnam → Seongsu · Line 7' },
-        { title: '5 notifications', meta: 'Messages · Booking confirmed' },
-      ],
-      note: 'These records are stored without anything that identifies you.',
-      cta: 'Build the timeline from this',
-    },
+    alt: 'The location records screen of the Laimory app, where you choose which places to send.',
   },
 
   footer: {

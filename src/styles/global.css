@@ -48,13 +48,11 @@
   --lm-badge-purple: #f1ebf6;
   --lm-badge-purple-ink: #5b4a72;
 
-  /* 타이포 ─ 본문은 Pretendard, 큰 제목은 Noto Sans KR, 영문 라벨은 Inter,
-     일기 초안 같은 손글씨 느낌은 Gowun Batang */
+  /* 타이포 ─ 본문은 Pretendard, 큰 제목은 Noto Sans KR, 영문 라벨은 Inter */
   --lm-font-sans: "Pretendard Variable", Pretendard, "Noto Sans KR", system-ui,
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --lm-font-heading: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
-  --lm-font-serif: "Gowun Batang", Georgia, "Times New Roman", serif;
   --lm-font-label: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* 레이아웃 ─ 시안은 1440px 기준, 좁은 화면에서는 여백이 줄어듭니다 */
@@ -100,6 +98,8 @@ body {
   letter-spacing: -0.02em;
   color: var(--lm-ink);
   text-wrap: pretty;
+  /* 한글은 단어 중간에서 끊지 않습니다 */
+  word-break: keep-all;
 }
 
 /* 흰 카드 ─ 얇은 테두리는 레이아웃을 밀지 않도록 inset 그림자로 그립니다 */
