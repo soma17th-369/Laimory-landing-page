@@ -6,8 +6,9 @@
  * 타임라인 화면은 히어로에서 이미 크게 보여 주고, 확인·편집 화면과 그 설명은
  * 바로 다음 개인정보 섹션이 맡으므로 이 섹션에는 설정 화면만 남깁니다.
  *
- * 제목과 설명은 다른 섹션처럼 왼쪽에 맞추고, 목업만 가운데에 둡니다.
- * (앞뒤 Result · 개인정보가 모두 좌우 배치라 여기까지 좌우로 나누지는 않습니다.)
+ * 넓은 화면에서는 글이 왼쪽, 목업이 오른쪽입니다. 바로 다음 개인정보 섹션이
+ * 목업 왼쪽 · 글 오른쪽이라 좌우가 번갈아 놓입니다.
+ * 좁은 화면에서는 글 아래에 목업이 가운데로 놓입니다.
  */
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
 
@@ -23,8 +24,10 @@ const shot = { src: '/images/how-phone.webp', width: 843, height: 967 };
 
 <section class="how" id="how">
   <div class="how__inner lm-page">
-    <h2 class="lm-h2 how__title">{c.how.title}</h2>
-    <p class="how__body">{c.how.body}</p>
+    <div class="how__copy">
+      <h2 class="lm-h2 how__title">{c.how.title}</h2>
+      <p class="how__body">{c.how.body}</p>
+    </div>
 
     <div class="how__device">
       <img
@@ -48,10 +51,14 @@ const shot = { src: '/images/how-phone.webp', width: 843, height: 967 };
   .how__inner {
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: clamp(18px, 2vw, 26px);
+    align-items: center;
+    gap: clamp(40px, 5.5vw, 80px);
     padding: clamp(64px, 6.7vw, 96px) var(--lm-gutter) var(--lm-section-y);
+  }
+
+  .how__copy {
+    flex: 1;
+    min-width: 0;
   }
 
   /* 두 줄 정도로 모아 두되, 한글 단어 중간에서는 끊지 않습니다. */
@@ -61,7 +68,7 @@ const shot = { src: '/images/how-phone.webp', width: 843, height: 967 };
   }
 
   .how__body {
-    margin: 0;
+    margin: clamp(18px, 2vw, 26px) 0 0;
     max-width: 40em;
     font-weight: 400;
     font-size: clamp(15px, 1.2vw, 17px);
@@ -71,13 +78,29 @@ const shot = { src: '/images/how-phone.webp', width: 843, height: 967 };
     word-break: keep-all;
   }
 
-  /* 글은 왼쪽에 맞추되 목업은 가운데 ─ 넓은 화면에서 한쪽이 비지 않도록 */
   .how__device {
-    align-self: center;
     display: flex;
     justify-content: center;
+    flex-shrink: 0;
     width: min(360px, 100%);
-    margin-top: clamp(10px, 1.4vw, 18px);
+  }
+
+  /* 좁은 화면 ─ 글 아래에 목업을 가운데로 놓습니다. */
+  @media (max-width: 900px) {
+    .how__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(18px, 2vw, 26px);
+    }
+
+    .how__copy {
+      width: 100%;
+    }
+
+    .how__device {
+      align-self: center;
+      margin-top: clamp(10px, 1.4vw, 18px);
+    }
   }
 
   /*
