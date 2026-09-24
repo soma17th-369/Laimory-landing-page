@@ -63,15 +63,8 @@ export interface SiteCopy {
     titleLine2: string;
     /** label은 약속이 적용되는 시점, body는 그 시점의 약속 */
     points: { label: string; body: string }[];
-    /** 목업 안의 '오늘 수집된 기록' 확인 화면 */
-    screen: {
-      title: string;
-      bodyLine1: string;
-      bodyLine2: string;
-      items: SourceItem[];
-      note: string;
-      cta: string;
-    };
+    /** 폰 목업(위치 기록 화면 캡처)의 접근성 설명 */
+    alt: string;
   };
   footer: {
     title: string;
@@ -176,19 +169,7 @@ const ko: SiteCopy = {
         body: '누가 쓴 것인지 알 수 없는 형태로 보관되고, 언제든 삭제할 수 있습니다',
       },
     ],
-    screen: {
-      title: '오늘 수집된 기록이에요',
-      bodyLine1: '타임라인을 만들기 전에 확인해 주세요.',
-      bodyLine2: '빼고 싶은 기록은 지금 끌 수 있어요.',
-      items: [
-        { title: '사진 23장', meta: '오늘 09:00~19:20' },
-        { title: '일정 3건', meta: '캘린더' },
-        { title: '이동 경로 2건', meta: '강남역 → 성수역 · 7호선' },
-        { title: '알림 5건', meta: '메시지 · 예약 확인' },
-      ],
-      note: '이 기록은 작성자를 알 수 없는 형태로 저장돼요.',
-      cta: '이 내용으로 타임라인 만들기',
-    },
+    alt: 'Laimory 앱의 위치 기록 화면. 수집된 장소 가운데 보낼 것만 고를 수 있습니다.',
   },
 
   footer: {
@@ -290,19 +271,7 @@ const en: SiteCopy = {
         body: 'It is kept in a form that does not identify who wrote it, and can be deleted at any time',
       },
     ],
-    screen: {
-      title: 'Records collected today',
-      bodyLine1: 'Review them before the timeline is built.',
-      bodyLine2: 'Anything you want to leave out can be turned off now.',
-      items: [
-        { title: '23 photos', meta: 'Today 09:00-19:20' },
-        { title: '3 events', meta: 'Calendar' },
-        { title: '2 trips', meta: 'Gangnam → Seongsu · Line 7' },
-        { title: '5 notifications', meta: 'Messages · Booking confirmed' },
-      ],
-      note: 'These records are stored without anything that identifies you.',
-      cta: 'Build the timeline from this',
-    },
+    alt: 'The location records screen of the Laimory app, where you choose which places to send.',
   },
 
   footer: {
