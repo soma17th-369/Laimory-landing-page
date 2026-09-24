@@ -10,8 +10,8 @@ import { getLangFromUrl, useCopy } from '../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 const c = useCopy(lang);
 
-/** 데모 카드에 보이는 사진 조각. 시안의 assets/photos/frag-*를 줄여 넣었습니다. */
-const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.webp'];
+/** 기록 카드에 겹쳐 보이는 사진 조각 두 장. */
+const frags = ['/images/frag-1.webp', '/images/frag-2.webp'];
 ---
 
 <section class="result" id="result">
@@ -20,16 +20,7 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
       <h2 class="lm-h2 result__title">
         {c.result.titleLine1}<br />{c.result.titleLine2}
       </h2>
-      <ul class="result__inputs">
-        {
-          c.result.inputs.map((item, i) => (
-            <li class="result__input">
-              <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={30} iconSize={15} />
-              {item}
-            </li>
-          ))
-        }
-      </ul>
+      <p class="result__body">{c.result.body}</p>
     </div>
 
     <div class="demo" role="group" aria-label={c.result.demoLabel}>
@@ -65,38 +56,16 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
       </span>
 
       <div class="demo__card">
-        <div class="demo__card-head">
-          <span class="demo__card-label">{c.result.timeline.label}</span>
-          <span class="demo__card-date">{c.result.timeline.date}</span>
-        </div>
-
-        <ol class="demo__entries">
-          {
-            c.result.timeline.entries.map((entry, i) => (
-              <li class="demo__entry">
-                <span class="demo__time">{entry.time}</span>
-                <div class="demo__event">
-                  <div class="demo__event-row">
-                    <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={24} iconSize={13} />
-                    <span class="demo__event-title">{entry.title}</span>
-                    {entry.meta && <span class="demo__event-meta">{entry.meta}</span>}
-                  </div>
-                  {i === 0 && (
-                    <div class="demo__photos" aria-hidden="true">
-                      {frags.map((src) => (
-                        <img src={src} alt="" width="64" height="48" loading="lazy" decoding="async" />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </li>
-            ))
-          }
-        </ol>
-
-        <div class="demo__draft">
-          <span class="demo__draft-label">{c.result.timeline.draftLabel}</span>
-          <p class="demo__draft-text">{c.result.timeline.draft}</p>
+        <div class="demo__shot-clip">
+          <img
+            class="demo__shot"
+            src="/images/result-timeline.webp"
+            alt=""
+            width="1080"
+            height="1785"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
     </div>
@@ -117,30 +86,15 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     min-width: 0;
   }
 
-  /* 모아 오는 기록 ─ 데모와 같은 소스 아이콘을 앞에 두고 얇은 줄로 나눕니다. */
-  .result__inputs {
-    list-style: none;
-    margin: 32px 0 0;
-    padding: 0;
-    max-width: 460px;
-  }
-
-  .result__input {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 4px;
-    border-bottom: 1px solid var(--lm-outline-2);
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 1.5;
+  .result__body {
+    margin: 20px 0 0;
+    max-width: 30em;
+    font-weight: 400;
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.8;
     color: var(--lm-ink);
     text-wrap: pretty;
     word-break: keep-all;
-  }
-
-  .result__input:last-child {
-    border-bottom: 0;
   }
 
   /* 데모 ─ 기록 카드 → 타임라인 카드 */
@@ -148,7 +102,7 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     display: flex;
     align-items: center;
     gap: 16px;
-    width: min(620px, 100%);
+    width: min(640px, 100%);
     flex-shrink: 0;
   }
 
@@ -216,139 +170,52 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     flex-shrink: 0;
   }
 
+  /*
+   * 타임라인 카드 ─ 실제 앱 화면 캡처를 담는 틀.
+   * 캡처 배경이 섹션 배경과 비슷해 그냥 얹힌 것처럼 보이므로,
+   * 안쪽 여백으로 흰 테두리를 두르고 그림자로 띄워 액자처럼 보이게 합니다.
+   */
   .demo__card {
-    flex: 1.15;
+    flex: 1.4;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 22px 22px 24px;
+    padding: 6px;
     box-sizing: border-box;
     border-radius: var(--lm-radius-card);
     background: var(--lm-surface);
     box-shadow:
-      0 2px 8px rgb(31 28 23 / 8%),
-      inset 0 0 0 1px var(--lm-outline-2);
+      0 18px 40px -14px rgb(31 28 23 / 22%),
+      0 4px 10px -4px rgb(31 28 23 / 10%),
+      inset 0 0 0 2px var(--lm-outline);
   }
 
-  .demo__card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  /*
+   * 캡처가 세로로 길어 그대로 두면 왼쪽 기록 카드보다 훨씬 커집니다.
+   * 높이를 잘라 두고 아래를 흐리게 풀어 하루가 이어진다는 걸 남깁니다.
+   */
+  /*
+   * 캡처 배경(#faf8f4)이 페이지 배경과 거의 같아 경계가 안 보입니다.
+   * 얇은 흰 여백과 바깥 선이 그 경계를 대신합니다.
+   */
+  .demo__shot-clip {
+    position: relative;
+    max-height: 428px;
+    overflow: hidden;
+    border-radius: 14px;
   }
 
-  .demo__card-label {
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 1;
-    color: var(--lm-primary-faint);
+  .demo__shot-clip::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 80px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--lm-surface));
   }
 
-  .demo__card-date {
-    font-family: var(--lm-font-label);
-    font-weight: 500;
-    font-size: 11px;
-    line-height: 1;
-    color: var(--lm-ink-faint);
-    white-space: nowrap;
-  }
-
-  .demo__entries {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .demo__entry {
-    display: flex;
-    gap: 10px;
-  }
-
-  .demo__time {
-    width: 38px;
-    flex-shrink: 0;
-    padding-top: 5px;
-    font-family: var(--lm-font-label);
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 1;
-    color: var(--lm-ink-faint);
-  }
-
-  .demo__event {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: var(--lm-paper);
-    box-shadow: inset 0 0 0 1px var(--lm-outline-3);
-  }
-
-  .demo__event-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-  }
-
-  .demo__event-title {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--lm-ink);
-  }
-
-  .demo__event-meta {
-    margin-left: auto;
-    font-family: var(--lm-font-label);
-    font-weight: 400;
-    font-size: 11px;
-    line-height: 1;
-    color: var(--lm-ink-faint);
-    white-space: nowrap;
-  }
-
-  .demo__photos {
-    display: flex;
-    gap: 6px;
-  }
-
-  .demo__photos img {
+  .demo__shot {
     display: block;
-    width: 64px;
-    height: 48px;
-    border-radius: 8px;
-    object-fit: cover;
-  }
-
-  .demo__draft {
-    padding: 14px 16px;
-    border-radius: 12px;
-    background: var(--lm-primary-container);
-  }
-
-  .demo__draft-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 11px;
-    line-height: 1;
-    color: var(--lm-primary-faint);
-  }
-
-  .demo__draft-text {
-    margin: 0;
-    font-family: var(--lm-font-serif);
-    font-size: 14px;
-    line-height: 1.75;
-    color: var(--lm-on-primary-container);
+    width: 100%;
+    height: auto;
   }
 
   /* 데모가 들어갈 자리가 없으면 설명 아래로 내립니다. */
@@ -356,10 +223,6 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
     .result__inner {
       flex-direction: column;
       align-items: stretch;
-    }
-
-    .result__inputs {
-      max-width: none;
     }
 
     .demo {
@@ -374,10 +237,6 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
    * 한 화면 안에 들어오게 합니다.
    */
   @media (max-width: 600px) {
-    .result__inputs {
-      display: none;
-    }
-
     .demo {
       flex-direction: column;
       align-items: stretch;
@@ -409,6 +268,11 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp', '/images/frag-3.web
 
     .demo__card {
       flex: none;
+    }
+
+    /* 세로로 쌓이면 자리가 넉넉하니 하루를 조금 더 보여 줍니다. */
+    .demo__shot-clip {
+      max-height: 468px;
     }
 
     .demo__arrow {

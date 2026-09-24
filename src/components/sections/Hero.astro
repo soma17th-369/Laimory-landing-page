@@ -1,9 +1,11 @@
 ---
 /**
- * 히어로. 왼쪽은 한 줄 약속과 CTA, 오른쪽은 실제 앱의 타임라인 화면 캡처입니다.
+ * 히어로. 왼쪽은 한 줄 약속과 CTA, 오른쪽은 실제 앱을 담은 폰 목업입니다.
+ *
+ * 목업 이미지가 기기 테두리까지 포함하고 배경이 투명해서, 목업 틀을 CSS로
+ * 그리지 않고 이미지를 그대로 얹습니다. 아래는 이미 잘린 그림이라
+ * 섹션 바닥에서 폰이 올라오는 모습이 됩니다.
  */
-import PhoneFrame from '../PhoneFrame.astro';
-import AppShot from '../AppShot.astro';
 import { getLangFromUrl, useCopy } from '../../i18n/utils';
 import { DOWNLOAD_URL, externalLinkAttrs } from '../../lib/links';
 
@@ -34,9 +36,16 @@ const c = useCopy(lang);
     </div>
 
     <div class="hero__device lm-rise lm-rise--after">
-      <PhoneFrame width={440} height={660} shadow label={c.hero.deviceAlt}>
-        <AppShot src="/images/app-timeline.webp" width={376} height={1282} eager />
-      </PhoneFrame>
+      <img
+        class="hero__phone"
+        src="/images/hero-phone.webp"
+        alt={c.hero.deviceAlt}
+        width="843"
+        height="1057"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
     </div>
   </div>
 </section>
@@ -104,6 +113,15 @@ const c = useCopy(lang);
     justify-content: center;
     flex-shrink: 0;
     align-self: flex-end;
+    width: min(440px, 100%);
+  }
+
+  /* 목업 이미지에 기기 테두리가 들어 있어 그림자만 더합니다. */
+  .hero__phone {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 24px 60px rgb(0 0 0 / 35%));
   }
 
   /* 세로로 쌓이면 목업이 글 아래에서 섹션 바닥에 붙습니다. */
