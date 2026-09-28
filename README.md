@@ -28,7 +28,10 @@ npm run preview  # 빌드 결과 미리보기
 src/
 ├─ pages/
 │  ├─ index.astro            # 한국어 홈 (/)
-│  └─ en/index.astro         # 영어 홈 (/en/)
+│  ├─ en/index.astro         # 영어 홈 (/en/)
+│  └─ notices/[slug].astro   # 앱 WebView용 공지사항 (/notices/{slug}/)
+├─ content/
+│  └─ notices/{slug}.md      # 공지사항 본문 (파일 하나 = 공지 한 건)
 ├─ layouts/
 │  └─ Layout.astro           # 공통 HTML 뼈대 (head, meta, 폰트, Header/Footer)
 ├─ components/
@@ -72,6 +75,7 @@ public/
 - **문구 변경**: `src/i18n/ui.ts` 의 `ko` / `en` 값 수정. 두 언어가 같은 타입을 쓰므로 한쪽만 고치면 타입 검사에서 걸립니다.
 - **색상 변경**: `src/styles/global.css` 의 `:root` 안 `--lm-*` 토큰
 - **앱 다운로드 링크**: `src/lib/links.ts` 의 `DOWNLOAD_URL` — 지금은 푸터로 스크롤만 하는 자리표시자입니다.
+- **공지사항 추가**: `src/content/notices/{slug}.md` 추가. `docs/notices.md` 참고.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/i18n/ui.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
 - **앱 화면 캡처 교체**: `public/images/app-*.webp` 를 바꾸고, `Hero.astro` · `HowItWorks.astro` 의 `width` · `height` 를 새 파일의 실제 픽셀 크기로 맞춥니다. 목업 안에서는 화면 폭에 맞춰 늘어나므로 비율만 맞으면 됩니다.

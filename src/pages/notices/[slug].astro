@@ -1,0 +1,89 @@
+---
+/**
+ * 앱 WebView로 여는 공지사항 한 건.
+ *
+ * 랜딩 페이지의 Layout(헤더·푸터·웹폰트·분석 스크립트)을 쓰지 않는 독립 문서입니다.
+ * 앱 안에서 바로 읽히도록 약관 HTML처럼 외부 리소스 없이 가볍게 둡니다.
+ * 검색 노출 대상이 아니므로 noindex이고, 사이트맵에서도 뺍니다(astro.config.mjs).
+ */
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notices = await getCollection('notices');
+  return notices.map((notice) => ({
+    params: { slug: notice.id },
+    props: { notice },
+  }));
+}
+
+const { notice } = Astro.props;
+const { Content } = await render(notice);
+
+// 날짜만 적은 frontmatter(2026-09-28)는 UTC 자정으로 읽히므로 UTC로 표시해야 하루가 밀리지 않습니다.
+const date = notice.data.date;
+const dateLabel = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'UTC',
+}).format(date);
+const dateIso = date.toISOString().slice(0, 10);
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="noindex" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>{notice.data.title} | 라이모리</title>
+  </head>
+  <body>
+    <main class="notice">
+      <header class="notice-head">
+        <h1>{notice.data.title}</h1>
+        <time datetime={dateIso}>{dateLabel}</time>
+      </header>
+      <article class="notice-body">
+        <Content />
+      </article>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  /* 색은 랜딩 페이지의 종이·잉크 토큰(global.css의 --lm-paper, --lm-ink 등)과 같은 값입니다. */
+  :root {
+    color-scheme: light;
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+      'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    font-size: 16px;
+    color: #1f1c18;
+    background: #faf8f5;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #faf8f5; line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+
+  .notice { width: min(100%, 720px); margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+  .notice-head { padding-bottom: 1.25rem; border-bottom: 1px solid #e7e2da; }
+  .notice-head h1 { margin: 0; font-size: 1.375rem; line-height: 1.4; letter-spacing: -.02em; }
+  .notice-head time { display: block; margin-top: .5rem; color: #786f65; font-size: .875rem; }
+
+  .notice-body { padding-top: .5rem; font-size: .9375rem; }
+  .notice-body h2 { margin: 2rem 0 .75rem; font-size: 1.125rem; line-height: 1.4; }
+  .notice-body h3 { margin: 1.5rem 0 .5rem; font-size: 1rem; line-height: 1.4; }
+  .notice-body p { margin: .85rem 0; }
+  .notice-body ol, .notice-body ul { margin: .85rem 0; padding-left: 1.4rem; }
+  .notice-body li + li { margin-top: .35rem; }
+  .notice-body a { color: #37446a; text-decoration-thickness: .08em; text-underline-offset: .18em; }
+  .notice-body img { max-width: 100%; height: auto; border-radius: .5rem; }
+  .notice-body hr { margin: 2rem 0; border: 0; border-top: 1px solid #e7e2da; }
+  .notice-body strong { font-weight: 700; }
+</style>
