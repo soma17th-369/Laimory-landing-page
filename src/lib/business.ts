@@ -15,5 +15,5 @@ export const BUSINESS = {
   /** 위치기반서비스사업 신고번호 (신고일 2026-08-28) */
   lbsReportNumber: '1464',
   /** 대표 문의 창구 */
-  email: 'laimory369@gmail.com',
+  email: 'contact@laimory.app',
 } as const;
