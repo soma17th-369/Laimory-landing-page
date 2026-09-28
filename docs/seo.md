@@ -102,5 +102,4 @@ Google은 [공식 크롤러 IP 대역 JSON](https://developers.google.com/static
 ## 추후 과제
 
 - `favicon.ico` / `apple-touch-icon` 추가 (구형 브라우저·iOS 홈 화면)
-- `404.astro` 커스텀 404 페이지
 - 스토어 출시 후 `SoftwareApplication` JSON-LD

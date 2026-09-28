@@ -10,8 +10,4 @@ date: 2026-09-28
 
 1. 제목과 게시일이 위에 보이는지
 2. 본문 글씨가 화면 폭에 맞게 줄바꿈되는지
-3. 목록과 [링크](https://www.laimory.app/)가 정상적으로 표시되는지
-
-## 문의
-
-궁금한 점은 [contact@laimory.app](mailto:contact@laimory.app)으로 보내 주세요.
+3. 목록이 정상적으로 표시되는지

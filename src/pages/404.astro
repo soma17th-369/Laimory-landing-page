@@ -1,0 +1,17 @@
+---
+/**
+ * 없는 주소로 들어왔을 때의 페이지. Vercel이 dist/404.html을 404 응답으로 내려 줍니다.
+ * 앱 WebView에서 내려간 공지를 열 때도 이 화면이 보이므로 공지와 같은 뼈대를 씁니다.
+ */
+import PlainLayout from '../layouts/PlainLayout.astro';
+---
+
+<PlainLayout title="페이지를 찾을 수 없습니다">
+  <header class="doc-head">
+    <h1>페이지를 찾을 수 없습니다</h1>
+  </header>
+  <div class="doc-body">
+    <p>주소가 바뀌었거나 더 이상 제공하지 않는 페이지입니다.</p>
+    <p><a href="/">라이모리 홈으로</a></p>
+  </div>
+</PlainLayout>

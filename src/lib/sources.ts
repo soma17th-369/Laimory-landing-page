@@ -1,6 +1,6 @@
 import type { IconName } from './icons';
 
-/** 아이콘 배지 색. 값은 global.css의 --lm-badge-* 토큰과 짝을 이룹니다. */
+/** 아이콘 배지 색. 값은 tokens.css의 --lm-badge-* 토큰과 짝을 이룹니다. */
 export type Tone = 'joy' | 'calm' | 'green' | 'purple';
 
 /**
