@@ -1,0 +1,67 @@
+---
+/**
+ * 랜딩 페이지 Layout(헤더·푸터·웹폰트)을 쓰지 않는 가벼운 단독 문서의 뼈대.
+ * 앱 WebView로 여는 공지사항과 404 페이지가 씁니다.
+ *
+ * 약관 HTML처럼 스크립트·외부 리소스 없이 CSS만 싣습니다. 색·글꼴은 랜딩과 같은
+ * 디자인 토큰(tokens.css)을 가져오므로 브랜드 색을 바꾸면 여기도 함께 바뀝니다.
+ * 검색 노출 대상이 아니므로 noindex입니다.
+ */
+import '../styles/tokens.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="noindex" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>{title} | 라이모리</title>
+  </head>
+  <body>
+    <main class="doc">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light;
+    font-family: var(--lm-font-sans);
+    font-size: 16px;
+    color: var(--lm-ink);
+    background: var(--lm-paper);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--lm-paper); line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+
+  .doc { width: min(100%, 720px); margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+  .doc-head { padding-bottom: 1.25rem; border-bottom: 1px solid var(--lm-outline-2); }
+  .doc-head h1 { margin: 0; font-size: 1.375rem; line-height: 1.4; letter-spacing: -.02em; }
+  .doc-head time { display: block; margin-top: .5rem; color: var(--lm-ink-quiet); font-size: .875rem; }
+
+  .doc-body { padding-top: .5rem; font-size: .9375rem; }
+  .doc-body h2 { margin: 2rem 0 .75rem; font-size: 1.125rem; line-height: 1.4; }
+  .doc-body h3 { margin: 1.5rem 0 .5rem; font-size: 1rem; line-height: 1.4; }
+  .doc-body p { margin: .85rem 0; }
+  .doc-body ol, .doc-body ul { margin: .85rem 0; padding-left: 1.4rem; }
+  .doc-body li + li { margin-top: .35rem; }
+  .doc-body a { color: var(--lm-on-primary-container); text-decoration-thickness: .08em; text-underline-offset: .18em; }
+  .doc-body img { max-width: 100%; height: auto; border-radius: .5rem; }
+  .doc-body hr { margin: 2rem 0; border: 0; border-top: 1px solid var(--lm-outline-2); }
+  .doc-body strong { font-weight: 700; }
+</style>

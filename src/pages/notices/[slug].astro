@@ -1,0 +1,39 @@
+---
+/**
+ * 앱 WebView로 여는 공지사항 한 건.
+ * 사이트맵에서는 뺍니다(astro.config.mjs).
+ */
+import { getCollection, render } from 'astro:content';
+import PlainLayout from '../../layouts/PlainLayout.astro';
+
+export async function getStaticPaths() {
+  const notices = await getCollection('notices');
+  return notices.map((notice) => ({
+    params: { slug: notice.id },
+    props: { notice },
+  }));
+}
+
+const { notice } = Astro.props;
+const { Content } = await render(notice);
+
+// 스키마가 시각 없는 날짜(UTC 자정)만 받으므로 UTC로 표시해야 하루가 밀리지 않습니다.
+const date = notice.data.date;
+const dateLabel = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'UTC',
+}).format(date);
+const dateIso = date.toISOString().slice(0, 10);
+---
+
+<PlainLayout title={notice.data.title}>
+  <header class="doc-head">
+    <h1>{notice.data.title}</h1>
+    <time datetime={dateIso}>{dateLabel}</time>
+  </header>
+  <article class="doc-body">
+    <Content />
+  </article>
+</PlainLayout>

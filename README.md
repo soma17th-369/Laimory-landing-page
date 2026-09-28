@@ -10,7 +10,7 @@ Laimory를 소개하는 랜딩 페이지입니다. 반응형과 한/영 다국�
 ## 기술 스택
 
 - **[Astro](https://astro.build/)** — 랜딩 페이지에 최적화된 프레임워크 (기본적으로 JS 최소 탑재 → 빠른 로딩, 강한 SEO)
-- **[Tailwind CSS v4](https://tailwindcss.com/)** — 기본 리셋과 유틸리티 용도. 실제 디자인은 `global.css`의 디자인 토큰과 컴포넌트 CSS로 구현되어 있습니다.
+- **[Tailwind CSS v4](https://tailwindcss.com/)** — 기본 리셋과 유틸리티 용도. 실제 디자인은 `tokens.css`의 디자인 토큰과 `global.css`의 컴포넌트 CSS로 구현되어 있습니다.
 - **TypeScript** — 타입 안전성
 
 ## 시작하기
@@ -28,9 +28,14 @@ npm run preview  # 빌드 결과 미리보기
 src/
 ├─ pages/
 │  ├─ index.astro            # 한국어 홈 (/)
-│  └─ en/index.astro         # 영어 홈 (/en/)
+│  ├─ en/index.astro         # 영어 홈 (/en/)
+│  ├─ notices/[slug].astro   # 앱 WebView용 공지사항 (/notices/{slug}/)
+│  └─ 404.astro              # 없는 주소 안내
+├─ content/
+│  └─ notices/{slug}.md      # 공지사항 본문 (파일 하나 = 공지 한 건)
 ├─ layouts/
-│  └─ Layout.astro           # 공통 HTML 뼈대 (head, meta, 폰트, Header/Footer)
+│  ├─ Layout.astro           # 공통 HTML 뼈대 (head, meta, 폰트, Header/Footer)
+│  └─ PlainLayout.astro      # 공지사항 · 404용 가벼운 단독 문서 뼈대
 ├─ components/
 │  ├─ Header.astro           # 상단 바 (히어로와 이어지는 네이비)
 │  ├─ Footer.astro           # 마무리 CTA · 약관 6종 링크 · 사업자 정보
@@ -56,7 +61,8 @@ src/
 │  ├─ links.ts               # 앱 다운로드 링크 · 약관 URL
 │  └─ business.ts            # 사업자 정보 (번호·이메일 등 언어 무관한 값)
 └─ styles/
-   └─ global.css             # 디자인 토큰 + 공통 클래스
+   ├─ tokens.css             # 디자인 토큰 (--lm-*)
+   └─ global.css             # 공통 클래스 (tokens.css를 가져옴)
 
 public/
 ├─ images/                    # 시안의 사진과 앱 화면 캡처 (WebP)
@@ -70,8 +76,9 @@ public/
 ## 자주 하는 수정
 
 - **문구 변경**: `src/i18n/ui.ts` 의 `ko` / `en` 값 수정. 두 언어가 같은 타입을 쓰므로 한쪽만 고치면 타입 검사에서 걸립니다.
-- **색상 변경**: `src/styles/global.css` 의 `:root` 안 `--lm-*` 토큰
+- **색상 변경**: `src/styles/tokens.css` 의 `--lm-*` 토큰
 - **앱 다운로드 링크**: `src/lib/links.ts` 의 `DOWNLOAD_URL` — 지금은 푸터로 스크롤만 하는 자리표시자입니다.
+- **공지사항 추가**: `src/content/notices/{slug}.md` 추가. `docs/notices.md` 참고.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/i18n/ui.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
 - **앱 화면 캡처 교체**: `public/images/app-*.webp` 를 바꾸고, `Hero.astro` · `HowItWorks.astro` 의 `width` · `height` 를 새 파일의 실제 픽셀 크기로 맞춥니다. 목업 안에서는 화면 폭에 맞춰 늘어나므로 비율만 맞으면 됩니다.

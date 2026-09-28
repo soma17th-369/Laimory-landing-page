@@ -1,0 +1,62 @@
+/* ─────────────────────────────────────────────
+   Laimory 디자인 토큰
+   원본 디자인 파일(Figma Variables)에서 실제로 쓰인 값만 옮겨 왔습니다.
+   색을 바꾸려면 여기만 고치면 전체 페이지에 반영됩니다.
+   ───────────────────────────────────────────── */
+:root {
+  /* 다크(네이비) 영역 ─ 헤더 · 히어로 · 푸터 */
+  --lm-navy: #262e46;
+  --lm-navy-deep: #1b2136;
+  --lm-navy-line: #4c5a80;
+
+  /* 밤(문제 제기) 영역 ─ 사진 위에 글이 얹히는 더 짙은 배경 */
+  --lm-dark: #12131a;
+  --lm-dark-soft: #c9cbd6;
+
+  /* 브랜드 페리윙클 */
+  --lm-primary: #879bd3;
+  --lm-primary-soft: #a4b5e0;
+  --lm-primary-dim: #7c8ab0;
+  --lm-primary-faint: #5c6a94;
+  --lm-primary-container: #dce3f4;
+  --lm-on-primary-container: #37446a;
+
+  /* 종이(라이트) 영역 */
+  --lm-paper: #faf8f5;
+  --lm-paper-2: #f3f0eb;
+  --lm-surface: #ffffff;
+
+  /* 잉크(텍스트) */
+  --lm-ink: #1f1c18;
+  --lm-ink-muted: #6e665a;
+  /* 작은 라벨용. --lm-ink-faint는 더 흐리지만 작은 글씨 대비(4.5:1)에 못 미칩니다. */
+  --lm-ink-quiet: #786f65;
+  --lm-ink-faint: #928a7c;
+  --lm-outline: #d6cfc4;
+  --lm-outline-2: #e7e2da;
+  --lm-outline-3: #efeae2;
+
+  /* 아이콘 배지 배경 ─ 사진 · 캘린더 · 위치 · 알림 */
+  --lm-badge-joy: #fcede4;
+  --lm-badge-joy-ink: #8a4527;
+  --lm-badge-calm: #dce3f4;
+  --lm-badge-calm-ink: #37446a;
+  --lm-badge-green: #eaf1ee;
+  --lm-badge-green-ink: #3a5749;
+  --lm-badge-purple: #f1ebf6;
+  --lm-badge-purple-ink: #5b4a72;
+
+  /* 타이포 ─ 본문은 Pretendard, 큰 제목은 Noto Sans KR, 영문 라벨은 Inter */
+  --lm-font-sans: "Pretendard Variable", Pretendard, "Noto Sans KR", system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --lm-font-heading: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --lm-font-label: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* 레이아웃 ─ 시안은 1440px 기준, 좁은 화면에서는 여백이 줄어듭니다 */
+  --lm-page-max: 1440px;
+  --lm-gutter: clamp(20px, 5.5vw, 80px);
+  --lm-section-y: clamp(64px, 7.5vw, 104px);
+  --lm-radius-card: 20px;
+  --lm-radius-tile: 16px;
+}
