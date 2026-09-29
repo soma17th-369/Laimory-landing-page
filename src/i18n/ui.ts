@@ -101,10 +101,10 @@ export interface SiteCopy {
 
 const ko: SiteCopy = {
   meta: {
-    title: 'Laimory - 나의 삶을 기억하는 AI',
+    title: '라이모리 Laimory - 나의 삶을 기억하는 AI',
     description:
-      '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인을 만들어 주는 기록 앱, Laimory.',
-    ogImageAlt: '흰 바탕 위의 Laimory 로고',
+      '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인을 만들어 주는 기록 앱, 라이모리(Laimory).',
+    ogImageAlt: '흰 바탕 위의 라이모리(Laimory) 로고',
   },
 
   nav: {
