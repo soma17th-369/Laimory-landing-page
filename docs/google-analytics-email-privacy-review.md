@@ -17,9 +17,24 @@ Astro의 게시 경로 밖에 둔다.
 | 제6조 | — | 위탁 행 |
 | 제7조 | — | 국외 이전 행, 거부 방법, 이전 국가 목록 |
 
+## 대조 기준
+
+처리방침 문구는 아래 고정 버전과 대조했다. **출시 전에 어느 쪽이든 아래 파일의 동작이 바뀌면 처리방침을 다시 대조한다.**
+
+- Android: `develop` [`4a3a28c`](https://github.com/soma17th-369/Laimory-android/tree/4a3a28c750203fb92c1d708cb4d586f4e232be3a) (2026-09-25 머지, 2026-09-29 확인 시점의 head)
+  - [`AndroidManifest.xml`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/app/src/main/AndroidManifest.xml) — 수집 기본값, 광고 ID 권한·수집 설정
+  - [`AnalyticsSessionReporter.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/app/src/main/java/com/soma369/laimory/analytics/AnalyticsSessionReporter.kt) — User-ID 설정·해제
+  - [`FirebaseAnalyticsBucket.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/app/src/main/java/com/soma369/laimory/analytics/FirebaseAnalyticsBucket.kt) — GA 전송
+  - [`AnalyticsEventMapper.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/core/data/src/main/java/com/soma369/laimory/core/data/analytics/AnalyticsEventMapper.kt) — 이벤트 파라미터(기록 날짜, 이벤트 시각·식별자, 메모 글자 수)
+  - [`InstallAttributionMapper.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/core/data/src/main/java/com/soma369/laimory/core/data/analytics/InstallAttributionMapper.kt) — 설치 유입(UTM) 속성
+  - [`WithdrawAccountUseCase.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/core/domain/src/main/java/com/soma369/laimory/core/domain/usecase/user/WithdrawAccountUseCase.kt) — 탈퇴 시 세션 정리(→ User-ID 해제)
+- 서버: [soma17th-369/Laimory-server#534](https://github.com/soma17th-369/Laimory-server/pull/534) head [`8822531`](https://github.com/soma17th-369/Laimory-server/tree/882253181c8e7661c7847ff1dc84e0267502a17f)
+  - [`OAuth2LoginSuccessHandler.java`](https://github.com/soma17th-369/Laimory-server/blob/882253181c8e7661c7847ff1dc84e0267502a17f/src/main/java/com/laimory/server/auth/security/OAuth2LoginSuccessHandler.java) — 구글 email 저장
+- GA4 속성 `laimory-dev` 관리 설정(2026-09-29 확인, 데이터 처리 약관은 2026-09-30 수락)
+
 ## 앱 구현 대조
 
-2026-09-29 기준 Android `develop` 코드와 GA4 속성 설정을 대조했다.
+위 기준의 Android 코드와 GA4 속성 설정을 대조했다.
 
 - 로그인 중 GA User-ID로 서버의 내부 회원 번호를 설정하고 로그아웃 시 해제한다 → "로그인한 경우 회원 식별자"로 공개.
 - 설치 유입(UTM) 값을 user property와 이벤트 파라미터로 보낸다 → "설치 유입 경로(캠페인 정보)".
@@ -62,8 +77,13 @@ GA4 설정: 이벤트 데이터 보관 2개월, 사용자 데이터 보관 14개
 - 데이터 공유 설정의 "Google 제품 및 서비스" 꺼짐
 - 보관 설정(이벤트 2개월, 사용자 14개월, 새 활동 시 재설정 켜짐)
 
-## 해석의 한계
+## 해석의 한계와 운영팀 결정
 
 - 이용 통계 분석을 별도 동의 없이 계약 이행(개인정보 보호법 제15조 제1항 제4호)과 처리위탁 국외 이전(제28조의8 제1항 제3호)으로 처리한다.
-  "서비스 개선용 통계"가 계약 이행에 필요한지는 해석의 여지가 있으며, 운영팀이 이를 알고 선택했다.
+  앱은 가입 전 첫 실행부터 수집하고 분석 실패가 기능을 막지 않도록 분리되어 있어, "계약 이행에 필요한 처리"로 보기 어렵다는
+  검토 의견이 있었다. 대안은 선택 동의 전환(앱의 수집 시작·거부 흐름 변경 포함)이다. 운영팀은 2026-09-30 이를 알고 현행 유지를 결정했다.
+- 탈퇴 시 GA에 삭제를 요청하지 않고 보유기간(마지막 이용일로부터 최대 14개월) 만료로 삭제한다. 제4조 ③(계정에 연결된 정보의 탈퇴 후 5일 내 파기)과
+  긴장 관계이고, 개인정보 보호법 제21조의 파기 의무 관점에서 탈퇴 후 보유의 별도 근거가 필요하다는 검토 의견이 있었다. 대안은 탈퇴 시
+  GA 사용자 삭제(User Deletion API 또는 관리 화면)와 앱의 `resetAnalyticsData()` 호출, 또는 User-ID 전송 중단이다. 운영팀은 2026-09-30 이를 알고
+  현행 유지를 결정했다.
 - 이전 국가 목록은 공급자 공개 자료의 대조 결과이며, 실제 처리 위치를 Google에 확인받은 것은 아니다.
