@@ -1,0 +1,89 @@
+# Google Analytics for Firebase·구글 로그인 이메일 처리방침 검토
+
+상태: **개인정보 처리방침 1.0 출시 전 보완으로 PR에 반영 · 아직 운영 게시 전**. 확인일: 2026-09-29.
+관련 작업: [서버 이슈 #521](https://github.com/soma17th-369/Laimory-server/issues/521).
+
+앱 출시 전 보완으로 `1.0`의 버전·시행일·URL을 유지하고 DB/catalog는 바꾸지 않는다. 이 문서는 게시본 원문이 아니며
+Astro의 게시 경로 밖에 둔다.
+
+## 반영한 내용
+
+| 조항 | 구글 로그인 이메일 | Google Analytics for Firebase |
+| --- | --- | --- |
+| 제1조 가 표 | 서비스 운영 안내 행(이메일 주소, 탈퇴 접수 후 5일 이내 파기) | 서비스 이용 통계 분석 행 |
+| 제1조 가 문단 | "이메일을 수집·저장하지 않음" 문단을 구글 한정 수집·광고성 정보 미발송·이메일로 계정 통합 안 함으로 교체 | 식별자 용도, 전송하지 않는 항목, IP 처리, 목적 제한 |
+| 제3조 | 기존 "회원 정보" 행이 포괄 | 이용 통계 정보 보유기간 |
+| 제4조 | — | ⑤ 탈퇴 시 처리 |
+| 제6조 | — | 위탁 행 |
+| 제7조 | — | 국외 이전 행, 거부 방법, 이전 국가 목록 |
+
+## 대조 기준
+
+처리방침 문구는 아래 고정 버전과 대조했다. **출시 전에 어느 쪽이든 아래 파일의 동작이 바뀌면 처리방침을 다시 대조한다.**
+
+- Android: `develop` [`4a3a28c`](https://github.com/soma17th-369/Laimory-android/tree/4a3a28c750203fb92c1d708cb4d586f4e232be3a) (2026-09-25 머지, 2026-09-29 확인 시점의 head)
+  - [`AndroidManifest.xml`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/app/src/main/AndroidManifest.xml) — 수집 기본값, 광고 ID 권한·수집 설정
+  - [`AnalyticsSessionReporter.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/app/src/main/java/com/soma369/laimory/analytics/AnalyticsSessionReporter.kt) — User-ID 설정·해제
+  - [`FirebaseAnalyticsBucket.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/app/src/main/java/com/soma369/laimory/analytics/FirebaseAnalyticsBucket.kt) — GA 전송
+  - [`AnalyticsEventMapper.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/core/data/src/main/java/com/soma369/laimory/core/data/analytics/AnalyticsEventMapper.kt) — 이벤트 파라미터(기록 날짜, 이벤트 시각·식별자, 메모 글자 수)
+  - [`InstallAttributionMapper.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/core/data/src/main/java/com/soma369/laimory/core/data/analytics/InstallAttributionMapper.kt) — 설치 유입(UTM) 속성
+  - [`WithdrawAccountUseCase.kt`](https://github.com/soma17th-369/Laimory-android/blob/4a3a28c750203fb92c1d708cb4d586f4e232be3a/core/domain/src/main/java/com/soma369/laimory/core/domain/usecase/user/WithdrawAccountUseCase.kt) — 탈퇴 시 세션 정리(→ User-ID 해제)
+- 서버: [soma17th-369/Laimory-server#534](https://github.com/soma17th-369/Laimory-server/pull/534) head [`8822531`](https://github.com/soma17th-369/Laimory-server/tree/882253181c8e7661c7847ff1dc84e0267502a17f)
+  - [`OAuth2LoginSuccessHandler.java`](https://github.com/soma17th-369/Laimory-server/blob/882253181c8e7661c7847ff1dc84e0267502a17f/src/main/java/com/laimory/server/auth/security/OAuth2LoginSuccessHandler.java) — 구글 email 저장
+- GA4 속성 `laimory-dev` 관리 설정(2026-09-29 확인, 데이터 처리 약관은 2026-09-30 수락)
+
+## 앱 구현 대조
+
+위 기준의 Android 코드와 GA4 속성 설정을 대조했다.
+
+- 로그인 중 GA User-ID로 서버의 내부 회원 번호를 설정하고 로그아웃 시 해제한다 → "로그인한 경우 회원 식별자"로 공개.
+- 설치 유입(UTM) 값을 user property와 이벤트 파라미터로 보낸다 → "설치 유입 경로(캠페인 정보)".
+- 이벤트 파라미터에 기록 날짜, 타임라인 이벤트의 시작 시각·식별자, 메모 글자 수가 있다 → 처리 항목에 공개. 메모 본문은 보내지 않는다.
+- 광고 ID 권한 제거, 광고 ID 수집·광고 개인화·자동 화면 보고 꺼짐 → "광고 식별자는 전송하지 않습니다".
+- `first_open`·`session_start`·`user_engagement`·`app_update` 등 SDK 자동 이벤트 → "앱 첫 실행·실행·이용 시간·업데이트·삭제".
+- 앱 안에 분석 수집을 끄는 설정이 없다 → 거부 방법은 앱 삭제로 안내.
+
+## 보유기간
+
+GA4 설정: 이벤트 데이터 보관 2개월, 사용자 데이터 보관 14개월, 새 활동 시 사용자 데이터 재설정 켜짐.
+[GA 데이터 보관 안내](https://support.google.com/analytics/answer/7667196)에 따라 사용자 데이터 보관은 사용자 식별자에 연결된
+데이터에 적용되고, 재설정이 켜져 있으면 새 이벤트마다 만료가 연장된다. 따라서 상한인 **마지막 이용일로부터 14개월**로 고지한다.
+표준 집계 보고서는 보관 설정의 영향을 받지 않으므로 "개인을 알아볼 수 없는 집계 통계는 기간 없이 보관"으로 적는다.
+**GA 보관 설정을 바꾸면 처리방침 문구도 함께 바꾼다.**
+
+탈퇴 시 GA에 삭제를 요청하지 않는 대신, 회사가 탈퇴 회원의 식별자로 통계 정보를 연결·이용하지 않는다고 제4조 ⑤에 적었다.
+회사 쪽 기록이 남아 있을 수 있으므로 "연결할 수 없다"는 단정은 쓰지 않는다.
+
+## 계약 상대방·연락처·이전 국가
+
+- [Firebase 개인정보 안내](https://firebase.google.com/support/privacy)는 Google Analytics를 별도 약관을 따르는 별도 서비스로 안내한다.
+  [Google Analytics 이용약관](https://marketingplatform.google.com/about/analytics/terms/kr/)의 계약 상대방은 Google LLC이고,
+  데이터 처리는 [Google Ads 데이터 처리 약관](https://business.safety.google/adsprocessorterms/)을 따른다. Crashlytics(Firebase 처리 약관,
+  Google Asia Pacific Pte. Ltd.)와 다르다.
+- 데이터 처리 약관은 EEA·영국·스위스 외 고객이 GA 관리 화면에서 직접 수락해야 적용된다. 2026-09-30 수락했다.
+- 연락처는 데이터 처리 약관 12.1항이 지정한 처리자 문의 창구(`privacy.google.com/businesses/processorsupport`)다.
+- 이전 국가는 데이터 처리 약관 10.1항("Google 또는 재수탁자가 시설을 둔 국가")에 따라 두 목록의 합집합이다.
+  - [Google 데이터센터 위치](https://datacenters.google/locations/) 중 운영 중인 시설의 국가. 건설 중인 시설만 있는 오스트리아·태국은 제외했다.
+  - [Google Ads 재수탁자](https://business.safety.google/adssubprocessors/) 중 적용 서비스에 Google Analytics for Firebase가 있거나
+    데이터센터 시설 관리를 맡는 재수탁자의 소재 국가.
+  - 대한민국은 두 목록에 없다. 우루과이는 Firebase 공통 목록과 같은 이유로 현재 처리 국가로 확정하지 않는다고 적었다.
+
+## 유지해야 하는 GA 설정
+
+아래 설정이 바뀌면 처리방침과 Play 데이터 보안 선언이 사실과 달라진다.
+
+- 데이터 처리 약관 수락 상태
+- Google 신호 꺼짐
+- 데이터 공유 설정의 "Google 제품 및 서비스" 꺼짐
+- 보관 설정(이벤트 2개월, 사용자 14개월, 새 활동 시 재설정 켜짐)
+
+## 해석의 한계와 운영팀 결정
+
+- 이용 통계 분석을 별도 동의 없이 계약 이행(개인정보 보호법 제15조 제1항 제4호)과 처리위탁 국외 이전(제28조의8 제1항 제3호)으로 처리한다.
+  앱은 가입 전 첫 실행부터 수집하고 분석 실패가 기능을 막지 않도록 분리되어 있어, "계약 이행에 필요한 처리"로 보기 어렵다는
+  검토 의견이 있었다. 대안은 선택 동의 전환(앱의 수집 시작·거부 흐름 변경 포함)이다. 운영팀은 2026-09-30 이를 알고 현행 유지를 결정했다.
+- 탈퇴 시 GA에 삭제를 요청하지 않고 보유기간(마지막 이용일로부터 최대 14개월) 만료로 삭제한다. 제4조 ③(계정에 연결된 정보의 탈퇴 후 5일 내 파기)과
+  긴장 관계이고, 개인정보 보호법 제21조의 파기 의무 관점에서 탈퇴 후 보유의 별도 근거가 필요하다는 검토 의견이 있었다. 대안은 탈퇴 시
+  GA 사용자 삭제(User Deletion API 또는 관리 화면)와 앱의 `resetAnalyticsData()` 호출, 또는 User-ID 전송 중단이다. 운영팀은 2026-09-30 이를 알고
+  현행 유지를 결정했다.
+- 이전 국가 목록은 공급자 공개 자료의 대조 결과이며, 실제 처리 위치를 Google에 확인받은 것은 아니다.
