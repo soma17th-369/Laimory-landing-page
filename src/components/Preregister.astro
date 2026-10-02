@@ -1,0 +1,351 @@
+---
+/**
+ * 푸터의 사전등록 양식. 전화번호 → 약관 동의 → 사전등록 순서로 내려갑니다.
+ *
+ * 양식 자체가 Google 폼의 응답 주소로 제출되는 평범한 <form>이라 스크립트가 없어도
+ * 동작합니다(이때는 Google의 '응답이 기록되었습니다' 화면으로 넘어갑니다).
+ * 스크립트가 있으면 페이지를 떠나지 않고 보내고 결과를 이 자리에 보여 줍니다.
+ *
+ * 동의 체크박스에는 name이 없어 폼으로 전송되지 않고, required로 제출만 막습니다.
+ * 어떤 문구에 동의했는지는 숨은 consent 값으로 함께 남깁니다.
+ */
+import { copy } from '../lib/copy';
+import { CONSENT_VERSION, PREREGISTER_FORM } from '../lib/links';
+
+const c = copy.preregister;
+
+const consentRecord = `${c.consents.map((item) => item.label).join(', ')} (문구 ${CONSENT_VERSION})`;
+---
+
+<form
+  class="prereg"
+  action={PREREGISTER_FORM.action}
+  method="post"
+  data-prereg
+  data-error-phone={c.errors.phone}
+  data-error-network={c.errors.network}
+  data-submitting={c.submitting}
+  data-done={c.done}
+>
+  <label class="prereg__sr" for="prereg-phone">{c.phoneLabel}</label>
+  <input
+    class="prereg__phone"
+    id="prereg-phone"
+    type="tel"
+    name={PREREGISTER_FORM.fields.phone}
+    inputmode="tel"
+    autocomplete="tel-national"
+    placeholder={c.phonePlaceholder}
+    maxlength="13"
+    required
+    data-prereg-phone
+  />
+  <input type="hidden" name={PREREGISTER_FORM.fields.consent} value={consentRecord} />
+
+  <fieldset class="prereg__consents">
+    <legend class="prereg__sr">{c.consentLegend}</legend>
+
+    <label class="prereg__check prereg__check--all">
+      <input type="checkbox" data-prereg-all />
+      <span>{c.agreeAll}</span>
+    </label>
+
+    <ul class="prereg__items">
+      {
+        c.consents.map((item) => (
+          <li class="prereg__item">
+            <label class="prereg__check">
+              <input type="checkbox" required data-prereg-item />
+              <span>{item.label}</span>
+            </label>
+            {item.details.length > 0 && (
+              <details class="prereg__details">
+                <summary>{c.viewDetails}</summary>
+                <dl>
+                  {item.details.map((row) => (
+                    <div>
+                      <dt>{row.term}</dt>
+                      <dd>{row.desc}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="prereg__note">{c.note}</p>
+  </fieldset>
+
+  <button class="lm-btn lm-btn--primary prereg__submit" type="submit" data-prereg-submit>
+    {c.submit}
+  </button>
+
+  <p class="prereg__status" role="status" aria-live="polite" data-prereg-status></p>
+</form>
+
+<script>
+  /** 숫자만 남겨 010-1234-5678 꼴로 맞춥니다. 휴대전화번호가 아니면 null. */
+  function formatMobile(value: string): string | null {
+    const digits = value.replace(/\D/g, '');
+    if (!/^01[016789]\d{7,8}$/.test(digits)) return null;
+    return digits.length === 10
+      ? `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`
+      : `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  }
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-prereg]')) {
+    const phone = form.querySelector<HTMLInputElement>('[data-prereg-phone]')!;
+    const all = form.querySelector<HTMLInputElement>('[data-prereg-all]')!;
+    const items = [...form.querySelectorAll<HTMLInputElement>('[data-prereg-item]')];
+    const submit = form.querySelector<HTMLButtonElement>('[data-prereg-submit]')!;
+    const status = form.querySelector<HTMLElement>('[data-prereg-status]')!;
+    const { errorPhone = '', errorNetwork = '', submitting = '' } = form.dataset;
+
+    // 형식이 틀리면 브라우저 기본 검증이 제출을 막고 안내를 띄웁니다.
+    const checkPhone = () => {
+      phone.setCustomValidity(phone.value && !formatMobile(phone.value) ? errorPhone : '');
+    };
+    phone.addEventListener('input', checkPhone);
+
+    all.addEventListener('change', () => {
+      for (const item of items) item.checked = all.checked;
+    });
+    for (const item of items) {
+      item.addEventListener('change', () => {
+        all.checked = items.every((i) => i.checked);
+      });
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formatted = formatMobile(phone.value);
+      if (!formatted) return;
+
+      const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+      body.set(phone.name, formatted);
+
+      const label = submit.textContent;
+      submit.disabled = true;
+      submit.textContent = submitting;
+      status.textContent = '';
+
+      try {
+        // Google 폼은 CORS를 열어 두지 않아 응답을 읽을 수 없습니다(no-cors).
+        // 네트워크 오류가 아니면 접수된 것으로 봅니다.
+        await fetch(form.action, { method: 'POST', mode: 'no-cors', body });
+        form.classList.add('prereg--done');
+        status.textContent = form.dataset.done ?? '';
+      } catch {
+        status.textContent = errorNetwork;
+        submit.disabled = false;
+        submit.textContent = label;
+      }
+    });
+  }
+</script>
+
+<style>
+  .prereg {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: min(440px, 100%);
+    margin-top: 12px;
+    text-align: start;
+  }
+
+  /* 화면에는 숨기고 스크린 리더에는 읽힙니다. */
+  .prereg__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .prereg__phone {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 17px 22px;
+    border: 0;
+    border-radius: 14px;
+    background: rgb(255 255 255 / 6%);
+    box-shadow: inset 0 0 0 1px var(--lm-navy-line);
+    font: inherit;
+    font-size: 17px;
+    line-height: 1.4;
+    color: #ffffff;
+    transition: box-shadow 160ms ease;
+  }
+
+  .prereg__phone::placeholder {
+    color: var(--lm-primary-dim);
+  }
+
+  .prereg__phone:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--lm-primary);
+  }
+
+  .prereg__consents {
+    margin: 0;
+    padding: 18px 20px;
+    border: 0;
+    border-radius: 14px;
+    background: rgb(255 255 255 / 4%);
+  }
+
+  .prereg__check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--lm-primary-soft);
+    cursor: pointer;
+  }
+
+  .prereg__check input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--lm-primary);
+    cursor: pointer;
+  }
+
+  .prereg__check--all {
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    font-weight: 600;
+    font-size: 15px;
+    color: #ffffff;
+  }
+
+  .prereg__items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* '내용 보기'는 항목 줄 오른쪽 끝에 두고, 펼친 내용은 그 아래로 이어집니다. */
+  .prereg__item {
+    position: relative;
+  }
+
+  .prereg__item .prereg__check {
+    padding-inline-end: 72px;
+  }
+
+  .prereg__details summary {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 13px;
+    line-height: 21px;
+    color: var(--lm-primary-dim);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .prereg__details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .prereg__details summary:hover {
+    color: var(--lm-primary-soft);
+  }
+
+  .prereg__details dl {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 10px 0 4px 28px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgb(0 0 0 / 18%);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  .prereg__details dl div {
+    display: grid;
+    grid-template-columns: 6.5em minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .prereg__details dt {
+    color: var(--lm-primary-dim);
+  }
+
+  .prereg__details dd {
+    margin: 0;
+    color: var(--lm-primary-soft);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .prereg__note {
+    margin: 14px 0 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--lm-primary-faint);
+    word-break: keep-all;
+  }
+
+  .prereg__submit {
+    width: 100%;
+    padding: 18px 36px;
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    font-size: 17px;
+    cursor: pointer;
+  }
+
+  .prereg__submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .prereg__status {
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--lm-primary-soft);
+  }
+
+  .prereg__status:empty {
+    display: none;
+  }
+
+  /* 접수되면 입력칸은 접고 완료 안내만 남깁니다. */
+  .prereg--done > :not(.prereg__status) {
+    display: none;
+  }
+
+  .prereg--done .prereg__status {
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: rgb(255 255 255 / 6%);
+    font-size: 16px;
+    color: #ffffff;
+  }
+
+  @media (max-width: 480px) {
+    .prereg__details dl div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+</style>

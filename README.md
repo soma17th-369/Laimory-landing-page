@@ -1,6 +1,6 @@
 # Laimory Landing Page
 
-Laimory를 소개하는 랜딩 페이지입니다. 반응형과 한/영 다국어(i18n)를 기본으로 지원합니다.
+Laimory를 소개하는 랜딩 페이지입니다. 반응형을 기본으로 지원하며, 한국어 페이지 하나만 운영합니다.
 
 화면은 Laimory 랜딩 디자인 시안(v2)을 기반으로 하며, 색·이미지·폰트는 시안을 그대로
 따릅니다. 다만 템플릿처럼 보이게 하는 장식(섹션 머리말 라벨, 단계 번호, 스파클 아이콘,
@@ -27,8 +27,7 @@ npm run preview  # 빌드 결과 미리보기
 ```
 src/
 ├─ pages/
-│  ├─ index.astro            # 한국어 홈 (/)
-│  ├─ en/index.astro         # 영어 홈 (/en/)
+│  ├─ index.astro            # 홈 (/)
 │  ├─ notices/[slug].astro   # 앱 WebView용 공지사항 (/notices/{slug}/)
 │  └─ 404.astro              # 없는 주소 안내
 ├─ content/
@@ -38,8 +37,8 @@ src/
 │  └─ PlainLayout.astro      # 공지사항 · 404용 가벼운 단독 문서 뼈대
 ├─ components/
 │  ├─ Header.astro           # 상단 바 (히어로와 이어지는 네이비)
-│  ├─ Footer.astro           # 마무리 CTA · 약관 6종 링크 · 사업자 정보
-│  ├─ LanguagePicker.astro   # 언어 전환 (KO / EN)
+│  ├─ Footer.astro           # 마무리 사전등록 · 약관 6종 링크 · 사업자 정보
+│  ├─ Preregister.astro      # 사전등록 양식 (전화번호 · 약관 동의 → Google 폼)
 │  ├─ Logo.astro             # Laimory 워드마크 (currentColor)
 │  ├─ Icon.astro             # 아이콘 한 개 렌더링
 │  ├─ SourceBadge.astro      # 데이터 소스 아이콘 배지 (사진 · 캘린더 · 위치 · 알림)
@@ -52,14 +51,12 @@ src/
 │     ├─ Result.astro        # 흩어진 기록 → 타임라인 · 일기 초안 데모
 │     ├─ HowItWorks.astro    # 한 번 연결해두면 알아서 모인다 (설정 화면 한 장)
 │     └─ Privacy.astro       # "어디까지 기록할지는 내가 정합니다"
-├─ i18n/
-│  ├─ ui.ts                  # 모든 문구(한/영) — 콘텐츠는 여기서 수정
-│  └─ utils.ts               # 언어 감지 · 문구 헬퍼
 ├─ lib/
+│  ├─ copy.ts                # 모든 문구 — 콘텐츠는 여기서 수정
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
 │  ├─ sources.ts             # 데이터 소스 4종의 아이콘 · 배지 색
-│  ├─ links.ts               # 앱 다운로드 링크 · 약관 URL
-│  └─ business.ts            # 사업자 정보 (번호·이메일 등 언어 무관한 값)
+│  ├─ links.ts               # 사전등록 Google 폼 · 스토어 주소 · 약관 URL
+│  └─ business.ts            # 사업자 정보 (번호·이메일 등 문구가 아닌 값)
 └─ styles/
    ├─ tokens.css             # 디자인 토큰 (--lm-*)
    └─ global.css             # 공통 클래스 (tokens.css를 가져옴)
@@ -75,14 +72,14 @@ public/
 
 ## 자주 하는 수정
 
-- **문구 변경**: `src/i18n/ui.ts` 의 `ko` / `en` 값 수정. 두 언어가 같은 타입을 쓰므로 한쪽만 고치면 타입 검사에서 걸립니다.
+- **문구 변경**: `src/lib/copy.ts` 의 값 수정.
 - **색상 변경**: `src/styles/tokens.css` 의 `--lm-*` 토큰
-- **앱 다운로드 링크**: `src/lib/links.ts` 의 `DOWNLOAD_URL` — 지금은 푸터로 스크롤만 하는 자리표시자입니다.
+- **사전등록 Google 폼**: `src/lib/links.ts` 의 `PREREGISTER_FORM`. 헤더 · 히어로의 사전등록 버튼은 푸터 양식(`#preregister`)으로 내려갑니다. 동의 문구(`copy.ts`의 `preregister.consents`)를 바꾸면 `CONSENT_VERSION`을 올립니다.
 - **공지사항 추가**: `src/content/notices/{slug}.md` 추가. `docs/notices.md` 참고.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
-- **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/i18n/ui.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
+- **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/lib/copy.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
 - **앱 화면 캡처 교체**: `public/images/app-*.webp` 를 바꾸고, `Hero.astro` · `HowItWorks.astro` 의 `width` · `height` 를 새 파일의 실제 픽셀 크기로 맞춥니다. 목업 안에서는 화면 폭에 맞춰 늘어나므로 비율만 맞으면 됩니다.
-- **섹션 추가/편집**: `src/components/sections/` 에 컴포넌트 추가 후 `pages/index.astro`, `pages/en/index.astro` 에 삽입
+- **섹션 추가/편집**: `src/components/sections/` 에 컴포넌트 추가 후 `pages/index.astro` 에 삽입
 - **아이콘 추가**: 디자인 파일에서 패스를 추출해 `src/lib/icons.ts` 에 추가
 
 ## 배포

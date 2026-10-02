@@ -3,13 +3,8 @@
  * 상단 바. 히어로와 같은 네이비라 경계 없이 이어집니다.
  */
 import Logo from './Logo.astro';
-import LanguagePicker from './LanguagePicker.astro';
-import { getLangFromUrl, useCopy, getLocalizedHome } from '../i18n/utils';
-import { DOWNLOAD_URL, externalLinkAttrs } from '../lib/links';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
-const home = getLocalizedHome(lang);
+import { copy as c } from '../lib/copy';
+import { PREREGISTER_ANCHOR } from '../lib/links';
 
 const links = [
   { href: '#problem', label: c.nav.problem },
@@ -20,7 +15,7 @@ const links = [
 
 <header class="header">
   <div class="header__inner">
-    <a class="header__logo" href={home}>
+    <a class="header__logo" href="/">
       <Logo width={132} />
     </a>
 
@@ -29,13 +24,8 @@ const links = [
     </nav>
 
     <div class="header__end">
-      <LanguagePicker />
-      <a
-        class="lm-btn lm-btn--primary header__cta"
-        href={DOWNLOAD_URL}
-        {...externalLinkAttrs(DOWNLOAD_URL)}
-      >
-        {c.nav.download}
+      <a class="lm-btn lm-btn--primary header__cta" href={PREREGISTER_ANCHOR}>
+        {c.nav.preregister}
       </a>
     </div>
   </div>

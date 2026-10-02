@@ -112,7 +112,7 @@ Secret 이름은 `VERCEL_ORG_ID`이지만 입력값은 프로젝트를 소유한
 4. Branch에서 `main`을 선택하고 다시 **Run workflow**를 누릅니다.
 5. 실행 상세 화면에서 `Build`와 `Deploy production`이 모두 성공하는지 확인합니다.
 6. `Deploy production`의 Job Summary에 표시된 `*.vercel.app` 주소를 엽니다.
-7. 한국어 `/`와 영어 `/en/` 페이지를 모두 확인합니다.
+7. `/` 페이지를 확인하고, `/en/`이 `/`로 이동하는지 확인합니다.
 
 도메인은 이 Vercel Production 주소가 정상 동작하는 것을 확인한 다음 연결합니다.
 
@@ -197,7 +197,7 @@ Domains에 연결되어 있다면 Vercel에서는 더 변경할 것이 없습니
 2. `www.laimory.app`이 **Valid Configuration**인지 확인합니다.
 3. 인증서 발급이 끝나 HTTPS가 활성화될 때까지 기다립니다.
 4. 시크릿 브라우저 창에서 `https://www.laimory.app`을 엽니다.
-5. `https://www.laimory.app/en/`도 엽니다.
+5. `https://www.laimory.app/en/`이 `https://www.laimory.app/`로 이동하는지 확인합니다.
 6. 주소가 다른 도메인으로 바뀌지 않고 `www.laimory.app`으로 유지되는지 확인합니다.
 7. 브라우저 주소창의 자물쇠/사이트 정보에서 인증서 오류가 없는지 확인합니다.
 8. 약관 6개 주소가 모두 열리는지 확인합니다. 확인 목록은 [약관 문서 운영 가이드](terms.md)에 있습니다.

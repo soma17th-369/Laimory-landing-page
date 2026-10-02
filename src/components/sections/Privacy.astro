@@ -5,10 +5,7 @@
  *
  * 목업에 기기 테두리가 들어 있고 배경이 투명해서 이미지를 그대로 얹습니다.
  */
-import { getLangFromUrl, useCopy } from '../../i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
+import { copy as c } from '../../lib/copy';
 ---
 
 <section class="privacy" id="privacy">
