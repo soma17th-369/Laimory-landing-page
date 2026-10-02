@@ -181,7 +181,7 @@ const ko: SiteCopy = {
   preregister: {
     body: '전화번호를 남겨주시면 출시되는 날 문자로 알려드려요.',
     phoneLabel: '휴대전화번호',
-    phonePlaceholder: '휴대전화번호 (010-1234-5678)',
+    phonePlaceholder: '휴대전화번호 (01012345679)',
     consentLegend: '사전등록 약관 동의',
     agreeAll: '전체 동의',
     consents: [
@@ -223,7 +223,7 @@ const ko: SiteCopy = {
     submitting: '등록하는 중…',
     done: '사전등록이 완료됐어요. 출시되면 문자로 알려드릴게요.',
     errors: {
-      phone: '휴대전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)',
+      phone: '휴대전화번호를 정확히 입력해 주세요. (예: 01012345679)',
       network: '등록하지 못했어요. 잠시 후 다시 시도해 주세요.',
     },
   },
