@@ -6,11 +6,8 @@
  * 그리지 않고 이미지를 그대로 얹습니다. 아래는 이미 잘린 그림이라
  * 섹션 바닥에서 폰이 올라오는 모습이 됩니다.
  */
-import { getLangFromUrl, useCopy } from '../../i18n/utils';
-import { DOWNLOAD_URL, externalLinkAttrs } from '../../lib/links';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
+import { copy as c } from '../../lib/copy';
+import { PREREGISTER_ANCHOR } from '../../lib/links';
 ---
 
 <section class="hero">
@@ -22,11 +19,7 @@ const c = useCopy(lang);
       <p class="hero__body">{c.hero.body}</p>
 
       <div class="hero__actions">
-        <a
-          class="lm-btn lm-btn--primary hero__cta"
-          href={DOWNLOAD_URL}
-          {...externalLinkAttrs(DOWNLOAD_URL)}
-        >
+        <a class="lm-btn lm-btn--primary hero__cta" href={PREREGISTER_ANCHOR}>
           {c.hero.ctaPrimary}
         </a>
         <a class="lm-btn lm-btn--ghost hero__cta" href="#how">

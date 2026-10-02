@@ -1,15 +1,13 @@
 ---
 /**
- * 마무리 CTA와 사이트 정보. 시안의 "오늘부터 하루를 남겨보세요" 아래에
- * 약관 6종 링크와 사업자 정보를 그대로 이어 둡니다.
+ * 마무리 사전등록과 사이트 정보. 시안의 "오늘부터 하루를 남겨보세요" 아래에
+ * 사전등록 양식, 약관 6종 링크와 사업자 정보를 이어 둡니다.
  */
 import Logo from './Logo.astro';
-import { getLangFromUrl, useCopy } from '../i18n/utils';
-import { DOWNLOAD_URL, TERMS_URL, externalLinkAttrs } from '../lib/links';
+import Preregister from './Preregister.astro';
+import { copy as c } from '../lib/copy';
+import { PREREGISTER_ANCHOR, TERMS_URL } from '../lib/links';
 import { BUSINESS } from '../lib/business';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
 
 /**
  * 약관 링크는 TERMS_URL의 키 순서를 그대로 따릅니다.
@@ -18,16 +16,11 @@ const c = useCopy(lang);
 const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
 ---
 
-<footer class="footer" id="download">
+<footer class="footer" id={PREREGISTER_ANCHOR.slice(1)}>
   <div class="footer__inner lm-page">
     <h2 class="footer__title">{c.footer.title}</h2>
-    <a
-      class="lm-btn lm-btn--primary footer__cta"
-      href={DOWNLOAD_URL}
-      {...externalLinkAttrs(DOWNLOAD_URL)}
-    >
-      {c.footer.cta}
-    </a>
+    <p class="footer__body">{c.preregister.body}</p>
+    <Preregister />
 
     <span class="footer__logo"><Logo width={150} /></span>
 
@@ -37,7 +30,6 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
           <a href={TERMS_URL[key]} hreflang="ko">{c.footer.links[key]}</a>
         ))}
       </nav>
-      {c.footer.legalNote && <p class="footer__legal-note">{c.footer.legalNote}</p>}
       <address class="footer__business" aria-label={c.footer.business.label}>
         <span>{c.footer.business.ownerLabel} {c.footer.business.owner}</span>
         <span>{c.footer.business.registrationLabel} {BUSINESS.registrationNumber}</span>
@@ -78,10 +70,13 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     text-wrap: pretty;
   }
 
-  .footer__cta {
-    margin-top: 12px;
-    padding: 18px 36px;
-    font-size: 17px;
+  .footer__body {
+    margin: -8px 0 0;
+    text-align: center;
+    font-size: clamp(15px, 1.3vw, 17px);
+    line-height: 1.7;
+    color: var(--lm-primary-soft);
+    word-break: keep-all;
   }
 
   .footer__logo {
@@ -118,13 +113,6 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     color: #ffffff;
     text-decoration: underline;
     text-underline-offset: 0.2em;
-  }
-
-  .footer__legal-note {
-    margin: 0;
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--lm-primary-faint);
   }
 
   /* 사업자 정보 ─ 두 열로 나눠 놓고, 좁은 화면에서는 한 열로 쌓습니다. */

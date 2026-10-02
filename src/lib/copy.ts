@@ -1,15 +1,6 @@
 /**
  * 화면에 보이는 모든 문구는 이 파일에서 관리합니다.
- * 새 언어를 추가하려면 copy 객체에 키를 하나 더 넣고
- * astro.config.mjs의 locales 배열에도 추가하세요.
  */
-
-export const languages = {
-  ko: '한국어',
-  en: 'English',
-} as const;
-
-export const defaultLang = 'ko';
 
 /**
  * 데이터 소스 한 종(사진 · 캘린더 · 위치 · 알림)의 문구.
@@ -27,7 +18,7 @@ export interface SiteCopy {
     /** SNS 공유 이미지(og:image)의 접근성 설명 */
     ogImageAlt: string;
   };
-  nav: { problem: string; how: string; privacy: string; download: string };
+  nav: { problem: string; how: string; privacy: string; preregister: string };
   hero: {
     titleLine1: string;
     titleLine2: string;
@@ -66,9 +57,26 @@ export interface SiteCopy {
     /** 폰 목업(위치 기록 화면 캡처)의 접근성 설명 */
     alt: string;
   };
+  /** 푸터의 사전등록 양식. 헤더·히어로의 사전등록 버튼이 이곳으로 내려옵니다. */
+  preregister: {
+    body: string;
+    phoneLabel: string;
+    phonePlaceholder: string;
+    /** 동의 항목 묶음의 접근성 레이블 */
+    consentLegend: string;
+    agreeAll: string;
+    /** 필수 동의 항목. details는 펼쳐 보는 고지 내용(용어 · 설명)입니다. */
+    consents: { label: string; details: { term: string; desc: string }[] }[];
+    viewDetails: string;
+    /** 동의 철회 · 삭제 요청 안내 */
+    note: string;
+    submit: string;
+    submitting: string;
+    done: string;
+    errors: { phone: string; network: string };
+  };
   footer: {
     title: string;
-    cta: string;
     credit: string;
     /** 약관 링크 묶음의 접근성 레이블 */
     legal: string;
@@ -81,9 +89,7 @@ export interface SiteCopy {
       crossBorderTransferConsent: string;
       locationBasedServiceTerms: string;
     };
-    /** 약관이 한국어로만 제공된다는 안내. 한국어판에는 불필요해 빈 문자열입니다. */
-    legalNote: string;
-    /** 사업자 정보. 번호·이메일 등 언어 무관한 값은 lib/business.ts에 있습니다. */
+    /** 사업자 정보. 번호·이메일 등 문구가 아닌 값은 lib/business.ts에 있습니다. */
     business: {
       label: string;
       ownerLabel: string;
@@ -111,14 +117,14 @@ const ko: SiteCopy = {
     problem: '왜 필요한가요',
     how: '사용 방법',
     privacy: '개인정보',
-    download: '앱 다운로드',
+    preregister: '사전등록',
   },
 
   hero: {
     titleLine1: '오늘 뭐 했는지,',
     titleLine2: '라이모리가 한눈에 정리해드려요',
     body: '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인을 만들어드려요.',
-    ctaPrimary: '앱 다운로드',
+    ctaPrimary: '사전등록',
     ctaSecondary: '어떻게 작동하나요',
     deviceAlt: 'Laimory 앱의 오늘의 타임라인 화면',
   },
@@ -172,9 +178,58 @@ const ko: SiteCopy = {
     alt: 'Laimory 앱의 위치 기록 화면. 수집된 장소 가운데 보낼 것만 고를 수 있습니다.',
   },
 
+  preregister: {
+    body: '전화번호를 남겨주시면 출시되는 날 문자로 알려드려요.',
+    phoneLabel: '휴대전화번호',
+    phonePlaceholder: '휴대전화번호 (010-1234-5678)',
+    consentLegend: '사전등록 약관 동의',
+    agreeAll: '전체 동의',
+    consents: [
+      { label: '[필수] 만 14세 이상입니다', details: [] },
+      {
+        label: '[필수] 개인정보 수집·이용 동의',
+        details: [
+          { term: '수집 목적', desc: '라이모리 출시 알림 문자 발송' },
+          { term: '수집 항목', desc: '휴대전화번호 (신청 일시와 동의 내용은 자동으로 기록)' },
+          { term: '보유·이용 기간', desc: '출시 알림 발송 후 지체 없이 파기' },
+          {
+            term: '동의 거부',
+            desc: '동의를 거부할 수 있으며, 거부하면 사전등록을 신청할 수 없습니다.',
+          },
+        ],
+      },
+      {
+        label: '[필수] 개인정보 국외 이전 동의',
+        details: [
+          { term: '이전받는 자', desc: 'Google LLC (googlekrsupport@google.com)' },
+          { term: '이전 국가', desc: '미국 및 Google이 데이터센터를 운영하는 국가' },
+          { term: '이전 일시·방법', desc: '사전등록 신청 시 암호화된 통신으로 전송' },
+          { term: '이전 항목', desc: '휴대전화번호, 신청 일시, 동의 내용' },
+          {
+            term: '이용 목적',
+            desc: '사전등록 신청 정보의 저장·관리 (Google Forms · Google 스프레드시트)',
+          },
+          { term: '보유·이용 기간', desc: '출시 알림 발송 후 지체 없이 파기' },
+          {
+            term: '동의 거부',
+            desc: '동의를 거부할 수 있으며, 거부하면 사전등록을 신청할 수 없습니다.',
+          },
+        ],
+      },
+    ],
+    viewDetails: '내용 보기',
+    note: '동의 철회와 삭제 요청은 contact@laimory.app으로 보내주세요.',
+    submit: '사전등록',
+    submitting: '등록하는 중…',
+    done: '사전등록이 완료됐어요. 출시되면 문자로 알려드릴게요.',
+    errors: {
+      phone: '휴대전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)',
+      network: '등록하지 못했어요. 잠시 후 다시 시도해 주세요.',
+    },
+  },
+
   footer: {
     title: '오늘부터 하루를 남겨보세요.',
-    cta: '앱 다운로드',
     legal: '약관 및 정책',
     links: {
       termsOfService: '이용약관',
@@ -184,7 +239,6 @@ const ko: SiteCopy = {
       crossBorderTransferConsent: '국외 이전 동의',
       locationBasedServiceTerms: '위치기반서비스 이용약관',
     },
-    legalNote: '',
     business: {
       label: '사업자 정보',
       ownerLabel: '사업자명 · 대표',
@@ -201,108 +255,4 @@ const ko: SiteCopy = {
   },
 };
 
-const en: SiteCopy = {
-  meta: {
-    title: 'Laimory - the AI that remembers your life',
-    description:
-      'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day.',
-    ogImageAlt: 'Laimory logo on a white background',
-  },
-
-  nav: {
-    problem: 'Why Laimory',
-    how: 'How it works',
-    privacy: 'Privacy',
-    download: 'Download',
-  },
-
-  hero: {
-    titleLine1: 'Everything you did today,',
-    titleLine2: 'laid out at a glance',
-    body: 'Laimory gathers your photos, schedule and movements, and AI turns them into a timeline of the day.',
-    ctaPrimary: 'Download the app',
-    ctaSecondary: 'See how it works',
-    deviceAlt: 'The daily timeline screen of the Laimory app',
-  },
-
-  problem: {
-    title: 'Memories fade, and the writing keeps getting put off.',
-    panels: [
-      {
-        title: 'Remember what you did last Tuesday?',
-        body: 'A busy day is hard to piece back together from the start.',
-        alt: 'A person on the evening subway home, looking out at the sunset',
-      },
-      {
-        title: 'Stuck in front of a blank journal page?',
-        body: 'By the time you sort out where you went and who you met, the writing gets put off again.',
-        alt: 'A person at night holding a phone with an empty journal screen',
-      },
-    ],
-    bridge: 'Laimory gathers the scattered traces of your day, photos, calendar, GPS and more, into a single timeline.',
-  },
-
-  result: {
-    titleLine1: 'Scattered moments,',
-    titleLine2: 'turned into a day you can read again.',
-    body: 'Where you were and what you did, kept in order with the photos you took.',
-    demoLabel: 'Example of scattered records becoming a timeline of the day',
-    sources: [
-      { title: '1 photo', meta: '12:00 · Mapo' },
-      { title: 'Team work', meta: '13:19-18:30' },
-      { title: 'Yongin → Mapo', meta: '09:13 · 46.1km' },
-      { title: 'Payment alert', meta: 'Bokseonggak · 17:25' },
-    ],
-  },
-
-  how: {
-    title: 'Connect once, and it gathers on its own.',
-    body: 'Pick what you want at the start: photos, calendar, places, activity. After that Laimory sorts out each day into a timeline.',
-    alt: 'The data source settings screen of the Laimory app',
-  },
-
-  privacy: {
-    titleLine1: 'How much gets recorded',
-    titleLine2: 'is up to me.',
-    points: [
-      { label: 'Before it is built', body: 'You see what will go in, and can leave anything out' },
-      {
-        label: 'Once it is stored',
-        body: 'It is kept in a form that does not identify who wrote it, and can be deleted at any time',
-      },
-    ],
-    alt: 'The location records screen of the Laimory app, where you choose which places to send.',
-  },
-
-  footer: {
-    title: 'Start keeping your days, from today.',
-    cta: 'Download the app',
-    legal: 'Legal',
-    links: {
-      termsOfService: 'Terms of Service',
-      privacyPolicy: 'Privacy Policy',
-      sensitiveInformationConsent: 'Sensitive Information Consent',
-      thirdPartyProvisionConsent: 'Third-Party Provision Consent',
-      crossBorderTransferConsent: 'Cross-Border Transfer Consent',
-      locationBasedServiceTerms: 'Location-Based Service Terms',
-    },
-    legalNote: 'The legal documents are provided in Korean.',
-    business: {
-      label: 'Business information',
-      ownerLabel: 'Business name · Representative',
-      owner: 'DongGeon Lee',
-      registrationLabel: 'Business registration number',
-      addressLabel: 'Address',
-      address: '85 Jibeom-ro 17-gil, Suseong-gu, Daegu, Republic of Korea',
-      lbsLabel: 'Location-based service report number',
-      privacyOfficerLabel: 'Privacy officer',
-      privacyOfficer: 'DongGeon Lee',
-      contactLabel: 'Contact',
-    },
-    credit: 'Team 369 · Laimory',
-  },
-};
-
-export const copy = { ko, en } as const;
-
-export type Lang = keyof typeof copy;
+export const copy = ko;

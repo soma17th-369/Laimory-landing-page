@@ -5,10 +5,7 @@
  */
 import SourceBadge from '../SourceBadge.astro';
 import { sourceLooks } from '../../lib/sources';
-import { getLangFromUrl, useCopy } from '../../i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
+import { copy as c } from '../../lib/copy';
 
 /** 기록 카드에 겹쳐 보이는 사진 조각 두 장. */
 const frags = ['/images/frag-1.webp', '/images/frag-2.webp'];

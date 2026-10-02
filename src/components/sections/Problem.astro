@@ -4,10 +4,7 @@
  * 사진 두 장(퇴근길 · 밤의 빈 일기)을 나란히 깔고 질문을 얹습니다.
  * 넓은 화면에서는 한 무대에 두 장이 붙어 있고, 좁은 화면에서는 사진마다 질문이 붙어 세로로 쌓입니다.
  */
-import { getLangFromUrl, useCopy } from '../../i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
+import { copy as c } from '../../lib/copy';
 
 /**
  * 퇴근길 사진은 시안대로 좌우를 뒤집어 인물이 이음새 반대편을 보게 합니다.

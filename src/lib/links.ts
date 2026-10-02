@@ -1,21 +1,37 @@
 /**
  * 바깥으로 나가는 링크를 한곳에 모아 둡니다.
- *
- * DOWNLOAD_URL 하나만 바꾸면 헤더 · 히어로 · 푸터의
- * '앱 다운로드' 버튼이 모두 함께 바뀝니다.
  */
+
+/** 스토어 주소. 지금은 구조화 데이터(Layout.astro의 JSON-LD)에서만 씁니다. */
 export const DOWNLOAD_URL =
   'https://play.google.com/store/apps/details?id=com.soma369.laimory';
 
-/** 외부 주소는 새 탭으로 엽니다. 같은 페이지 앵커(#...)는 그대로 둡니다. */
-export const isExternal = (href: string) => /^https?:\/\//.test(href);
+/** 헤더 · 히어로의 사전등록 버튼이 내려가는 푸터 양식의 앵커. */
+export const PREREGISTER_ANCHOR = '#preregister';
 
 /**
- * 외부 링크에 붙일 속성. 새 탭으로 열고, 여는 쪽 창을 넘겨주지 않습니다.
- * 앵커 링크에는 아무것도 붙지 않도록 undefined를 돌려줍니다.
+ * 사전등록 신청을 받는 Google 폼.
+ *
+ * 푸터 양식이 입력값을 이 폼의 응답 주소(formResponse)로 바로 보내고,
+ * 응답은 폼에 연결한 Google 스프레드시트에 쌓입니다.
+ *
+ * 값은 폼 편집 화면 ⋮ → '미리 채워진 링크 가져오기'로 만든 주소에서 옮겨 옵니다.
+ *   https://docs.google.com/forms/d/e/{폼 ID}/viewform?usp=pp_url&entry.{번호}=...
+ * - phone:   전화번호를 받는 단답형 문항
+ * - consent: 동의 내용을 남기는 단답형 문항 (어떤 문구에 동의했는지 증빙)
+ *
+ * 폼은 로그인 없이 응답할 수 있어야 하고, 이메일 주소를 수집하지 않아야 합니다.
+ * 동의 문구(lib/copy.ts의 preregister.consents)를 바꾸면 CONSENT_VERSION도 올리세요.
  */
-export const externalLinkAttrs = (href: string) =>
-  isExternal(href) ? { target: '_blank', rel: 'noopener' } : {};
+export const PREREGISTER_FORM = {
+  action: 'https://docs.google.com/forms/d/e/1FAIpQLSdcjMAYcjH9bj6P0mIqxbGNiUtRj2gT6rxf99_At3I9IywUIA/formResponse',
+  fields: {
+    phone: 'entry.1035407657',
+    consent: 'entry.1138571508',
+  },
+} as const;
+
+export const CONSENT_VERSION = '2026-10-02';
 
 /**
  * 약관 문서 주소.

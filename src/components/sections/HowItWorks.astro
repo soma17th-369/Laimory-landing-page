@@ -10,10 +10,7 @@
  * 목업 왼쪽 · 글 오른쪽이라 좌우가 번갈아 놓입니다.
  * 좁은 화면에서는 글 아래에 목업이 가운데로 놓입니다.
  */
-import { getLangFromUrl, useCopy } from '../../i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const c = useCopy(lang);
+import { copy as c } from '../../lib/copy';
 
 /**
  * 설정 화면을 담은 폰 목업. 기기 테두리까지 그림에 들어 있고 배경이
