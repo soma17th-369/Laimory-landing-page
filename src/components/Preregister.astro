@@ -8,6 +8,7 @@
  *
  * 동의 체크박스에는 name이 없어 폼으로 전송되지 않고, required로 제출만 막습니다.
  * 어떤 문구에 동의했는지는 숨은 consent 값으로 함께 남깁니다.
+ * 광고 링크로 들어왔다면 주소의 utm_* 값도 숨은 칸에 채워 함께 보냅니다.
  */
 import { copy } from '../lib/copy';
 import { CONSENT_VERSION, PREREGISTER_FORM } from '../lib/links';
@@ -41,6 +42,11 @@ const consentRecord = `${c.consents.map((item) => item.label).join(', ')} (문�
     data-prereg-phone
   />
   <input type="hidden" name={PREREGISTER_FORM.fields.consent} value={consentRecord} />
+  {
+    Object.entries(PREREGISTER_FORM.fields.utm).map(([key, name]) => (
+      <input type="hidden" name={name} data-prereg-utm={key} />
+    ))
+  }
 
   <fieldset class="prereg__consents">
     <legend class="prereg__sr">{c.consentLegend}</legend>
@@ -96,7 +102,36 @@ const consentRecord = `${c.consents.map((item) => item.label).join(', ')} (문�
       : `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
   }
 
+  const UTM_STORAGE_KEY = 'lm-utm';
+
+  /**
+   * 광고 링크로 들어온 주소의 utm_* 값.
+   * 약관을 보고 돌아오거나 로고를 눌러 주소에서 값이 빠져도 같은 탭에서는 유지합니다.
+   */
+  function readUtm(): Record<string, string> {
+    const fromUrl = Object.fromEntries(
+      [...new URLSearchParams(location.search)]
+        .filter(([key]) => key.startsWith('utm_'))
+        .map(([key, value]) => [key, value.slice(0, 100)]),
+    );
+    try {
+      if (Object.keys(fromUrl).length > 0) {
+        sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(fromUrl));
+        return fromUrl;
+      }
+      return JSON.parse(sessionStorage.getItem(UTM_STORAGE_KEY) ?? '{}');
+    } catch {
+      return fromUrl;
+    }
+  }
+
+  const utm = readUtm();
+
   for (const form of document.querySelectorAll<HTMLFormElement>('[data-prereg]')) {
+    for (const input of form.querySelectorAll<HTMLInputElement>('[data-prereg-utm]')) {
+      input.value = utm[input.dataset.preregUtm ?? ''] ?? '';
+    }
+
     const phone = form.querySelector<HTMLInputElement>('[data-prereg-phone]')!;
     const all = form.querySelector<HTMLInputElement>('[data-prereg-all]')!;
     const items = [...form.querySelectorAll<HTMLInputElement>('[data-prereg-item]')];
