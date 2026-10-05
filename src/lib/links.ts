@@ -19,6 +19,7 @@ export const PREREGISTER_ANCHOR = '#preregister';
  *   https://docs.google.com/forms/d/e/{폼 ID}/viewform?usp=pp_url&entry.{번호}=...
  * - phone:   전화번호를 받는 단답형 문항
  * - consent: 동의 내용을 남기는 단답형 문항 (어떤 문구에 동의했는지 증빙)
+ * - utm:     광고 링크의 utm_* 값을 남기는 단답형 문항 5개 (광고를 거치지 않으면 빈 값)
  *
  * 폼은 로그인 없이 응답할 수 있어야 하고, 이메일 주소를 수집하지 않아야 합니다.
  * 동의 문구(lib/copy.ts의 preregister.consents)를 바꾸면 CONSENT_VERSION도 올리세요.
@@ -28,10 +29,17 @@ export const PREREGISTER_FORM = {
   fields: {
     phone: 'entry.1035407657',
     consent: 'entry.1138571508',
+    utm: {
+      utm_source: 'entry.147533875',
+      utm_medium: 'entry.1069047158',
+      utm_campaign: 'entry.1930206337',
+      utm_id: 'entry.1419074956',
+      utm_content: 'entry.883806138',
+    },
   },
 } as const;
 
-export const CONSENT_VERSION = '2026-10-02';
+export const CONSENT_VERSION = '2026-10-05';
 
 /**
  * 약관 문서 주소.
