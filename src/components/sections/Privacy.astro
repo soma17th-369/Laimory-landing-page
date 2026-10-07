@@ -1,38 +1,115 @@
 ---
 /**
  * "어디까지 기록할지는 내가 정합니다."
- * 왼쪽 목업은 기록마다 무엇을 담을지 고르는 화면 세 장(위치를 앞에, 사진 · 알림을 양옆 뒤에),
- * 오른쪽은 약속 두 가지입니다.
+ * 왼쪽은 폰 세 장(사진 · 위치 · 알림 고르기 화면), 오른쪽은 약속 두 가지입니다.
  *
- * 목업에 기기 테두리가 들어 있고 배경이 투명해서 이미지를 그대로 얹습니다.
+ * 세 폰은 부채꼴로 겹쳐 있고, 화면에 보이는 동안 한 장씩 돌아가며 가운데 앞으로 나옵니다.
+ * 앞에 나온 화면에서는 손가락 표시가 항목을 짚고, 그때마다 선택이 켜지거나 꺼집니다.
+ * '만들기 전에 무엇이 담길지 확인하고 뺄 수 있다'는 약속을 움직임으로 보여 주는 장식이라
+ * 누르는 곳은 없습니다. 움직임 줄이기를 켰으면 처음 모습 그대로 멈춰 있습니다.
+ *
+ * 사진 화면은 HTML로 다시 그렸고, 위치 · 알림 화면은 앱 캡처 위에 선택 테두리를 덧그립니다.
  */
+import Icon from '../Icon.astro';
 import { copy as c } from '../../lib/copy';
 
+const p = c.privacy.picker;
+
+/** 사진 칸 그림. 앱 화면 캡처에서 한 칸씩 잘라 낸 것이라 체크 표시가 그림에 들어 있고, HTML 체크 표시가 그 위를 덮습니다. */
+let n = 0;
+const groups = p.groups.map((group) => ({
+  ...group,
+  photos: group.photos.map((photo) => ({ ...photo, src: `/images/privacy-pick-${++n}.webp` })),
+}));
+const total = n;
+const pickedCount = p.groups.flatMap((g) => g.photos).filter((ph) => ph.picked).length;
+
 /**
- * 원본 캡처(376×916)는 내용 아래가 비어 있어 위쪽 640px만 잘라 썼습니다.
- * 배열 순서가 그리는 순서라, 앞에 보일 위치 화면을 마지막에 둡니다.
+ * 위치 · 알림 화면 캡처(376×720, 기기 테두리는 불투명하게 바꿈)와 그 위 카드 자리.
+ * x · y · w · h는 캡처의 px이고, picked는 캡처에 그려진 처음 선택 상태입니다.
  */
 const shots = [
-  { key: 'photos', src: '/images/privacy-photos.webp', alt: c.privacy.alts.photos },
-  { key: 'notifications', src: '/images/privacy-notifications.webp', alt: c.privacy.alts.notifications },
-  { key: 'places', src: '/images/privacy-places.webp', alt: c.privacy.alts.places },
+  {
+    key: 'places',
+    src: '/images/privacy-places.webp',
+    cards: [
+      { x: 28, y: 310, w: 320, h: 58, picked: true },
+      { x: 28, y: 382, w: 320, h: 58, picked: false },
+      { x: 28, y: 487, w: 320, h: 75, picked: true },
+      { x: 28, y: 568, w: 320, h: 75, picked: true },
+      { x: 28, y: 649, w: 320, h: 72, picked: false },
+    ],
+  },
+  {
+    key: 'notifications',
+    src: '/images/privacy-notifications.webp',
+    cards: [
+      { x: 28, y: 155, w: 320, h: 57, picked: true },
+      { x: 28, y: 270, w: 320, h: 57, picked: false },
+    ],
+  },
 ];
 ---
 
 <section class="privacy" id="privacy">
   <div class="privacy__inner lm-page">
-    <div class="privacy__device">
+    <div class="privacy__device" role="img" aria-label={c.privacy.deviceLabel} data-phones>
+      <!-- 사진 고르기 화면(HTML). 처음에는 가운데 앞에 놓입니다. -->
+      <div class="phone" data-phone="photos" data-pos="front" aria-hidden="true">
+        <div class="pick__screen">
+          <span class="pick__camera"></span>
+          <div class="pick__bar">
+            <Icon name="caretLeft" size={18} />
+            <span class="pick__date">{p.date}</span>
+            <Icon name="dots" size={18} />
+          </div>
+
+          {
+            groups.map((group) => (
+              <>
+                <p class="pick__group">{group.date}</p>
+                <ul class="pick__grid">
+                  {group.photos.map((photo) => (
+                    <li class="pick__tile" data-pick data-picked={photo.picked ? 'true' : 'false'}>
+                      <img src={photo.src} alt="" width="102" height="102" loading="lazy" decoding="async" />
+                      <span class="pick__check">
+                        <svg viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="m7 12.5 3.2 3.2L17 9"
+                            stroke="currentColor"
+                            stroke-width="2.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                        </svg>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ))
+          }
+
+          <p class="pick__count">
+            <span class="pick__num"><b data-pick-count>{pickedCount}</b> / {total}</span>
+          </p>
+        </div>
+        <span class="phone__tap" data-tap></span>
+      </div>
+
       {
-        shots.map((shot) => (
-          <img
-            class={`privacy__phone privacy__phone--${shot.key}`}
-            src={shot.src}
-            alt={shot.alt}
-            width="376"
-            height="640"
-            loading="lazy"
-            decoding="async"
-          />
+        shots.map((shot, i) => (
+          <div class="phone" data-phone={shot.key} data-pos={i === 0 ? 'left' : 'right'} aria-hidden="true">
+            <img class="phone__shot" src={shot.src} alt="" width="376" height="720" loading="lazy" decoding="async" />
+            {shot.cards.map((card) => (
+              <span
+                class="mark"
+                style={`--x: ${card.x}; --y: ${card.y}; --w: ${card.w}; --h: ${card.h}`}
+                data-pick
+                data-picked={card.picked ? 'true' : 'false'}
+              />
+            ))}
+            <span class="phone__tap" data-tap />
+          </div>
         ))
       }
     </div>
@@ -55,7 +132,102 @@ const shots = [
   </div>
 </section>
 
+<script>
+  /*
+   * 고르기 애니메이션. 화면에 보이는 동안만 돕니다.
+   * 앞 폰에서 항목 두 개를 차례로 짚어 선택을 바꾸고, 다음 폰이 앞으로 나옵니다.
+   * 폰마다 짚는 순서에 같은 항목이 두 번씩 들어 있어, 몇 바퀴 돌면 처음 상태로 돌아옵니다.
+   */
+  const stage = document.querySelector<HTMLElement>('[data-phones]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (stage && !reduce && 'IntersectionObserver' in window) {
+    const ring = ['photos', 'places', 'notifications'];
+    const phones = Object.fromEntries(
+      ring.map((key) => [key, stage.querySelector<HTMLElement>(`[data-phone="${key}"]`)!]),
+    );
+    /** 짚는 항목 번호(0부터). 사진: 책상 담기 → 건물 빼기 → 침실 담기 → 거실 빼기 */
+    const order: Record<string, number[]> = {
+      photos: [2, 4, 5, 0],
+      places: [1, 3, 4, 0],
+      notifications: [1, 0],
+    };
+    const done: Record<string, number> = { photos: 0, places: 0, notifications: 0 };
+    let front = 0;
+
+    let visible = false;
+    let wake: (() => void) | null = null;
+    const whenVisible = () => (visible ? Promise.resolve() : new Promise<void>((r) => (wake = r)));
+    const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms));
+
+    /** 앞 폰을 정하고 나머지를 왼쪽 뒤 · 오른쪽 뒤에 나눠 둡니다. */
+    const arrange = () => {
+      ring.forEach((key, i) => {
+        const rel = (i - front + ring.length) % ring.length;
+        phones[key].dataset.pos = rel === 0 ? 'front' : rel === 1 ? 'left' : 'right';
+      });
+    };
+
+    const tap = async (phone: HTMLElement, item: HTMLElement) => {
+      const dot = phone.querySelector<HTMLElement>('[data-tap]');
+      if (dot) {
+        const a = item.getBoundingClientRect();
+        const b = phone.getBoundingClientRect();
+        dot.style.left = `${a.left - b.left + a.width / 2}px`;
+        dot.style.top = `${a.top - b.top + a.height / 2}px`;
+        dot.classList.remove('is-tapping');
+        void dot.offsetWidth; // 같은 애니메이션을 다시 시작하려면 한 번 끊어 줍니다.
+        dot.classList.add('is-tapping');
+      }
+      await sleep(360); // 손가락이 눌리는 순간(탭 애니메이션의 40% 지점)에 바뀝니다.
+      item.dataset.picked = item.dataset.picked === 'true' ? 'false' : 'true';
+      const count = phone.querySelector('[data-pick-count]');
+      if (count) {
+        count.textContent = String(phone.querySelectorAll('[data-pick][data-picked="true"]').length);
+      }
+    };
+
+    const run = async () => {
+      for (;;) {
+        await whenVisible();
+        await sleep(600);
+        const key = ring[front];
+        const phone = phones[key];
+        const items = [...phone.querySelectorAll<HTMLElement>('[data-pick]')];
+        for (let k = 0; k < 2; k++) {
+          await whenVisible();
+          const list = order[key];
+          await tap(phone, items[list[done[key]++ % list.length]]);
+          await sleep(1100);
+        }
+        await whenVisible();
+        front = (front + 1) % ring.length;
+        arrange();
+        await sleep(900);
+      }
+    };
+
+    new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && wake) {
+          wake();
+          wake = null;
+        }
+      },
+      { threshold: 0.4 },
+    ).observe(stage);
+
+    run();
+  }
+</script>
+
 <style>
+  /* 기울어진 뒤 폰 모서리가 좁은 화면에서 옆으로 삐져나가 가로 스크롤이 생기지 않게 합니다. */
+  .privacy {
+    overflow-x: clip;
+  }
+
   .privacy__inner {
     box-sizing: border-box;
     display: flex;
@@ -64,43 +236,285 @@ const shots = [
     padding: var(--lm-section-y) var(--lm-gutter);
   }
 
-  /* 세 폰을 부채꼴로 겹쳐 놓는 자리. 캡처가 1배 크기라 한 장이 376px을 넘지 않게 둡니다. */
+  /*
+   * 세 폰을 부채꼴로 겹쳐 놓는 자리. 캡처가 1배 크기라 한 장이 376px을 넘지 않게 둡니다.
+   * 아래쪽 흐림은 폰마다가 아니라 묶음 전체에 한 번 줘서, 앞 폰 너머로 뒤 폰이 비치지 않게 합니다.
+   */
   .privacy__device {
     position: relative;
     flex-shrink: 0;
     width: min(560px, 100%);
-    aspect-ratio: 560 / 620;
+    aspect-ratio: 560 / 640;
+    -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 94%);
+    mask-image: linear-gradient(to bottom, #000 68%, transparent 94%);
   }
 
-  /*
-   * 목업에 기기 테두리가 들어 있어 그림자만 더합니다.
-   * 잘라 낸 아래쪽은 흐리게 풀어 화면이 이어진다는 걸 남깁니다.
-   */
-  .privacy__phone {
+  /* 폰 한 장. --u는 캡처의 1px(폰 폭 376 기준)이라 안쪽을 그림과 같은 비율로 그립니다. */
+  .phone {
+    --u: calc(100cqw / 376);
     position: absolute;
-    display: block;
     width: 54%;
-    height: auto;
+    aspect-ratio: 376 / 720;
+    container-type: inline-size;
     filter: drop-shadow(0 18px 40px rgb(31 28 23 / 18%));
-    -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+    transition:
+      left 800ms cubic-bezier(0.3, 0.7, 0.2, 1),
+      top 800ms cubic-bezier(0.3, 0.7, 0.2, 1),
+      transform 800ms cubic-bezier(0.3, 0.7, 0.2, 1);
   }
 
-  .privacy__phone--photos {
+  .phone[data-pos='front'] {
+    z-index: 3;
+    top: 0;
+    left: 23%;
+  }
+
+  .phone[data-pos='left'] {
+    z-index: 1;
     top: 6%;
     left: 0;
     transform: rotate(-8deg);
   }
 
-  .privacy__phone--notifications {
+  .phone[data-pos='right'] {
+    z-index: 2;
     top: 6%;
-    right: 0;
+    left: 46%;
     transform: rotate(8deg);
   }
 
-  .privacy__phone--places {
-    top: 0;
-    left: 23%;
+  .phone__shot {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 위치 · 알림 카드의 선택 테두리. 캡처에 그려진 테두리(파랑 · 회색) 위를 덮습니다. */
+  .mark {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: calc(var(--y) * var(--u));
+    width: calc(var(--w) * var(--u));
+    height: calc(var(--h) * var(--u));
+    border-radius: calc(14 * var(--u));
+    box-shadow: inset 0 0 0 calc(2 * var(--u)) var(--lm-outline-2);
+    transition:
+      box-shadow 220ms ease,
+      background-color 220ms ease;
+  }
+
+  .mark[data-picked='true'] {
+    background: rgb(135 155 211 / 8%);
+    box-shadow: inset 0 0 0 calc(2 * var(--u)) var(--lm-primary);
+    animation: mark-pop 420ms ease-out;
+  }
+
+  @keyframes mark-pop {
+    from {
+      box-shadow:
+        inset 0 0 0 calc(2 * var(--u)) var(--lm-primary),
+        0 0 0 calc(6 * var(--u)) rgb(135 155 211 / 35%);
+    }
+  }
+
+  /* ── 사진 고르기 화면: 폰 테두리(뒤 폰 캡처와 같은 회색 · 두께 8 · 모서리 30)와 화면 ── */
+  .pick__screen {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    /* 캡처에서 사진 칸은 폰 왼쪽 끝에서 28px(테두리 8 + 여백 20)부터 시작합니다. */
+    padding: 0 calc(22 * var(--u)) 0 calc(20 * var(--u));
+    border: calc(8 * var(--u)) solid #b7b7b4;
+    border-bottom: 0;
+    border-radius: calc(30 * var(--u)) calc(30 * var(--u)) 0 0;
+    background: var(--lm-paper);
+    overflow: hidden;
+    font-family: var(--lm-font-sans);
+    color: var(--lm-ink);
+  }
+
+  .pick__camera {
+    position: absolute;
+    top: calc(8 * var(--u));
+    left: 50%;
+    width: calc(24 * var(--u));
+    height: calc(24 * var(--u));
+    border-radius: 999px;
+    background: #1f1c18;
+    transform: translateX(-50%);
+  }
+
+  .pick__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: calc(40 * var(--u));
+    margin: calc(45 * var(--u)) calc(-12 * var(--u)) 0 calc(-8 * var(--u));
+  }
+
+  .pick__bar :global(svg) {
+    width: calc(22 * var(--u));
+    height: calc(22 * var(--u));
+  }
+
+  .pick__date {
+    font-weight: 600;
+    font-size: calc(15 * var(--u));
+  }
+
+  .pick__group {
+    margin: calc(17 * var(--u)) 0 calc(11 * var(--u));
+    font-size: calc(13.5 * var(--u));
+    line-height: calc(20 * var(--u));
+    color: var(--lm-ink-muted);
+  }
+
+  .pick__group:not(:nth-of-type(1)) {
+    margin-top: calc(15 * var(--u));
+  }
+
+  .pick__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, calc(102 * var(--u)));
+    gap: calc(6 * var(--u));
+  }
+
+  .pick__tile {
+    position: relative;
+    width: calc(102 * var(--u));
+    height: calc(102 * var(--u));
+    border-radius: calc(10 * var(--u));
+    overflow: hidden;
+  }
+
+  .pick__tile img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition:
+      opacity 200ms ease,
+      filter 200ms ease;
+  }
+
+  /* 담긴 사진은 테두리로, 뺀 사진은 흐리게 */
+  .pick__tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 calc(2.5 * var(--u)) var(--lm-primary);
+    transition: opacity 200ms ease;
+  }
+
+  .pick__tile[data-picked='false']::after {
+    opacity: 0;
+  }
+
+  .pick__tile[data-picked='false'] img {
+    opacity: 0.5;
+    filter: grayscale(0.4);
+  }
+
+  /* 체크 표시 ─ 그림 속 체크(지름 20, 중심 86·16)를 덮도록 같은 자리에 조금 크게 놓습니다. */
+  .pick__check {
+    position: absolute;
+    top: calc(4 * var(--u));
+    left: calc(74 * var(--u));
+    display: flex;
+    width: calc(24 * var(--u));
+    height: calc(24 * var(--u));
+    border-radius: 999px;
+    color: #fff;
+    background: var(--lm-primary);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+    transition: background-color 200ms ease;
+  }
+
+  .pick__check svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .pick__tile[data-picked='false'] .pick__check {
+    color: #c9c4bb;
+    background: #fff;
+    box-shadow:
+      inset 0 0 0 calc(1.5 * var(--u)) #d6cfc4,
+      0 1px 3px rgb(0 0 0 / 20%);
+  }
+
+  /* 체크가 켜질 때 살짝 튀어 오릅니다. */
+  .pick__tile[data-picked='true'] .pick__check {
+    animation: pick-pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  }
+
+  @keyframes pick-pop {
+    from {
+      transform: scale(0.6);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  .pick__count {
+    margin: calc(20 * var(--u)) 0 0;
+  }
+
+  .pick__num {
+    font-family: var(--lm-font-label);
+    font-size: calc(22 * var(--u));
+    color: var(--lm-ink-muted);
+  }
+
+  .pick__num b {
+    font-weight: 500;
+    color: var(--lm-primary);
+  }
+
+  /* 손가락 표시 ─ 항목 위에 나타나 한 번 눌렀다 사라집니다. 위치는 스크립트가 정합니다. */
+  .phone__tap {
+    position: absolute;
+    z-index: 1;
+    width: calc(38 * var(--u));
+    height: calc(38 * var(--u));
+    border-radius: 999px;
+    background: rgb(255 255 255 / 45%);
+    box-shadow:
+      0 0 0 calc(2 * var(--u)) rgb(255 255 255 / 85%),
+      0 calc(4 * var(--u)) calc(12 * var(--u)) rgb(31 28 23 / 35%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .phone__tap.is-tapping {
+    animation: pick-tap 900ms ease-out;
+  }
+
+  @keyframes pick-tap {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.4);
+    }
+    25% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    40% {
+      transform: translate(-50%, -50%) scale(0.78);
+    }
+    60% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
   }
 
   .privacy__copy {

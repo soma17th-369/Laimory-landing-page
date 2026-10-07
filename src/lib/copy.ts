@@ -92,8 +92,16 @@ export interface SiteCopy {
     titleLine2: string;
     /** label은 약속이 적용되는 시점, body는 그 시점의 약속 */
     points: { label: string; body: string }[];
-    /** 폰 목업 세 장(위치 · 사진 · 알림 화면 캡처)의 접근성 설명. 앞에 놓이는 위치 화면부터입니다. */
-    alts: { places: string; photos: string; notifications: string };
+    /** 폰 세 장(사진 · 위치 · 알림 고르기 화면) 묶음의 접근성 설명 */
+    deviceLabel: string;
+    /**
+     * 사진 고르기 화면. 앱 화면을 HTML로 다시 그려, 사진의 체크가 저절로 켜지고 꺼지는 애니메이션을 보여 줍니다.
+     * groups는 날짜 묶음, photos의 picked는 처음 체크 상태입니다.
+     */
+    picker: {
+      date: string;
+      groups: { date: string; photos: { alt: string; picked: boolean }[] }[];
+    };
   };
   /** 푸터의 사전등록 양식. 헤더·히어로의 사전등록 버튼이 이곳으로 내려옵니다. */
   preregister: {
@@ -324,10 +332,28 @@ const ko: SiteCopy = {
         body: '누가 쓴 것인지 알 수 없는 형태로 보관되고, 언제든 삭제할 수 있습니다',
       },
     ],
-    alts: {
-      places: 'Laimory 앱의 위치 기록 화면. 방문한 장소와 이동 기록 가운데 담을 것만 고를 수 있습니다.',
-      photos: 'Laimory 앱의 사진 고르기 화면. 날짜별 사진 가운데 체크한 것만 타임라인에 담깁니다.',
-      notifications: 'Laimory 앱의 알림 기록 화면. 카카오톡과 배달의민족 알림이 앱별로 모여 있습니다.',
+    deviceLabel:
+      'Laimory 앱의 사진 · 위치 · 알림 고르기 화면. 사진, 방문한 장소와 이동 기록, 알림마다 타임라인에 담을지 뺄지 직접 고르는 모습입니다.',
+    picker: {
+      date: '5월 8일 목요일',
+      groups: [
+        {
+          date: '2025년 1월 12일',
+          photos: [
+            { alt: '크리스마스 장식이 걸린 아늑한 거실', picked: true },
+            { alt: '눈 내린 저녁 거리', picked: true },
+            { alt: '노트북이 놓인 책상', picked: false },
+          ],
+        },
+        {
+          date: '2025년 1월 10일',
+          photos: [
+            { alt: '토마토 파스타 한 접시', picked: true },
+            { alt: '회색 콘크리트 건물', picked: true },
+            { alt: '햇살이 드는 침실', picked: false },
+          ],
+        },
+      ],
     },
   },
 
