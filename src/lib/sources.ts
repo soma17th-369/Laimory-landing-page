@@ -3,14 +3,17 @@ import type { IconName } from './icons';
 /** 아이콘 배지 색. 값은 tokens.css의 --lm-badge-* 토큰과 짝을 이룹니다. */
 export type Tone = 'joy' | 'calm' | 'green' | 'purple';
 
+/** 기록 데모(Result 섹션)에서 모아 오는 기록 세 가지. */
+export type SourceKey = 'calendar' | 'photo' | 'place';
+
 /**
- * 데이터 소스 4종(사진 · 캘린더 · 위치 · 알림)의 아이콘과 배지 색.
- * 문구는 lib/copy.ts의 result.sources에 있고,
- * 배열 순서가 서로 맞아야 합니다.
+ * 기록 종류별 아이콘과 배지 색.
+ * 왼쪽 기록 카드와 오른쪽 타임라인의 '어디서 왔는지' 표시가 같은 색을 써서
+ * 어느 기록이 어느 순간이 됐는지 이어 보이게 합니다.
+ * 문구는 lib/copy.ts의 result에 있습니다.
  */
-export const sourceLooks: { icon: IconName; tone: Tone }[] = [
-  { icon: 'camera', tone: 'joy' },
-  { icon: 'calendar', tone: 'calm' },
-  { icon: 'pin', tone: 'green' },
-  { icon: 'chatsCircle', tone: 'purple' },
-];
+export const sourceLooks: Record<SourceKey, { icon: IconName; tone: Tone }> = {
+  calendar: { icon: 'calendar', tone: 'calm' },
+  photo: { icon: 'camera', tone: 'joy' },
+  place: { icon: 'pin', tone: 'green' },
+};

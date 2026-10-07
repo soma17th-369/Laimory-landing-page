@@ -2,10 +2,17 @@
  * 화면에 보이는 모든 문구는 이 파일에서 관리합니다.
  */
 
+import type { IconName } from './icons';
+import type { SourceKey } from './sources';
+
 /**
- * 데이터 소스 한 종(사진 · 캘린더 · 위치 · 알림)의 문구.
- * 배열 순서가 lib/sources.ts의 아이콘·배지 색과 1:1로 맞아야 합니다.
+ * '어디서 가져오나요' 섹션의 안내 한 줄.
+ * **굵게** 표시한 부분은 강조됩니다. sub는 그 아래 한 단계 들여 쓴 목록,
+ * note는 sub 항목 밑에 붙는 보충 설명입니다.
  */
+export type SourcePoint = string | { text: string; sub: (string | { text: string; note: string })[] };
+
+/** 기록 카드 한 장(사진 · 위치)의 이름과, 그림 아래 붙는 시각 표시. */
 export interface SourceItem {
   title: string;
   meta: string;
@@ -40,22 +47,53 @@ export interface SiteCopy {
     body: string;
     /** 데모(기록 카드 → 타임라인) 묶음의 접근성 레이블 */
     demoLabel: string;
-    /** 데모 왼쪽의 기록 카드 4장. 순서는 lib/sources.ts를 따릅니다. */
-    sources: SourceItem[];
+    /** 왼쪽 기록 카드 묶음과 오른쪽 타임라인 카드 위의 작은 제목 */
+    sourcesCaption: string;
+    timelineCaption: string;
+    /** 왼쪽 기록 카드 세 장. 화면에 놓이는 순서 그대로입니다. */
+    /** 캘린더 칸은 시각이 그림 안에 있어 따로 시각 표시가 없습니다. */
+    calendar: { title: string; event: string; start: string; end: string };
+    photo: SourceItem & { alt: string };
+    place: SourceItem & { alt: string };
+    /** 가운데 '타임라인 만들기' 표시. 앱의 버튼 문구를 그대로 씁니다. */
+    make: { title: string; sub: string };
+    timelineTitle: string;
+    date: string;
+    /** 타임라인의 순간들. from은 어느 기록에서 왔는지(lib/sources.ts의 키)입니다. */
+    entries: {
+      time: string;
+      text: string;
+      from: SourceKey;
+      icon: IconName;
+      /** 카드에 보일 '○○에서' 표시 */
+      fromLabel: string;
+    }[];
   };
   how: {
     title: string;
     body: string;
-    /** 폰 목업(설정 화면 캡처)의 접근성 설명 */
+    /** 폰 목업(홈 화면 캡처)의 접근성 설명 */
     alt: string;
+  };
+  /** 라이모리가 기록을 어디서 가져오는지 · 언제 밖으로 나가는지. 항목은 눌러야 펼쳐집니다. */
+  sources: {
+    title: string;
+    intro: string;
+    items: {
+      key: 'photo' | 'calendar' | 'notification' | 'place' | 'outbound';
+      /** 접혀 있을 때 보이는 이름과 한 줄 설명 */
+      name: string;
+      from: string;
+      points: SourcePoint[];
+    }[];
   };
   privacy: {
     titleLine1: string;
     titleLine2: string;
     /** label은 약속이 적용되는 시점, body는 그 시점의 약속 */
     points: { label: string; body: string }[];
-    /** 폰 목업(위치 기록 화면 캡처)의 접근성 설명 */
-    alt: string;
+    /** 폰 목업 세 장(위치 · 사진 · 알림 화면 캡처)의 접근성 설명. 앞에 놓이는 위치 화면부터입니다. */
+    alts: { places: string; photos: string; notifications: string };
   };
   /** 푸터의 사전등록 양식. 헤더·히어로의 사전등록 버튼이 이곳으로 내려옵니다. */
   preregister: {
@@ -149,20 +187,131 @@ const ko: SiteCopy = {
   result: {
     titleLine1: '흩어진 순간을,',
     titleLine2: '다시 읽을 수 있는 하루로.',
-    body: '언제 어디에 있었고 무엇을 했는지가 사진과 함께 시간순으로 남습니다.',
-    demoLabel: '흩어진 기록이 오늘의 타임라인이 되는 예시',
-    sources: [
-      { title: '사진 1장', meta: '12:00 · 마포' },
-      { title: '팀 작업', meta: '13:19~18:30' },
-      { title: '용인 → 마포', meta: '09:13 · 46.1km' },
-      { title: '결제 알림', meta: '복성각 · 17:25' },
+    body: '폰 속 캘린더 일정, 사진, 위치 기록을 라이모리가 모아 시간순으로 엮어요. 따로 적지 않아도 오늘 하루가 한 편의 기록으로 남습니다.',
+    demoLabel: '캘린더 · 사진 · 위치 기록이 오늘의 타임라인이 되는 예시',
+    sourcesCaption: '내 폰에 이미 있는 기록',
+    timelineCaption: '라이모리가 엮은 하루',
+    calendar: { title: '캘린더', event: '기획 회의', start: '10:00', end: '11:00' },
+    photo: {
+      title: '사진',
+      meta: '18:45 촬영',
+      alt: '장바구니에 담긴 방울토마토, 달걀, 바나나, 채소',
+    },
+    place: { title: '위치', meta: '08:50 도착', alt: '역삼동 사무실 위치가 표시된 지도' },
+    make: { title: '타임라인 만들기', sub: '오늘의 순간을 하나로' },
+    timelineTitle: '오늘의 타임라인',
+    date: '10월 1일 목요일',
+    entries: [
+      {
+        time: '08:50',
+        text: '오늘도 사무실로 출근했다.',
+        from: 'place',
+        icon: 'pin',
+        fromLabel: '위치에서',
+      },
+      {
+        time: '10:00',
+        text: '오전엔 기획 회의가 있었다.',
+        from: 'calendar',
+        icon: 'briefcase',
+        fromLabel: '캘린더에서',
+      },
+      {
+        time: '18:45',
+        text: '퇴근길에 마트에서 장을 봤다.',
+        from: 'photo',
+        icon: 'bag',
+        fromLabel: '사진에서',
+      },
     ],
   },
 
   how: {
     title: '한 번 연결해두면, 그다음은 알아서 모입니다.',
     body: '처음에 사진 · 캘린더 · 위치 · 활동 중 원하는 것만 고르면, 이후로는 AI가 매일 정리해서 타임라인을 만듭니다.',
-    alt: 'Laimory 앱의 데이터 소스 설정 화면',
+    alt: 'Laimory 앱의 홈 화면. 오늘의 사진 · 일정 · 위치 · 알림이 한 화면에 모여 있고, 아래에 타임라인 만들기 버튼이 있습니다.',
+  },
+
+  sources: {
+    title: '라이모리는 내 기록을 어디서 가져오나요?',
+    intro:
+      '라이모리는 내 휴대폰 안에 이미 있는 정보를 모아 하루를 정리해요. 따로 계정을 연결하거나 다른 앱에 로그인하지 않아요. 휴대폰 설정에서 허락한 항목만 읽어요.',
+    items: [
+      {
+        key: 'photo',
+        name: '사진',
+        from: "휴대폰 '갤러리'에서 가져와요",
+        points: [
+          '갤러리에 저장된 사진을 읽기만 하고, 지우거나 바꾸지 않아요.',
+          '사진이 언제 찍혔는지, 그리고 사진에 위치가 저장돼 있다면 어디서 찍혔는지를 확인해요.',
+          '스크린샷이나 내려받은 이미지도 갤러리에 있으면 후보로 보일 수 있어요. 대신 어떤 사진을 기록에 넣을지는 직접 고르세요.',
+          '휴대폰 설정에서 **"선택한 사진만 허용"**을 고르면 그 사진들만 볼 수 있어요.',
+          '기록을 만들 때 고른 사진은 원본 그대로 서버로 보내져요. AI가 사진 속 장면을 읽고 하루를 정리하는 데 써요.',
+        ],
+      },
+      {
+        key: 'calendar',
+        name: '일정',
+        from: "휴대폰 '캘린더' 앱에서 가져와요",
+        points: [
+          '휴대폰 캘린더에 등록된 일정을 읽기만 해요. 새로 만들거나 고치지 않아요.',
+          {
+            text: '내가 만든 캘린더의 일정만 봐요.',
+            sub: [
+              '휴대폰 기본 캘린더(삼성 캘린더 등)에 직접 등록한 일정',
+              {
+                text: '휴대폰과 연동된 구글 계정 캘린더 중 내가 만든 캘린더의 일정',
+                note: '기본 캘린더뿐 아니라 "운동", "회사"처럼 내가 새로 만든 캘린더도 포함돼요.',
+              },
+              '그 밖에 휴대폰 캘린더와 동기화되도록 설정한 계정(예: Outlook)의 내 캘린더',
+            ],
+          },
+          '공휴일 캘린더나 남이 공유해 준 캘린더는 읽지 않아요.',
+          '최근 한 달 동안의 지난 일정만 확인해요. 앞으로 있을 일정은 보지 않아요.',
+          '일정 제목, 시간, 장소, 메모를 읽어요. 메모가 길면 앞부분만 가져와요.',
+        ],
+      },
+      {
+        key: 'notification',
+        name: '알림',
+        from: '휴대폰 상단에 뜨는 알림에서 가져와요',
+        points: [
+          '휴대폰 설정의 **"알림 접근"**을 켜면, 그 뒤로 오는 알림만 확인해요. 켜기 전에 왔던 알림은 볼 수 없어요.',
+          '결제, 주문·배송, 배달, 예약, 여행(출발·탑승) 같은 생활 기록이 될 만한 알림만 골라요.',
+          '알림을 직접 눌렀다면 그 알림도 의미 있는 순간으로 보고 기록해요.',
+          {
+            text: '아래 알림은 가져오지 않아요.',
+            sub: [
+              '카카오톡 같은 대화 메시지 (직접 누른 경우는 예외)',
+              '광고 알림, 다운로드 진행률처럼 계속 떠 있는 알림',
+              '인증번호, 비밀번호가 담긴 알림',
+              '주민등록번호, 여권번호 같은 신분 정보나 검사 결과가 담긴 알림',
+            ],
+          },
+          '이메일, 카드번호, 전화번호, 계좌번호, 상세주소는 가린 뒤 저장해요. 예를 들어 전화번호는 [전화번호]로 바뀌어요.',
+        ],
+      },
+      {
+        key: 'place',
+        name: '위치',
+        from: '휴대폰 위치 기능에서 가져와요',
+        points: [
+          '앱을 쓰지 않을 때도 위치를 확인해서 어디에 머물렀고 어떻게 이동했는지 정리해요.',
+          '위치를 확인하는 동안에는 휴대폰 상단에 알림이 계속 떠 있어요.',
+          '"대략적인 위치"만 허용해도 쓸 수 있어요.',
+        ],
+      },
+      {
+        key: 'outbound',
+        name: '내 정보는 언제 밖으로 나가나요?',
+        from: '보낼 항목을 직접 확인했을 때만이에요',
+        points: [
+          '모은 정보는 평소에는 내 휴대폰 안에만 저장돼요.',
+          '기록 만들기를 누르고, 보낼 항목을 직접 확인하고 동의했을 때만 AI 분석을 위해 서버로 보내져요.',
+          '각 항목은 언제든 설정 > 데이터 수집에서 끌 수 있어요.',
+        ],
+      },
+    ],
   },
 
   privacy: {
@@ -175,7 +324,11 @@ const ko: SiteCopy = {
         body: '누가 쓴 것인지 알 수 없는 형태로 보관되고, 언제든 삭제할 수 있습니다',
       },
     ],
-    alt: 'Laimory 앱의 위치 기록 화면. 수집된 장소 가운데 보낼 것만 고를 수 있습니다.',
+    alts: {
+      places: 'Laimory 앱의 위치 기록 화면. 방문한 장소와 이동 기록 가운데 담을 것만 고를 수 있습니다.',
+      photos: 'Laimory 앱의 사진 고르기 화면. 날짜별 사진 가운데 체크한 것만 타임라인에 담깁니다.',
+      notifications: 'Laimory 앱의 알림 기록 화면. 카카오톡과 배달의민족 알림이 앱별로 모여 있습니다.',
+    },
   },
 
   preregister: {
