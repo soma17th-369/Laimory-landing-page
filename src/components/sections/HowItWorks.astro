@@ -4,6 +4,9 @@
  * 연결해 둔 사진 · 일정 · 위치 · 알림이 홈 화면 한 장에 알아서 모여 있고,
  * 그 아래 '타임라인 만들기'로 이어지는 모습을 보여 줍니다. 설명은 한 문장만 답니다.
  *
+ * 일정 · 알림 칸은 화면에 보이는 동안 내용이 몇 초마다 번갈아 바뀌어(일정 세 개, 알림 앱 두 개)
+ * 기록이 계속 모이고 있다는 느낌을 줍니다. 캡처 위 그 자리를 흰 바탕으로 덮고 HTML 글자를 얹습니다.
+ *
  * 각 기록에서 무엇을 담을지 고르는 화면과 그 설명은 바로 다음 개인정보 섹션이 맡습니다.
  *
  * 넓은 화면에서는 글이 왼쪽, 목업이 오른쪽입니다. 바로 다음 개인정보 섹션이
@@ -27,18 +30,90 @@ const shot = { src: '/images/how-home.webp', width: 752, height: 1837 };
     </div>
 
     <div class="how__device">
-      <img
-        class="how__phone"
-        src={shot.src}
-        alt={c.how.alt}
-        width={shot.width}
-        height={shot.height}
-        loading="lazy"
-        decoding="async"
-      />
+      <div class="how__screen" data-home>
+        <img
+          class="how__phone"
+          src={shot.src}
+          alt={c.how.alt}
+          width={shot.width}
+          height={shot.height}
+          loading="lazy"
+          decoding="async"
+        />
+
+        <!-- 일정 칸: 시간 · 제목이 번갈아 바뀌고, 아래 수는 일정 개수에 맞춥니다. -->
+        <div class="swap swap--schedule" aria-hidden="true">
+          {
+            c.how.schedule.map((item, i) => (
+              <div class="swap__item" data-active={i === 0 ? 'true' : undefined}>
+                <span class="swap__time">{item.time}</span>
+                <span class="swap__title">{item.title}</span>
+              </div>
+            ))
+          }
+          <span class="swap__count">
+            <b>{c.how.scheduleCount.picked}</b> / {c.how.scheduleCount.total}
+          </span>
+        </div>
+
+        <!-- 알림 칸: 앱 아이콘 · 이름 · 건수가 번갈아 바뀝니다. -->
+        <div class="swap swap--notif" aria-hidden="true">
+          {
+            c.how.notifications.map((item, i) => (
+              <div class="swap__item" data-active={i === 0 ? 'true' : undefined}>
+                <img class="swap__icon" src={item.icon} alt="" width="68" height="68" loading="lazy" decoding="async" />
+                <span class="swap__app">
+                  {item.app} {item.count}
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  /*
+   * 일정 · 알림 칸을 몇 초마다 다음 내용으로 바꿉니다. 화면에 보이는 동안만 돌고,
+   * 두 칸이 한꺼번에 바뀌지 않게 알림 칸은 반 박자 늦게 바꿉니다.
+   * 움직임 줄이기를 켰으면 캡처와 같은 첫 내용에 머뭅니다.
+   */
+  const home = document.querySelector<HTMLElement>('[data-home]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (home && !reduce && 'IntersectionObserver' in window) {
+    const STEP = 2800;
+    const swaps = [...home.querySelectorAll<HTMLElement>('.swap')];
+    const timers: number[] = [];
+
+    const next = (swap: HTMLElement) => {
+      const items = [...swap.querySelectorAll<HTMLElement>('.swap__item')];
+      const cur = items.findIndex((item) => item.hasAttribute('data-active'));
+      const leaving = items[cur];
+      leaving.removeAttribute('data-active');
+      leaving.setAttribute('data-leaving', '');
+      window.setTimeout(() => leaving.removeAttribute('data-leaving'), 600);
+      items[(cur + 1) % items.length].setAttribute('data-active', '');
+    };
+
+    new IntersectionObserver(
+      ([entry]) => {
+        timers.splice(0).forEach((t) => window.clearInterval(t));
+        if (!entry.isIntersecting) return;
+        swaps.forEach((swap, i) => {
+          const start = window.setTimeout(() => {
+            next(swap);
+            timers.push(window.setInterval(() => next(swap), STEP));
+          }, STEP / 2 + (i * STEP) / 2);
+          timers.push(start);
+        });
+      },
+      { threshold: 0.3 },
+    ).observe(home);
+  }
+</script>
 
 <style>
   .how {
@@ -106,5 +181,120 @@ const shot = { src: '/images/how-home.webp', width: 752, height: 1837 };
     width: 100%;
     height: auto;
     filter: drop-shadow(0 18px 40px rgb(31 28 23 / 18%));
+  }
+
+  /*
+   * 캡처 위에 얹는 칸들의 기준 틀. --u는 원본 캡처(폭 1500)의 1px이고,
+   * 아래 좌표는 원본에서 잰 글자 자리입니다.
+   */
+  .how__screen {
+    --u: calc(100cqw / 1500);
+    position: relative;
+    width: 100%;
+    container-type: inline-size;
+  }
+
+  /* 캡처의 글자를 흰 바탕으로 덮고 그 위에 번갈아 바뀌는 내용을 얹습니다. */
+  .swap {
+    position: absolute;
+    overflow: hidden;
+    background: #fff;
+    font-family: var(--lm-font-sans);
+    line-height: 1;
+  }
+
+  .swap--schedule {
+    left: calc(170 * var(--u));
+    top: calc(1825 * var(--u));
+    width: calc(1190 * var(--u));
+    height: calc(305 * var(--u));
+  }
+
+  .swap--notif {
+    left: calc(830 * var(--u));
+    top: calc(2512 * var(--u));
+    width: calc(540 * var(--u));
+    height: calc(92 * var(--u));
+  }
+
+  /* 새 내용은 아래에서 올라오고, 나가는 내용은 위로 빠집니다. */
+  .swap__item {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(calc(28 * var(--u)));
+    transition:
+      opacity 420ms ease,
+      transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  /* 나가는 내용이 먼저 빠진 뒤에 들어오도록 조금 늦게 시작합니다. */
+  .swap__item[data-active] {
+    opacity: 1;
+    transform: none;
+    transition-delay: 220ms;
+  }
+
+  .swap__item[data-leaving] {
+    opacity: 0;
+    transform: translateY(calc(-28 * var(--u)));
+  }
+
+  .swap__time,
+  .swap__title,
+  .swap__count,
+  .swap__icon,
+  .swap__app {
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  /* 일정 ─ 시간(13px) · 제목(16px) · 담긴 수(17.5px), 앱 화면 크기의 4배 기준 */
+  .swap__time {
+    left: calc(7 * var(--u));
+    top: calc(8 * var(--u));
+    font-size: calc(52 * var(--u));
+    color: var(--lm-ink-muted);
+  }
+
+  .swap__title {
+    left: calc(6 * var(--u));
+    top: calc(102 * var(--u));
+    font-size: calc(64 * var(--u));
+    color: var(--lm-ink);
+  }
+
+  .swap__count {
+    left: calc(8 * var(--u));
+    top: calc(229 * var(--u));
+    font-size: calc(70 * var(--u));
+    color: var(--lm-ink-muted);
+  }
+
+  .swap__count b {
+    font-weight: 400;
+    color: var(--lm-primary);
+  }
+
+  /* 알림 ─ 앱 아이콘 · 이름과 건수 */
+  .swap__icon {
+    left: calc(10 * var(--u));
+    top: calc(12 * var(--u));
+    width: calc(68 * var(--u));
+    height: calc(68 * var(--u));
+    border-radius: calc(16 * var(--u));
+  }
+
+  .swap__app {
+    left: calc(102 * var(--u));
+    top: calc(19 * var(--u));
+    font-size: calc(64 * var(--u));
+    color: var(--lm-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .swap__item {
+      transition: none;
+    }
   }
 </style>

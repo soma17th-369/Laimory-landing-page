@@ -74,6 +74,13 @@ export interface SiteCopy {
     body: string;
     /** 폰 목업(홈 화면 캡처)의 접근성 설명 */
     alt: string;
+    /**
+     * 홈 화면의 일정 · 알림 칸에 번갈아 보이는 내용. 첫 항목이 캡처에 그려진 내용과 같습니다.
+     * scheduleCount는 일정 칸 아래 '담긴 수 / 전체 수'입니다.
+     */
+    schedule: { time: string; title: string }[];
+    scheduleCount: { picked: number; total: number };
+    notifications: { app: string; count: number; icon: string }[];
   };
   /** 라이모리가 기록을 어디서 가져오는지 · 언제 밖으로 나가는지. 항목은 눌러야 펼쳐집니다. */
   sources: {
@@ -238,6 +245,16 @@ const ko: SiteCopy = {
     title: '한 번 연결해두면, 그다음은 알아서 모입니다.',
     body: '처음에 사진 · 캘린더 · 위치 · 활동 중 원하는 것만 고르면, 이후로는 AI가 매일 정리해서 타임라인을 만듭니다.',
     alt: 'Laimory 앱의 홈 화면. 오늘의 사진 · 일정 · 위치 · 알림이 한 화면에 모여 있고, 아래에 타임라인 만들기 버튼이 있습니다.',
+    schedule: [
+      { time: '19:00 ~ 21:00', title: '상민이랑 데이트' },
+      { time: '10:00 ~ 11:00', title: '기획 회의' },
+      { time: '18:30 ~ 20:00', title: '강남역 저녁 약속' },
+    ],
+    scheduleCount: { picked: 3, total: 3 },
+    notifications: [
+      { app: '토스', count: 4, icon: '/images/how-toss.webp' },
+      { app: '카카오톡', count: 12, icon: '/images/how-kakao.webp' },
+    ],
   },
 
   sources: {
