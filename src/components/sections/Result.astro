@@ -1,86 +1,175 @@
 ---
 /**
  * "흩어진 순간을, 다시 읽을 수 있는 하루로."
- * 왼쪽은 모아 오는 기록 네 가지(데모의 소스 아이콘과 같은 순서), 오른쪽은 기록 카드 → 타임라인 카드 데모입니다.
+ * 마케팅 피드 시안(오늘 있었던 일들, 기록하기 힘드시죠?)을 따라
+ * 폰 속 캘린더 · 사진 · 위치 기록 세 장 → 타임라인 만들기 → 오늘의 타임라인 순서로 보여 줍니다.
+ *
+ * 대부분 휴대폰으로 보므로 폰 화면을 기준으로 짭니다. 기록 세 장은 화면 폭과 상관없이
+ * 늘 가로 한 줄이고, 그 아래로 타임라인 만들기 → 타임라인이 이어집니다.
+ * 넓은 화면에서는 이 묶음을 오른쪽에 두고 제목을 왼쪽에 둡니다.
+ *
+ * 앱 캡처 대신 HTML로 그려서, 기록 카드와 타임라인의 순간을 같은 배지 색으로 잇습니다.
+ * 기록 카드에 마우스를 올리면 그 기록으로 만든 순간이, 순간에 올리면 그 기록 카드가 함께 강조됩니다.
  */
+import Icon from '../Icon.astro';
 import SourceBadge from '../SourceBadge.astro';
 import { sourceLooks } from '../../lib/sources';
 import { copy as c } from '../../lib/copy';
 
-/** 기록 카드에 겹쳐 보이는 사진 조각 두 장. */
-const frags = ['/images/frag-1.webp', '/images/frag-2.webp'];
+const r = c.result;
+const photo = { src: '/images/result-photo.webp', width: 960, height: 720 };
+const map = { src: '/images/result-map.webp', width: 800, height: 316 };
 ---
 
 <section class="result" id="result">
   <div class="result__inner lm-page">
     <div class="result__copy">
       <h2 class="lm-h2 result__title">
-        {c.result.titleLine1}<br />{c.result.titleLine2}
+        {r.titleLine1}<br />{r.titleLine2}
       </h2>
-      <p class="result__body">{c.result.body}</p>
+      <p class="result__body">{r.body}</p>
     </div>
 
-    <div class="demo" role="group" aria-label={c.result.demoLabel}>
-      <ul class="demo__sources">
-        {
-          c.result.sources.map((source, i) => (
-            <li class="lm-card demo__source">
-              <SourceBadge icon={sourceLooks[i].icon} tone={sourceLooks[i].tone} size={36} iconSize={18} />
-              <span class="demo__source-text">
-                <span class="demo__source-title">{source.title}</span>
-                <span class="demo__source-meta">{source.meta}</span>
-              </span>
-              {i === 0 && (
-                <span class="demo__thumbs" aria-hidden="true">
-                  <img src={frags[0]} alt="" width="26" height="26" loading="lazy" decoding="async" />
-                  <img src={frags[1]} alt="" width="26" height="26" loading="lazy" decoding="async" />
-                </span>
-              )}
-            </li>
-          ))
-        }
-      </ul>
+    <div class="demo" role="group" aria-label={r.demoLabel} data-demo>
+      <!-- 1. 폰에 흩어져 있는 기록 -->
+      <div class="demo__col demo__col--sources">
+        <p class="demo__caption">{r.sourcesCaption}</p>
+        <ul class="demo__sources">
+          <li class="lm-card src src--calendar" data-src="calendar">
+            <span class="src__head">
+              <SourceBadge icon={sourceLooks.calendar.icon} tone={sourceLooks.calendar.tone} size={28} iconSize={16} />
+              <span class="src__title">{r.calendar.title}</span>
+            </span>
+            <span class="cal" aria-label={`${r.calendar.start}~${r.calendar.end} ${r.calendar.event}`}>
+              <span class="cal__hour" aria-hidden="true">{r.calendar.start}</span>
+              <span class="cal__line" aria-hidden="true"></span>
+              <span class="cal__event" aria-hidden="true">{r.calendar.event}</span>
+              <span class="cal__hour" aria-hidden="true">{r.calendar.end}</span>
+              <span class="cal__line" aria-hidden="true"></span>
+            </span>
+          </li>
 
-      <span class="demo__arrow" aria-hidden="true">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <path
-            d="M4 14h19M15 6l8 8-8 8"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-      </span>
+          <li class="lm-card src src--photo" data-src="photo">
+            <span class="src__head">
+              <SourceBadge icon={sourceLooks.photo.icon} tone={sourceLooks.photo.tone} size={28} iconSize={16} />
+              <span class="src__title">{r.photo.title}</span>
+            </span>
+            <img
+              class="src__img src__img--photo"
+              src={photo.src}
+              alt={r.photo.alt}
+              width={photo.width}
+              height={photo.height}
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="src__meta">{r.photo.meta}</span>
+          </li>
 
-      <div class="demo__card">
-        <div class="demo__shot-clip">
-          <img
-            class="demo__shot"
-            src="/images/result-timeline.webp"
-            alt=""
-            width="1080"
-            height="1785"
-            loading="lazy"
-            decoding="async"
-          />
+          <li class="lm-card src src--place" data-src="place">
+            <span class="src__head">
+              <SourceBadge icon={sourceLooks.place.icon} tone={sourceLooks.place.tone} size={28} iconSize={16} />
+              <span class="src__title">{r.place.title}</span>
+            </span>
+            <img
+              class="src__img src__img--map"
+              src={map.src}
+              alt={r.place.alt}
+              width={map.width}
+              height={map.height}
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="src__meta">{r.place.meta}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 2. 타임라인 만들기 (앱의 버튼 모양을 빌린 표시일 뿐, 누르는 버튼이 아닙니다) -->
+      <div class="demo__col demo__col--make">
+        <div class="make">
+          <span class="make__icon"><Icon name="clock" size={26} /></span>
+          <span class="make__text">
+            <span class="make__title">{r.make.title}</span>
+            <span class="make__sub">{r.make.sub}</span>
+          </span>
+          <span class="make__arrow"><Icon name="arrowRight" size={22} /></span>
         </div>
+      </div>
+
+      <!-- 3. 다시 읽을 수 있는 하루 -->
+      <div class="demo__col demo__col--timeline">
+        <p class="demo__caption">{r.timelineCaption}</p>
+        <article class="tl">
+          <header class="tl__head">
+            <span class="tl__label">{r.timelineTitle}</span>
+            <span class="tl__date">{r.date}</span>
+          </header>
+          <ol class="tl__list">
+            {
+              r.entries.map((entry) => (
+                <li class="tl__item" data-for={entry.from}>
+                  <span class={`tl__dot tl__dot--${sourceLooks[entry.from].tone}`}>
+                    <Icon name={entry.icon} size={20} />
+                  </span>
+                  <span class="tl__body">
+                    <span class="tl__time">
+                      <time>{entry.time}</time>
+                      <span class={`tl__from tl__from--${sourceLooks[entry.from].tone}`}>{entry.fromLabel}</span>
+                    </span>
+                    <span class="tl__text">{entry.text}</span>
+                    {entry.from === 'photo' && (
+                      <img
+                        class="tl__photo"
+                        src={photo.src}
+                        alt=""
+                        width={photo.width}
+                        height={photo.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </span>
+                </li>
+              ))
+            }
+          </ol>
+        </article>
       </div>
     </div>
   </div>
 </section>
 
+<script>
+  /*
+   * 화면에 들어오면 기록 카드 → 타임라인 만들기 → 순간 하나씩 순서로 나타납니다.
+   * 스크립트가 돌지 않거나 움직임 줄이기를 켠 경우에는 처음부터 다 보입니다.
+   */
+  const demo = document.querySelector<HTMLElement>('[data-demo]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (demo && !reduce && 'IntersectionObserver' in window) {
+    demo.classList.add('is-waiting');
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          demo.classList.replace('is-waiting', 'is-in');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(demo);
+  }
+</script>
+
 <style>
+  /*
+   * 폰 화면이 기준입니다. 넓은 화면 규칙은 맨 아래 min-width 미디어 쿼리에 모았습니다.
+   */
   .result__inner {
     box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: clamp(40px, 5.5vw, 80px);
     padding: var(--lm-section-y) var(--lm-gutter);
-  }
-
-  .result__copy {
-    flex: 1;
-    min-width: 0;
   }
 
   .result__body {
@@ -94,187 +183,478 @@ const frags = ['/images/frag-1.webp', '/images/frag-2.webp'];
     word-break: keep-all;
   }
 
-  /* 데모 ─ 기록 카드 → 타임라인 카드 */
+  /* ── 데모: 기록 카드(가로 한 줄) → 타임라인 만들기 → 타임라인 ── */
   .demo {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 16px;
-    width: min(640px, 100%);
-    flex-shrink: 0;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 32px;
   }
 
+  .demo__caption {
+    margin: 0 0 12px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--lm-ink-quiet);
+  }
+
+  /* 기록 카드 세 장 ─ 늘 가로 한 줄. 폰 여기저기 흩어져 있다는 느낌으로 조금씩 기울입니다. */
   .demo__sources {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
-  .demo__source {
+  .src {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 14px;
+    transform: rotate(var(--tilt));
+    box-shadow:
+      inset 0 0 0 1px var(--lm-outline-2),
+      0 10px 24px -14px rgb(31 28 23 / 22%);
+    transition:
+      transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 320ms ease;
+  }
+
+  .src--calendar {
+    --tilt: -1.6deg;
+  }
+
+  .src--photo {
+    --tilt: 1.2deg;
+    margin-top: 10px;
+  }
+
+  .src--place {
+    --tilt: -0.8deg;
+  }
+
+  .src__head {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px 18px;
-    border-radius: 14px;
+    gap: 6px;
   }
 
-  .demo__source-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  }
-
-  .demo__source-title {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 1;
+  .src__title {
+    font-weight: 700;
+    font-size: 13px;
     color: var(--lm-ink);
     white-space: nowrap;
   }
 
-  .demo__source-meta {
-    font-family: var(--lm-font-label);
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 1;
-    color: var(--lm-ink-faint);
-    white-space: nowrap;
-  }
-
-  .demo__thumbs {
-    display: flex;
-    gap: 4px;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
-  .demo__thumbs img {
-    display: block;
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    object-fit: cover;
-  }
-
-  .demo__arrow {
-    display: flex;
-    color: var(--lm-primary);
-    flex-shrink: 0;
-  }
-
-  /*
-   * 타임라인 카드 ─ 실제 앱 화면 캡처를 담는 틀.
-   * 캡처 배경이 섹션 배경과 비슷해 그냥 얹힌 것처럼 보이므로,
-   * 안쪽 여백으로 흰 테두리를 두르고 그림자로 띄워 액자처럼 보이게 합니다.
-   */
-  .demo__card {
-    flex: 1.4;
-    min-width: 0;
-    padding: 6px;
-    box-sizing: border-box;
-    border-radius: var(--lm-radius-card);
-    background: var(--lm-surface);
-    box-shadow:
-      0 18px 40px -14px rgb(31 28 23 / 22%),
-      0 4px 10px -4px rgb(31 28 23 / 10%),
-      inset 0 0 0 2px var(--lm-outline);
-  }
-
-  /*
-   * 캡처가 세로로 길어 그대로 두면 왼쪽 기록 카드보다 훨씬 커집니다.
-   * 높이를 잘라 두고 아래를 흐리게 풀어 하루가 이어진다는 걸 남깁니다.
-   */
-  /*
-   * 캡처 배경(#faf8f4)이 페이지 배경과 거의 같아 경계가 안 보입니다.
-   * 얇은 흰 여백과 바깥 선이 그 경계를 대신합니다.
-   */
-  .demo__shot-clip {
-    position: relative;
-    max-height: 428px;
-    overflow: hidden;
-    border-radius: 14px;
-  }
-
-  .demo__shot-clip::after {
-    content: '';
-    position: absolute;
-    inset: auto 0 0;
-    height: 80px;
-    pointer-events: none;
-    background: linear-gradient(to bottom, transparent, var(--lm-surface));
-  }
-
-  .demo__shot {
+  .src__img {
     display: block;
     width: 100%;
     height: auto;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    object-fit: cover;
   }
 
-  /* 데모가 들어갈 자리가 없으면 설명 아래로 내립니다. */
-  @media (max-width: 1100px) {
-    .result__inner {
-      flex-direction: column;
-      align-items: stretch;
-    }
+  /* 지도는 핀이 가운데 오게 */
+  .src__img--map {
+    object-position: 35% 50%;
+  }
 
-    .demo {
-      width: 100%;
-    }
+  /* 찍은 · 도착한 시각. 타임라인의 같은 시각과 짝을 이룹니다. */
+  .src__meta {
+    font-family: var(--lm-font-label);
+    font-size: 11px;
+    line-height: 1.2;
+    color: var(--lm-ink-quiet);
+    white-space: nowrap;
   }
 
   /*
-   * 아주 좁으면 기록 카드 → 화살표 → 타임라인을 세로로 세웁니다.
-   * 폰에서는 왼쪽 목록과 데모 카드가 위아래로 붙어 같은 내용이 두 번 나오므로
-   * 목록은 감추고, 카드 4장을 2×2로 눕혀 '흩어진 기록 → 하루 한 장'이
-   * 한 화면 안에 들어오게 합니다.
+   * 캘린더 ─ 앱 캘린더의 하루 보기 한 칸.
+   * '시간 · 줄 · 일정 블록 · 시간 · 줄'을 위아래로 쌓고, 일정 블록은 글자만큼만 차지합니다.
+   * 칸 높이는 사진 · 지도 칸에 맞춰지고 그 가운데에 놓입니다.
    */
-  @media (max-width: 600px) {
-    .demo {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
-      margin-top: 28px;
+  .cal {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    row-gap: 3px;
+  }
+
+  .cal__hour {
+    font-family: var(--lm-font-label);
+    font-size: 10px;
+    line-height: 1;
+    color: var(--lm-ink-quiet);
+  }
+
+  .cal__line {
+    height: 1px;
+    background: var(--lm-outline-2);
+  }
+
+  .cal__event {
+    margin: 3px 0 5px;
+    padding: 6px 7px;
+    border-radius: 6px;
+    border-left: 3px solid #6f7ff5;
+    background: #dcdffd;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--lm-ink);
+    word-break: keep-all;
+  }
+
+  /* 타임라인 만들기 ─ 앱의 버튼 모양을 빌린 표시(누르는 버튼은 아닙니다). 화살표는 아래 타임라인을 가리킵니다. */
+  .make {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px 12px 12px;
+    border-radius: 20px;
+    color: #fff;
+    background: linear-gradient(100deg, var(--lm-navy) 0%, #5f6ea8 65%, var(--lm-primary) 100%);
+    box-shadow: 0 14px 28px -14px rgb(38 46 70 / 55%);
+  }
+
+  .make__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .make__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .make__title {
+    font-weight: 700;
+    font-size: 17px;
+    white-space: nowrap;
+  }
+
+  .make__sub {
+    font-size: 13px;
+    color: rgb(255 255 255 / 82%);
+    white-space: nowrap;
+  }
+
+  .make__arrow {
+    display: flex;
+    margin-left: auto;
+    transform: rotate(90deg);
+  }
+
+  /* 오늘의 타임라인 카드 */
+  .tl {
+    padding: 22px 20px;
+    border-radius: var(--lm-radius-card);
+    background: var(--lm-surface);
+    box-shadow:
+      0 24px 48px -20px rgb(31 28 23 / 24%),
+      0 4px 10px -4px rgb(31 28 23 / 8%),
+      inset 0 0 0 1px var(--lm-outline-2);
+  }
+
+  .tl__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  .tl__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--lm-ink-quiet);
+  }
+
+  .tl__date {
+    font-family: var(--lm-font-heading);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--lm-ink);
+  }
+
+  .tl__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tl__item {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    padding-bottom: 22px;
+    border-radius: 12px;
+    transition: opacity 240ms ease;
+  }
+
+  .tl__item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* 순간과 순간을 잇는 세로선 */
+  .tl__item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: 44px;
+    bottom: 4px;
+    left: 19.5px;
+    width: 1px;
+    background: var(--lm-outline);
+  }
+
+  .tl__dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    transition: transform 240ms ease;
+  }
+
+  .tl__dot--calm,
+  .tl__from--calm {
+    background: var(--lm-badge-calm);
+    color: var(--lm-badge-calm-ink);
+  }
+
+  .tl__dot--joy,
+  .tl__from--joy {
+    background: var(--lm-badge-joy);
+    color: var(--lm-badge-joy-ink);
+  }
+
+  .tl__dot--green,
+  .tl__from--green {
+    background: var(--lm-badge-green);
+    color: var(--lm-badge-green-ink);
+  }
+
+  .tl__body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+    padding-top: 2px;
+  }
+
+  .tl__time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--lm-font-label);
+    font-size: 13px;
+    color: var(--lm-ink-muted);
+  }
+
+  .tl__from {
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-family: var(--lm-font-sans);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .tl__text {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--lm-ink);
+    word-break: keep-all;
+  }
+
+  .tl__photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    margin-top: 6px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  /*
+   * 기록 카드 ↔ 순간 잇기(마우스가 있는 화면만). 하나에 올리면 짝이 함께 떠오르고
+   * 나머지 순간은 살짝 흐려집니다.
+   */
+  @media (hover: hover) {
+    .src:hover,
+    .demo:has([data-for='calendar']:hover) [data-src='calendar'],
+    .demo:has([data-for='photo']:hover) [data-src='photo'],
+    .demo:has([data-for='place']:hover) [data-src='place'] {
+      transform: rotate(0deg) translateY(-3px);
+      box-shadow:
+        inset 0 0 0 1.5px var(--lm-primary),
+        0 18px 32px -16px rgb(31 28 23 / 28%);
     }
 
-    .demo__sources {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      flex: none;
+    .demo:has(.src:hover) .tl__item,
+    .demo:has(.tl__item:hover) .tl__item {
+      opacity: 0.45;
     }
 
-    /* 2×2에서는 아이콘과 제목만 ─ 시간·장소와 사진 조각은 타임라인 카드가 보여 줍니다. */
-    .demo__source {
-      gap: 10px;
-      padding: 14px 12px;
+    .demo:has([data-src='calendar']:hover) [data-for='calendar'],
+    .demo:has([data-src='photo']:hover) [data-for='photo'],
+    .demo:has([data-src='place']:hover) [data-for='place'],
+    .demo .tl__item:hover {
+      opacity: 1;
     }
 
-    .demo__source-title {
-      white-space: normal;
+    .demo:has([data-src='calendar']:hover) [data-for='calendar'] .tl__dot,
+    .demo:has([data-src='photo']:hover) [data-for='photo'] .tl__dot,
+    .demo:has([data-src='place']:hover) [data-for='place'] .tl__dot,
+    .tl__item:hover .tl__dot {
+      transform: scale(1.12);
     }
+  }
 
-    .demo__source-meta,
-    .demo__thumbs {
+  /* ── 나타나는 순서: 기록 카드 → 타임라인 만들기 → 순간 하나씩 ── */
+  .demo.is-waiting .src,
+  .demo.is-waiting .make,
+  .demo.is-waiting .tl,
+  .demo.is-waiting .tl__item {
+    opacity: 0;
+  }
+
+  .demo.is-in .src {
+    animation: src-in 560ms cubic-bezier(0.05, 0.7, 0.1, 1) backwards;
+  }
+
+  .demo.is-in .src--photo {
+    animation-delay: 120ms;
+  }
+
+  .demo.is-in .src--place {
+    animation-delay: 240ms;
+  }
+
+  .demo.is-in .make {
+    animation: make-in 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) 520ms backwards;
+  }
+
+  .demo.is-in .tl {
+    animation: fade-up 520ms cubic-bezier(0.05, 0.7, 0.1, 1) 760ms backwards;
+  }
+
+  .demo.is-in .tl__item {
+    animation: fade-up 480ms cubic-bezier(0.05, 0.7, 0.1, 1) backwards;
+  }
+
+  .demo.is-in .tl__item:nth-child(1) {
+    animation-delay: 960ms;
+  }
+
+  .demo.is-in .tl__item:nth-child(2) {
+    animation-delay: 1140ms;
+  }
+
+  .demo.is-in .tl__item:nth-child(3) {
+    animation-delay: 1320ms;
+  }
+
+  @keyframes src-in {
+    from {
+      opacity: 0;
+      transform: rotate(calc(var(--tilt) * 4)) translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(var(--tilt));
+    }
+  }
+
+  @keyframes make-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* 아주 좁으면 배지를 빼서 '캘린더'가 한 줄에 들어가게 합니다. 색은 타임라인 표시가 대신합니다. */
+  @media (max-width: 400px) {
+    .src__head > :global(.badge) {
       display: none;
     }
+  }
 
-    .demo__card {
-      flex: none;
+  /* 큰 폰 · 태블릿 ─ 카드에 여유가 생기면 글자와 여백을 조금 키웁니다. */
+  @media (min-width: 480px) {
+    .demo__sources {
+      gap: 12px;
     }
 
-    /* 세로로 쌓이면 자리가 넉넉하니 하루를 조금 더 보여 줍니다. */
-    .demo__shot-clip {
-      max-height: 468px;
+    .src {
+      padding: 12px;
+      gap: 10px;
     }
 
-    .demo__arrow {
-      align-self: center;
-      transform: rotate(90deg);
+    .src__title {
+      font-size: 14px;
+    }
+
+    .src__meta {
+      font-size: 12px;
+    }
+
+    .cal__hour {
+      font-size: 11px;
+    }
+
+    .cal__event {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .tl {
+      padding: 26px 24px;
+    }
+  }
+
+  /* 넓은 화면 ─ 제목은 왼쪽, 폰 폭만 한 데모 묶음은 오른쪽. */
+  @media (min-width: 1024px) {
+    .result__inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+      align-items: center;
+      gap: clamp(40px, 5.5vw, 80px);
+    }
+
+    .demo {
+      margin-top: 0;
     }
   }
 </style>

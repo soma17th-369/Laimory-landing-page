@@ -49,6 +49,36 @@ export const icons = {
     viewBox: "0 0 12 12",
     body: `<path d="M1 6h10M6 1v10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`,
   },
+  /* 아래 네 개는 기록 데모(Result 섹션)용 선 아이콘입니다. */
+  briefcase: {
+    viewBox: "0 0 24 24",
+    body: `<rect x="3.5" y="7" width="17" height="12.5" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`,
+  },
+  bag: {
+    viewBox: "0 0 24 24",
+    body: `<path d="M5 8.5h14l-1 11.5H6L5 8.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 11V7.5a3 3 0 0 1 6 0V11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`,
+  },
+  clock: {
+    viewBox: "0 0 24 24",
+    body: `<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+  /* bell · lock은 '어디서 가져오나요' 섹션용 선 아이콘입니다. */
+  bell: {
+    viewBox: "0 0 24 24",
+    body: `<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15l1.5-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 20.5a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`,
+  },
+  lock: {
+    viewBox: "0 0 24 24",
+    body: `<rect x="5" y="10.5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor"/>`,
+  },
+  chevronDown: {
+    viewBox: "0 0 24 24",
+    body: `<path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+  arrowRight: {
+    viewBox: "0 0 24 24",
+    body: `<path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
 } satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof icons;

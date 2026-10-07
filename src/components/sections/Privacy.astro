@@ -1,25 +1,40 @@
 ---
 /**
  * "어디까지 기록할지는 내가 정합니다."
- * 왼쪽 목업은 수집된 위치 중 무엇을 보낼지 고르는 화면, 오른쪽은 약속 두 가지입니다.
+ * 왼쪽 목업은 기록마다 무엇을 담을지 고르는 화면 세 장(위치를 앞에, 사진 · 알림을 양옆 뒤에),
+ * 오른쪽은 약속 두 가지입니다.
  *
  * 목업에 기기 테두리가 들어 있고 배경이 투명해서 이미지를 그대로 얹습니다.
  */
 import { copy as c } from '../../lib/copy';
+
+/**
+ * 원본 캡처(376×916)는 내용 아래가 비어 있어 위쪽 640px만 잘라 썼습니다.
+ * 배열 순서가 그리는 순서라, 앞에 보일 위치 화면을 마지막에 둡니다.
+ */
+const shots = [
+  { key: 'photos', src: '/images/privacy-photos.webp', alt: c.privacy.alts.photos },
+  { key: 'notifications', src: '/images/privacy-notifications.webp', alt: c.privacy.alts.notifications },
+  { key: 'places', src: '/images/privacy-places.webp', alt: c.privacy.alts.places },
+];
 ---
 
 <section class="privacy" id="privacy">
   <div class="privacy__inner lm-page">
     <div class="privacy__device">
-      <img
-        class="privacy__phone"
-        src="/images/privacy-phone.webp"
-        alt={c.privacy.alt}
-        width="843"
-        height="1050"
-        loading="lazy"
-        decoding="async"
-      />
+      {
+        shots.map((shot) => (
+          <img
+            class={`privacy__phone privacy__phone--${shot.key}`}
+            src={shot.src}
+            alt={shot.alt}
+            width="376"
+            height="640"
+            loading="lazy"
+            decoding="async"
+          />
+        ))
+      }
     </div>
 
     <div class="privacy__copy">
@@ -49,25 +64,43 @@ import { copy as c } from '../../lib/copy';
     padding: var(--lm-section-y) var(--lm-gutter);
   }
 
+  /* 세 폰을 부채꼴로 겹쳐 놓는 자리. 캡처가 1배 크기라 한 장이 376px을 넘지 않게 둡니다. */
   .privacy__device {
-    display: flex;
-    justify-content: center;
+    position: relative;
     flex-shrink: 0;
-    width: min(412px, 100%);
+    width: min(560px, 100%);
+    aspect-ratio: 560 / 620;
   }
 
   /*
    * 목업에 기기 테두리가 들어 있어 그림자만 더합니다.
-   * 6번 카드까지(86%)는 또렷하게 두고, 7번 카드(88~98%)가 통째로
-   * 흐려지며 사라집니다. 카드 테두리 행을 찾아 정한 값입니다.
+   * 잘라 낸 아래쪽은 흐리게 풀어 화면이 이어진다는 걸 남깁니다.
    */
   .privacy__phone {
+    position: absolute;
     display: block;
-    width: 100%;
+    width: 54%;
     height: auto;
     filter: drop-shadow(0 18px 40px rgb(31 28 23 / 18%));
-    -webkit-mask-image: linear-gradient(to bottom, #000 87%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 87%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+  }
+
+  .privacy__phone--photos {
+    top: 6%;
+    left: 0;
+    transform: rotate(-8deg);
+  }
+
+  .privacy__phone--notifications {
+    top: 6%;
+    right: 0;
+    transform: rotate(8deg);
+  }
+
+  .privacy__phone--places {
+    top: 0;
+    left: 23%;
   }
 
   .privacy__copy {
@@ -123,6 +156,7 @@ import { copy as c } from '../../lib/copy';
 
     .privacy__device {
       order: 2;
+      align-self: center;
     }
 
     .privacy__copy {
