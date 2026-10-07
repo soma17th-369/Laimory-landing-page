@@ -54,6 +54,7 @@ const shots = [
 <section class="privacy" id="privacy">
   <div class="privacy__inner lm-page">
     <div class="privacy__device" role="img" aria-label={c.privacy.deviceLabel} data-phones>
+      <div class="privacy__stage">
       <!-- 사진 고르기 화면(HTML). 처음에는 가운데 앞에 놓입니다. -->
       <div class="phone" data-phone="photos" data-pos="front" aria-hidden="true">
         <div class="pick__screen">
@@ -112,6 +113,7 @@ const shots = [
           </div>
         ))
       }
+      </div>
     </div>
 
     <div class="privacy__copy">
@@ -237,23 +239,38 @@ const shots = [
   }
 
   /*
-   * 세 폰을 부채꼴로 겹쳐 놓는 자리. 캡처가 1배 크기라 한 장이 376px을 넘지 않게 둡니다.
-   * 아래쪽 흐림은 폰마다가 아니라 묶음 전체에 한 번 줘서, 앞 폰 너머로 뒤 폰이 비치지 않게 합니다.
+   * 세 폰을 부채꼴로 겹쳐 놓는 자리(레이아웃 크기). 캡처가 1배 크기라 한 장이 376px을 넘지 않게 둡니다.
    */
   .privacy__device {
     position: relative;
     flex-shrink: 0;
     width: min(560px, 100%);
     aspect-ratio: 560 / 640;
-    -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 94%);
-    mask-image: linear-gradient(to bottom, #000 68%, transparent 94%);
+  }
+
+  /*
+   * 폰을 실제로 그리는 판. 기울어진 양옆 폰 모서리가 잘리지 않도록 자리보다 좌우 16%, 위 8% 넓습니다.
+   * 아래쪽 흐림은 폰마다가 아니라 이 판 전체에 한 번 줘서, 앞 폰 너머로 뒤 폰이 비치지 않게 합니다.
+   * 마스크는 판 밖을 지우므로 판이 폰보다 좁으면 폰이 잘립니다.
+   *
+   * 아래 폰 위치 · 크기는 자리(.privacy__device) 기준 값을 판 기준으로 옮긴 것입니다.
+   * 예: 폭 54% ÷ 1.32 = 40.91%, 가운데 폰 왼쪽 (16% + 23%) ÷ 1.32 = 29.55%.
+   */
+  .privacy__stage {
+    position: absolute;
+    top: -8%;
+    right: -16%;
+    bottom: 0;
+    left: -16%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 94%);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent 94%);
   }
 
   /* 폰 한 장. --u는 캡처의 1px(폰 폭 376 기준)이라 안쪽을 그림과 같은 비율로 그립니다. */
   .phone {
     --u: calc(100cqw / 376);
     position: absolute;
-    width: 54%;
+    width: 40.91%;
     aspect-ratio: 376 / 720;
     container-type: inline-size;
     filter: drop-shadow(0 18px 40px rgb(31 28 23 / 18%));
@@ -265,21 +282,21 @@ const shots = [
 
   .phone[data-pos='front'] {
     z-index: 3;
-    top: 0;
-    left: 23%;
+    top: 7.41%;
+    left: 29.55%;
   }
 
   .phone[data-pos='left'] {
     z-index: 1;
-    top: 6%;
-    left: 0;
+    top: 12.96%;
+    left: 12.12%;
     transform: rotate(-8deg);
   }
 
   .phone[data-pos='right'] {
     z-index: 2;
-    top: 6%;
-    left: 46%;
+    top: 12.96%;
+    left: 46.97%;
     transform: rotate(8deg);
   }
 
