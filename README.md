@@ -37,8 +37,7 @@ src/
 │  └─ PlainLayout.astro      # 공지사항 · 404용 가벼운 단독 문서 뼈대
 ├─ components/
 │  ├─ Header.astro           # 상단 바 (히어로와 이어지는 네이비)
-│  ├─ Footer.astro           # 마무리 사전등록 · 약관 6종 링크 · 사업자 정보
-│  ├─ Preregister.astro      # 사전등록 양식 (전화번호 · 약관 동의 → Google 폼)
+│  ├─ Footer.astro           # 마무리 다운로드 버튼 · 약관 6종 링크 · 사업자 정보
 │  ├─ Logo.astro             # Laimory 워드마크 (currentColor)
 │  ├─ Icon.astro             # 아이콘 한 개 렌더링
 │  ├─ SourceBadge.astro      # 데이터 소스 아이콘 배지 (사진 · 캘린더 · 위치 · 알림)
@@ -55,7 +54,7 @@ src/
 │  ├─ copy.ts                # 모든 문구 — 콘텐츠는 여기서 수정
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
 │  ├─ sources.ts             # 데이터 소스 4종의 아이콘 · 배지 색
-│  ├─ links.ts               # 사전등록 Google 폼 · 스토어 주소 · 약관 URL
+│  ├─ links.ts               # 스토어 주소(UTM 포함) · 약관 URL
 │  └─ business.ts            # 사업자 정보 (번호·이메일 등 문구가 아닌 값)
 └─ styles/
    ├─ tokens.css             # 디자인 토큰 (--lm-*)
@@ -74,7 +73,7 @@ public/
 
 - **문구 변경**: `src/lib/copy.ts` 의 값 수정.
 - **색상 변경**: `src/styles/tokens.css` 의 `--lm-*` 토큰
-- **사전등록 Google 폼**: `src/lib/links.ts` 의 `PREREGISTER_FORM`. 헤더 · 히어로의 사전등록 버튼은 푸터 양식(`#preregister`)으로 내려갑니다. 동의 문구(`copy.ts`의 `preregister.consents`)를 바꾸면 `CONSENT_VERSION`을 올립니다.
+- **스토어 링크 UTM**: `src/lib/links.ts` 의 `storeUrl()`. 헤더 · 히어로 · 푸터 버튼이 `utm_source=website`, `utm_medium=organic`, `utm_campaign=landing` 에 버튼 위치(`utm_content`)를 붙여 Google Play로 보냅니다. 광고는 랜딩을 거치지 않고 스토어로 바로 연결합니다.
 - **공지사항 추가**: `src/content/notices/{slug}.md` 추가. `docs/notices.md` 참고.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/lib/copy.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.

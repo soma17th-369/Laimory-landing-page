@@ -2,44 +2,33 @@
  * 바깥으로 나가는 링크를 한곳에 모아 둡니다.
  */
 
-/** 스토어 주소. 지금은 구조화 데이터(Layout.astro의 JSON-LD)에서만 씁니다. */
+/** 스토어 주소. 구조화 데이터(Layout.astro의 JSON-LD)에는 이 주소를 그대로 씁니다. */
 export const DOWNLOAD_URL =
   'https://play.google.com/store/apps/details?id=com.soma369.laimory';
 
-/** 헤더 · 히어로의 사전등록 버튼이 내려가는 푸터 양식의 앵커. */
-export const PREREGISTER_ANCHOR = '#preregister';
+/** 다운로드 버튼이 놓인 자리. 스토어 링크의 utm_content 값이 됩니다. */
+export type DownloadPlacement = 'header' | 'hero' | 'footer';
 
 /**
- * 사전등록 신청을 받는 Google 폼.
+ * 다운로드 버튼이 여는 스토어 주소.
  *
- * 푸터 양식이 입력값을 이 폼의 응답 주소(formResponse)로 바로 보내고,
- * 응답은 폼에 연결한 Google 스프레드시트에 쌓입니다.
- *
- * 값은 폼 편집 화면 ⋮ → '미리 채워진 링크 가져오기'로 만든 주소에서 옮겨 옵니다.
- *   https://docs.google.com/forms/d/e/{폼 ID}/viewform?usp=pp_url&entry.{번호}=...
- * - phone:   전화번호를 받는 단답형 문항
- * - consent: 동의 내용을 남기는 단답형 문항 (어떤 문구에 동의했는지 증빙)
- * - utm:     광고 링크의 utm_* 값을 남기는 단답형 문항 5개 (광고를 거치지 않으면 빈 값)
- *
- * 폼은 로그인 없이 응답할 수 있어야 하고, 이메일 주소를 수집하지 않아야 합니다.
- * 동의 문구(lib/copy.ts의 preregister.consents)를 바꾸면 CONSENT_VERSION도 올리세요.
+ * 광고는 스토어로 바로 보내고(utm_source=meta, utm_medium=paid),
+ * 웹사이트에서 나간 설치는 아래 고정값으로 나눠 봅니다.
+ * utm_* 값은 referrer 파라미터 안에 인코딩해 담아야
+ * Play Console과 Install Referrer API에 잡힙니다.
  */
-export const PREREGISTER_FORM = {
-  action: 'https://docs.google.com/forms/d/e/1FAIpQLSdcjMAYcjH9bj6P0mIqxbGNiUtRj2gT6rxf99_At3I9IywUIA/formResponse',
-  fields: {
-    phone: 'entry.1035407657',
-    consent: 'entry.1138571508',
-    utm: {
-      utm_source: 'entry.147533875',
-      utm_medium: 'entry.1069047158',
-      utm_campaign: 'entry.1930206337',
-      utm_id: 'entry.1419074956',
-      utm_content: 'entry.883806138',
-    },
-  },
-} as const;
-
-export const CONSENT_VERSION = '2026-10-05';
+export function storeUrl(placement: DownloadPlacement): string {
+  const referrer = new URLSearchParams({
+    utm_source: 'website',
+    utm_medium: 'organic',
+    utm_campaign: 'landing',
+    utm_content: placement,
+  });
+  const url = new URL(DOWNLOAD_URL);
+  url.searchParams.set('hl', 'ko');
+  url.searchParams.set('referrer', referrer.toString());
+  return url.toString();
+}
 
 /**
  * 약관 문서 주소.

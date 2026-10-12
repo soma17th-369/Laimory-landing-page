@@ -1,12 +1,11 @@
 ---
 /**
- * 마무리 사전등록과 사이트 정보. 시안의 "오늘부터 하루를 남겨보세요" 아래에
- * 사전등록 양식, 약관 6종 링크와 사업자 정보를 이어 둡니다.
+ * 마무리 다운로드와 사이트 정보. 시안의 "오늘부터 하루를 남겨보세요" 아래에
+ * 스토어 버튼, 약관 6종 링크와 사업자 정보를 이어 둡니다.
  */
 import Logo from './Logo.astro';
-import Preregister from './Preregister.astro';
 import { copy as c } from '../lib/copy';
-import { PREREGISTER_ANCHOR, TERMS_URL } from '../lib/links';
+import { TERMS_URL, storeUrl } from '../lib/links';
 import { BUSINESS } from '../lib/business';
 
 /**
@@ -16,11 +15,13 @@ import { BUSINESS } from '../lib/business';
 const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
 ---
 
-<footer class="footer" id={PREREGISTER_ANCHOR.slice(1)}>
+<footer class="footer">
   <div class="footer__inner lm-page">
     <h2 class="footer__title">{c.footer.title}</h2>
-    <p class="footer__body">{c.preregister.body}</p>
-    <Preregister />
+    <p class="footer__body">{c.footer.body}</p>
+    <a class="lm-btn lm-btn--primary footer__cta" href={storeUrl('footer')}>
+      {c.footer.cta}
+    </a>
 
     <span class="footer__logo"><Logo width={150} /></span>
 
@@ -77,6 +78,11 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     line-height: 1.7;
     color: var(--lm-primary-soft);
     word-break: keep-all;
+  }
+
+  .footer__cta {
+    padding: 18px clamp(24px, 2.6vw, 34px);
+    font-size: clamp(15px, 1.3vw, 17px);
   }
 
   .footer__logo {
