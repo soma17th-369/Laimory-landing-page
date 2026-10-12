@@ -25,7 +25,7 @@ export interface SiteCopy {
     /** SNS 공유 이미지(og:image)의 접근성 설명 */
     ogImageAlt: string;
   };
-  nav: { problem: string; how: string; privacy: string; preregister: string };
+  nav: { problem: string; how: string; privacy: string; download: string };
   hero: {
     titleLine1: string;
     titleLine2: string;
@@ -110,26 +110,11 @@ export interface SiteCopy {
       groups: { date: string; photos: { alt: string; picked: boolean }[] }[];
     };
   };
-  /** 푸터의 사전등록 양식. 헤더·히어로의 사전등록 버튼이 이곳으로 내려옵니다. */
-  preregister: {
-    body: string;
-    phoneLabel: string;
-    phonePlaceholder: string;
-    /** 동의 항목 묶음의 접근성 레이블 */
-    consentLegend: string;
-    agreeAll: string;
-    /** 필수 동의 항목. details는 펼쳐 보는 고지 내용(용어 · 설명)입니다. */
-    consents: { label: string; details: { term: string; desc: string }[] }[];
-    viewDetails: string;
-    /** 동의 철회 · 삭제 요청 안내 */
-    note: string;
-    submit: string;
-    submitting: string;
-    done: string;
-    errors: { phone: string; network: string };
-  };
   footer: {
     title: string;
+    body: string;
+    /** 마무리 다운로드 버튼 */
+    cta: string;
     credit: string;
     /** 약관 링크 묶음의 접근성 레이블 */
     legal: string;
@@ -170,14 +155,14 @@ const ko: SiteCopy = {
     problem: '왜 필요한가요',
     how: '사용 방법',
     privacy: '개인정보',
-    preregister: '사전등록',
+    download: '앱 다운로드',
   },
 
   hero: {
     titleLine1: '오늘 뭐 했는지,',
     titleLine2: '라이모리가 한눈에 정리해드려요',
     body: '사진과 일정, 이동 기록을 모아 AI가 오늘의 타임라인을 만들어드려요.',
-    ctaPrimary: '사전등록',
+    ctaPrimary: '앱 다운로드',
     ctaSecondary: '어떻게 작동하나요',
     deviceAlt: 'Laimory 앱의 오늘의 타임라인 화면',
   },
@@ -375,64 +360,10 @@ const ko: SiteCopy = {
     },
   },
 
-  preregister: {
-    body: '전화번호를 남겨주시면 출시되는 날 문자로 알려드려요.',
-    phoneLabel: '휴대전화번호',
-    phonePlaceholder: '휴대전화번호 (01012345679)',
-    consentLegend: '사전등록 약관 동의',
-    agreeAll: '전체 동의',
-    consents: [
-      { label: '[필수] 만 14세 이상입니다', details: [] },
-      {
-        label: '[필수] 개인정보 수집·이용 동의',
-        details: [
-          { term: '수집 목적', desc: '라이모리 출시 알림 문자 발송, 광고 유입 경로 분석' },
-          {
-            term: '수집 항목',
-            desc: '휴대전화번호, 광고를 통해 들어온 경우 유입 경로(광고 캠페인·소재 정보). 신청 일시와 동의 내용은 자동으로 기록',
-          },
-          { term: '보유·이용 기간', desc: '출시 알림 발송 후 지체 없이 파기' },
-          {
-            term: '동의 거부',
-            desc: '동의를 거부할 수 있으며, 거부하면 사전등록을 신청할 수 없습니다.',
-          },
-        ],
-      },
-      {
-        label: '[필수] 개인정보 국외 이전 동의',
-        details: [
-          { term: '이전받는 자', desc: 'Google LLC (googlekrsupport@google.com)' },
-          { term: '이전 국가', desc: '미국 및 Google이 데이터센터를 운영하는 국가' },
-          { term: '이전 일시·방법', desc: '사전등록 신청 시 암호화된 통신으로 전송' },
-          {
-            term: '이전 항목',
-            desc: '휴대전화번호, 유입 경로(광고 캠페인·소재 정보), 신청 일시, 동의 내용',
-          },
-          {
-            term: '이용 목적',
-            desc: '사전등록 신청 정보의 저장·관리 (Google Forms · Google 스프레드시트)',
-          },
-          { term: '보유·이용 기간', desc: '출시 알림 발송 후 지체 없이 파기' },
-          {
-            term: '동의 거부',
-            desc: '동의를 거부할 수 있으며, 거부하면 사전등록을 신청할 수 없습니다.',
-          },
-        ],
-      },
-    ],
-    viewDetails: '내용 보기',
-    note: '동의 철회와 삭제 요청은 contact@laimory.app으로 보내주세요.',
-    submit: '사전등록',
-    submitting: '등록하는 중…',
-    done: '사전등록이 완료됐어요. 출시되면 문자로 알려드릴게요.',
-    errors: {
-      phone: '휴대전화번호를 정확히 입력해 주세요. (예: 01012345679)',
-      network: '등록하지 못했어요. 잠시 후 다시 시도해 주세요.',
-    },
-  },
-
   footer: {
     title: '오늘부터 하루를 남겨보세요.',
+    body: '지금 Google Play에서 라이모리를 받아보세요.',
+    cta: 'Google Play에서 받기',
     legal: '약관 및 정책',
     links: {
       termsOfService: '이용약관',

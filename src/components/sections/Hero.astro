@@ -7,7 +7,7 @@
  * 섹션 바닥에서 폰이 올라오는 모습이 됩니다.
  */
 import { copy as c } from '../../lib/copy';
-import { PREREGISTER_ANCHOR } from '../../lib/links';
+import { storeUrl } from '../../lib/links';
 ---
 
 <section class="hero">
@@ -19,7 +19,7 @@ import { PREREGISTER_ANCHOR } from '../../lib/links';
       <p class="hero__body">{c.hero.body}</p>
 
       <div class="hero__actions">
-        <a class="lm-btn lm-btn--primary hero__cta" href={PREREGISTER_ANCHOR}>
+        <a class="lm-btn lm-btn--primary hero__cta" href={storeUrl('hero')}>
           {c.hero.ctaPrimary}
         </a>
         <a class="lm-btn lm-btn--ghost hero__cta" href="#how">

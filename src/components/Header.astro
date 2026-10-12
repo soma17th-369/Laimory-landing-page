@@ -4,7 +4,7 @@
  */
 import Logo from './Logo.astro';
 import { copy as c } from '../lib/copy';
-import { PREREGISTER_ANCHOR } from '../lib/links';
+import { storeUrl } from '../lib/links';
 
 const links = [
   { href: '#problem', label: c.nav.problem },
@@ -24,8 +24,8 @@ const links = [
     </nav>
 
     <div class="header__end">
-      <a class="lm-btn lm-btn--primary header__cta" href={PREREGISTER_ANCHOR}>
-        {c.nav.preregister}
+      <a class="lm-btn lm-btn--primary header__cta" href={storeUrl('header')}>
+        {c.nav.download}
       </a>
     </div>
   </div>
