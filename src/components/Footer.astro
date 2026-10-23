@@ -4,9 +4,12 @@
  * 스토어 버튼, 약관 6종 링크와 사업자 정보를 이어 둡니다.
  */
 import Logo from './Logo.astro';
-import { copy as c } from '../lib/copy';
+import { getLang, useCopy } from '../lib/i18n';
 import { TERMS_URL, storeUrl } from '../lib/links';
 import { BUSINESS } from '../lib/business';
+
+const lang = getLang(Astro.currentLocale);
+const c = useCopy(lang);
 
 /**
  * 약관 링크는 TERMS_URL의 키 순서를 그대로 따릅니다.
@@ -19,7 +22,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
   <div class="footer__inner lm-page">
     <h2 class="footer__title">{c.footer.title}</h2>
     <p class="footer__body">{c.footer.body}</p>
-    <a class="lm-btn lm-btn--primary footer__cta" href={storeUrl('footer')}>
+    <a class="lm-btn lm-btn--primary footer__cta" href={storeUrl('footer', lang)}>
       {c.footer.cta}
     </a>
 
@@ -31,6 +34,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
           <a href={TERMS_URL[key]} hreflang="ko">{c.footer.links[key]}</a>
         ))}
       </nav>
+      {c.footer.legalNote && <p class="footer__note">{c.footer.legalNote}</p>}
       <address class="footer__business" aria-label={c.footer.business.label}>
         <span>{c.footer.business.ownerLabel} {c.footer.business.owner}</span>
         <span>{c.footer.business.registrationLabel} {BUSINESS.registrationNumber}</span>
@@ -119,6 +123,14 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     color: #ffffff;
     text-decoration: underline;
     text-underline-offset: 0.2em;
+  }
+
+  .footer__note {
+    margin: -4px 0 0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--lm-primary-faint);
   }
 
   /* 사업자 정보 ─ 두 열로 나눠 놓고, 좁은 화면에서는 한 열로 쌓습니다. */

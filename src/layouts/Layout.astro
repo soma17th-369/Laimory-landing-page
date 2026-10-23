@@ -2,25 +2,34 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { copy as c } from '../lib/copy';
 import { BUSINESS } from '../lib/business';
 import { DOWNLOAD_URL } from '../lib/links';
+import { getLang, useCopy, LANGUAGES, DEFAULT_LANG, type Lang } from '../lib/i18n';
+
+const lang = getLang(Astro.currentLocale);
+const c = useCopy(lang);
 
 const title = c.meta.title;
 const description = c.meta.description;
 
 /**
- * 정규 주소.
+ * 정규 주소와 언어별 대체 주소.
  * 정적 빌드에서는 같은 페이지가 뒷슬래시 유무로 두 주소로 열릴 수 있어
  * 항상 뒷슬래시가 붙은 쪽을 정규 주소로 통일합니다.
  * (vercel.json의 trailingSlash: true가 뒷슬래시를 붙여 보내는 것과 같은 형태)
+ * 대체 주소(hreflang)는 지금 두 언어가 홈만 있어 각 언어의 홈을 가리킵니다.
  */
 const pathname = Astro.url.pathname.endsWith('/')
   ? Astro.url.pathname
   : `${Astro.url.pathname}/`;
 const canonical = new URL(pathname, Astro.site ?? Astro.url.origin);
+const langs = Object.keys(LANGUAGES) as Lang[];
+const alternates = langs.map((code) => ({
+  hreflang: code,
+  href: new URL(LANGUAGES[code].home, Astro.site ?? Astro.url.origin).href,
+}));
 
-/** SNS 공유 이미지. */
+/** SNS 공유 이미지. 로고 중심이라 언어 구분 없이 한 장을 씁니다. */
 const ogImage = new URL('/og/og.png', Astro.site ?? Astro.url.origin);
 
 /**
@@ -60,7 +69,7 @@ const jsonLd = {
       name: 'Laimory',
       alternateName: '라이모리',
       description,
-      inLanguage: 'ko',
+      inLanguage: lang,
       publisher: { '@id': `${siteUrl}#organization` },
     },
     {
@@ -74,7 +83,7 @@ const jsonLd = {
       url: siteUrl,
       downloadUrl: DOWNLOAD_URL,
       installUrl: DOWNLOAD_URL,
-      inLanguage: 'ko',
+      inLanguage: langs,
       publisher: { '@id': `${siteUrl}#organization` },
       offers: {
         '@type': 'Offer',
@@ -87,7 +96,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -102,6 +111,8 @@ const jsonLd = {
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical.href} />
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <link rel="alternate" hreflang="x-default" href={alternates.find((alt) => alt.hreflang === DEFAULT_LANG)!.href} />
 
     <!-- SNS 공유 미리보기 -->
     <meta property="og:type" content="website" />
@@ -109,7 +120,12 @@ const jsonLd = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
-    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:locale" content={LANGUAGES[lang].ogLocale} />
+    {
+      langs
+        .filter((code) => code !== lang)
+        .map((code) => <meta property="og:locale:alternate" content={LANGUAGES[code].ogLocale} />)
+    }
     <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

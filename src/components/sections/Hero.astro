@@ -6,8 +6,11 @@
  * 그리지 않고 이미지를 그대로 얹습니다. 아래는 이미 잘린 그림이라
  * 섹션 바닥에서 폰이 올라오는 모습이 됩니다.
  */
-import { copy as c } from '../../lib/copy';
+import { getLang, useCopy } from '../../lib/i18n';
 import { storeUrl } from '../../lib/links';
+
+const lang = getLang(Astro.currentLocale);
+const c = useCopy(lang);
 ---
 
 <section class="hero">
@@ -19,7 +22,7 @@ import { storeUrl } from '../../lib/links';
       <p class="hero__body">{c.hero.body}</p>
 
       <div class="hero__actions">
-        <a class="lm-btn lm-btn--primary hero__cta" href={storeUrl('hero')}>
+        <a class="lm-btn lm-btn--primary hero__cta" href={storeUrl('hero', lang)}>
           {c.hero.ctaPrimary}
         </a>
         <a class="lm-btn lm-btn--ghost hero__cta" href="#result">

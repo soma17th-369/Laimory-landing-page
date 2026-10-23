@@ -9,7 +9,7 @@ SEO 발표 키노트 체크리스트를 기준으로 적용한 내용과 운영 
 | 1 | robots.txt로 검색로봇 접근 경로 제어 | 적용 | `public/robots.txt` |
 | 2 | 검색로봇 User-Agent 확인 | 절차 문서화 | 이 문서 [검색로봇 User-Agent 확인](#검색로봇-user-agent-확인) |
 | 3 | XML Sitemap 작성과 제출 | 작성 자동화, 제출은 수동 | `@astrojs/sitemap` (`astro.config.mjs`) |
-| 4 | 사람이 이해하기 쉬운 URL | 이미 충족 | `/`, `/terms/privacy-policy/1.0` 등 |
+| 4 | 사람이 이해하기 쉬운 URL | 이미 충족 | `/`, `/en/`, `/terms/privacy-policy/1.0` 등 |
 | 5 | URL에 콘텐츠 관련 단어 사용 | 이미 충족 | 약관 slug가 문서 내용을 그대로 설명 (`src/lib/links.ts`) |
 | 6 | canonical URL로 중복 주소 정리 | 적용 | `src/layouts/Layout.astro` + `vercel.json`의 `trailingSlash` |
 | 7 | 구조화 데이터와 JSON-LD | 적용 | `src/layouts/Layout.astro` (Organization + WebSite) |
@@ -27,7 +27,8 @@ SEO 발표 키노트 체크리스트를 기준으로 적용한 내용과 운영 
 
 `@astrojs/sitemap`이 빌드 때 `dist/sitemap-index.xml`과 `sitemap-0.xml`을 만듭니다.
 
-- 영어 페이지(`/en/`)는 2026-10-02에 없앴습니다. 언어가 하나라 hreflang 대체 링크는 싣지 않습니다.
+- 한국어 `/`와 영어 `/en/`에 언어별 대체 링크(`xhtml:link hreflang`)를 함께 싣습니다(`astro.config.mjs`의 `sitemap({ i18n })`).
+- 영어 페이지는 2026-10-02에 없앴다가 2026-10-23에 다시 열었습니다. 그사이 `/en/`은 `/`로 영구 이동했으므로, 다시 연 뒤 Search Console에서 `/en/` 색인을 요청하세요.
 - 약관 문서 6건은 `customPages`로 추가합니다. 주소 목록의 원본은 `src/lib/links.ts`의 `TERMS_URL` 하나입니다 — 약관 버전이 올라가면 그 파일만 고치면 사이트맵도 따라옵니다.
 - `changefreq`/`priority`는 Google이 무시하고, `lastmod`는 불변 약관에 거짓 값이 되기 쉬워 셋 다 넣지 않습니다.
 
@@ -65,15 +66,14 @@ Google은 [공식 크롤러 IP 대역 JSON](https://developers.google.com/static
 ## canonical 규칙
 
 - 같은 페이지가 뒷슬래시 유무로 두 주소로 열리는 중복을 막기 위해 canonical은 **항상 뒷슬래시 붙은 주소**로 통일하고(`Layout.astro`), `vercel.json`의 `trailingSlash: true`가 뒷슬래시 없는 요청을 붙은 주소로 308 리다이렉트합니다.
-- 한국어 페이지 하나만 있어 hreflang은 싣지 않습니다.
+- 언어별 대체 주소는 `<link rel="alternate" hreflang="ko|en|x-default">`로 싣습니다(`Layout.astro`). `x-default`는 한국어 홈입니다.
+- 지금은 두 언어 모두 홈만 있어 대체 주소도 각 언어의 홈입니다. 언어별 하위 페이지가 생기면 같은 페이지끼리 짝짓도록 바꾸세요.
 - 약관 문서는 각 HTML이 자체 canonical(확장자 없는 주소)을 이미 갖고 있어 손대지 않습니다.
 
 ## 리다이렉트 정책 (영구 이동)
 
-- `vercel.json`의 `redirects`가 중복 주소를 정식 주소로 보냅니다: `/index.html` → `/`, `/terms/{slug}/1.0.html` → `/terms/{slug}/1.0`.
-- 없앤 영어 페이지는 `/en/` 아래 모든 주소를 `/`로 영구 이동시켜, 이미 색인된 `/en/`이 홈으로 이어지게 합니다.
-  - 규칙이 `/en/:path*`와 `/en/:path*/` 두 줄인 이유: Vercel은 `source`를 끝 슬래시를 따로 허용하지 않는 정규식으로 바꾸는데, `trailingSlash: true`라 실제 주소는 모두 `/`로 끝납니다. `/en/:path*` 한 줄만 두면 `/en/index.html`만 이동하고 `/en/`은 404가 됩니다(2026-10-23에 실제로 발생).
-  - `trailingSlash: true`인 동안 폴더형 주소(`/xxx/`)를 옮기는 리다이렉트는 끝 슬래시가 붙은 `source`를 함께 두세요.
+- `vercel.json`의 `redirects`가 중복 주소를 정식 주소로 보냅니다: `/index.html` → `/`, `/en/index.html` → `/en/`, `/terms/{slug}/1.0.html` → `/terms/{slug}/1.0`.
+- 주의: Vercel은 `source`를 끝 슬래시를 따로 허용하지 않는 정규식으로 바꾸는데, `trailingSlash: true`라 실제 주소는 모두 `/`로 끝납니다. 폴더형 주소(`/xxx/`)를 옮기는 리다이렉트는 끝 슬래시가 붙은 `source`(예: `/xxx/:path*/`)를 함께 두세요. `/xxx/:path*` 한 줄만 두면 `/xxx/`는 걸리지 않습니다(2026-10-23 `/en/` 404로 실제 발생).
 - `permanent: true`는 **308**을 반환합니다. 검색엔진은 308을 301과 동일한 영구 이동 신호로 취급합니다(리터럴 301이 필요하면 `permanent` 대신 `statusCode: 301`).
 - Vercel은 redirects를 rewrites보다 먼저 처리하고 rewrite 목적지는 내부에서만 해석되므로, `.html` → 확장자 없는 주소 → (rewrite) → `.html` 파일 서빙 구조는 루프가 없습니다.
 - **약관 새 버전을 게시할 때는 rewrite와 redirect를 한 줄씩 함께 추가**하세요(와일드카드 금지 정책은 `docs/terms.md` 참고).

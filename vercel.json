@@ -16,13 +16,8 @@
       "permanent": true
     },
     {
-      "source": "/en/:path*",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/:path*/",
-      "destination": "/",
+      "source": "/en/index.html",
+      "destination": "/en/",
       "permanent": true
     },
     {

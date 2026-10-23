@@ -3,8 +3,12 @@
  * 상단 바. 히어로와 같은 네이비라 경계 없이 이어집니다.
  */
 import Logo from './Logo.astro';
-import { copy as c } from '../lib/copy';
+import LanguagePicker from './LanguagePicker.astro';
+import { getLang, useCopy, LANGUAGES } from '../lib/i18n';
 import { storeUrl } from '../lib/links';
+
+const lang = getLang(Astro.currentLocale);
+const c = useCopy(lang);
 
 const links = [
   { href: '#problem', label: c.nav.problem },
@@ -15,7 +19,7 @@ const links = [
 
 <header class="header">
   <div class="header__inner">
-    <a class="header__logo" href="/">
+    <a class="header__logo" href={LANGUAGES[lang].home}>
       <Logo width={132} />
     </a>
 
@@ -24,7 +28,8 @@ const links = [
     </nav>
 
     <div class="header__end">
-      <a class="lm-btn lm-btn--primary header__cta" href={storeUrl('header')}>
+      <LanguagePicker />
+      <a class="lm-btn lm-btn--primary header__cta" href={storeUrl('header', lang)}>
         {c.nav.download}
       </a>
     </div>
