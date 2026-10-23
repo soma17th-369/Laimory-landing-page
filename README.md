@@ -1,6 +1,6 @@
 # Laimory Landing Page
 
-Laimory를 소개하는 랜딩 페이지입니다. 반응형을 기본으로 지원하며, 한국어 페이지 하나만 운영합니다.
+Laimory를 소개하는 랜딩 페이지입니다. 반응형을 기본으로 지원하며, 한국어(`/`)와 영어(`/en/`) 두 언어로 운영합니다.
 
 화면은 Laimory 랜딩 디자인 시안(v2)을 기반으로 하며, 색·이미지·폰트는 시안을 그대로
 따릅니다. 다만 템플릿처럼 보이게 하는 장식(섹션 머리말 라벨, 단계 번호, 스파클 아이콘,
@@ -28,6 +28,7 @@ npm run preview  # 빌드 결과 미리보기
 src/
 ├─ pages/
 │  ├─ index.astro            # 홈 (/)
+│  ├─ en/index.astro         # 영어 홈 (/en/) — 한국어 홈과 같은 섹션, 문구만 영어
 │  ├─ notices/[slug].astro   # 앱 WebView용 공지사항 (/notices/{slug}/)
 │  └─ 404.astro              # 없는 주소 안내
 ├─ content/
@@ -37,6 +38,7 @@ src/
 │  └─ PlainLayout.astro      # 공지사항 · 404용 가벼운 단독 문서 뼈대
 ├─ components/
 │  ├─ Header.astro           # 상단 바 (히어로와 이어지는 네이비)
+│  ├─ LanguagePicker.astro   # 한국어 · 영어 전환 (KO / EN)
 │  ├─ Footer.astro           # 마무리 다운로드 버튼 · 약관 6종 링크 · 사업자 정보
 │  ├─ Logo.astro             # Laimory 워드마크 (currentColor)
 │  ├─ Icon.astro             # 아이콘 한 개 렌더링
@@ -51,7 +53,8 @@ src/
 │     ├─ HowItWorks.astro    # 한 번 연결해두면 알아서 모인다 (설정 화면 한 장)
 │     └─ Privacy.astro       # "어디까지 기록할지는 내가 정합니다"
 ├─ lib/
-│  ├─ copy.ts                # 모든 문구 — 콘텐츠는 여기서 수정
+│  ├─ copy.ts                # 모든 문구(한국어 · 영어) — 콘텐츠는 여기서 수정
+│  ├─ i18n.ts                # 언어 목록 · 현재 언어의 문구 고르기(useCopy)
 │  ├─ icons.ts               # 디자인 파일에서 추출한 아이콘 패스
 │  ├─ sources.ts             # 데이터 소스 4종의 아이콘 · 배지 색
 │  ├─ links.ts               # 스토어 주소(UTM 포함) · 약관 URL
@@ -71,7 +74,7 @@ public/
 
 ## 자주 하는 수정
 
-- **문구 변경**: `src/lib/copy.ts` 의 값 수정.
+- **문구 변경**: `src/lib/copy.ts` 의 값 수정. 한국어(`ko`)를 바꾸면 영어(`en`)도 같이 맞춥니다.
 - **색상 변경**: `src/styles/tokens.css` 의 `--lm-*` 토큰
 - **스토어 링크 UTM**: `src/lib/links.ts` 의 `storeUrl()`. 헤더 · 히어로 · 푸터 버튼이 `utm_source=website`, `utm_medium=organic`, `utm_campaign=landing` 에 버튼 위치(`utm_content`)를 붙여 Google Play로 보냅니다. 광고로 들어와 랜딩 주소에 `utm_*` 가 붙어 있으면(예: `?utm_source=meta&utm_medium=paid&...`) `withLandingUtm()` 이 그 값을 그대로 referrer에 담아 보냅니다.
 - **공지사항 추가**: `src/content/notices/{slug}.md` 추가. `docs/notices.md` 참고.

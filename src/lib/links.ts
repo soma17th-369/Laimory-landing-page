@@ -2,6 +2,8 @@
  * 바깥으로 나가는 링크를 한곳에 모아 둡니다.
  */
 
+import type { Lang } from './i18n';
+
 /** 스토어 주소. 구조화 데이터(Layout.astro의 JSON-LD)에는 이 주소를 그대로 씁니다. */
 export const DOWNLOAD_URL =
   'https://play.google.com/store/apps/details?id=com.soma369.laimory';
@@ -16,8 +18,9 @@ export type DownloadPlacement = 'header' | 'hero' | 'footer';
  * 광고로 들어온 방문은 페이지에서 withLandingUtm()이 광고 값으로 바꿉니다.
  * utm_* 값은 referrer 파라미터 안에 인코딩해 담아야
  * Play Console과 Install Referrer API에 잡힙니다.
+ * 스토어 화면 언어(hl)는 보고 있던 페이지 언어를 따릅니다.
  */
-export function storeUrl(placement: DownloadPlacement): string {
+export function storeUrl(placement: DownloadPlacement, lang: Lang = 'ko'): string {
   const referrer = new URLSearchParams({
     utm_source: 'website',
     utm_medium: 'organic',
@@ -25,7 +28,7 @@ export function storeUrl(placement: DownloadPlacement): string {
     utm_content: placement,
   });
   const url = new URL(DOWNLOAD_URL);
-  url.searchParams.set('hl', 'ko');
+  url.searchParams.set('hl', lang);
   url.searchParams.set('referrer', referrer.toString());
   return url.toString();
 }

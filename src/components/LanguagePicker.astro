@@ -1,0 +1,70 @@
+---
+/**
+ * 한국어 · 영어 전환. 지금은 홈만 두 언어라 각 언어의 홈으로 이동합니다.
+ * 페이지가 늘어나면 현재 경로를 기준으로 짝을 찾도록 넓히세요.
+ */
+import { getLang, LANGUAGES, type Lang } from '../lib/i18n';
+
+const lang = getLang(Astro.currentLocale);
+const options = Object.entries(LANGUAGES) as [Lang, (typeof LANGUAGES)[Lang]][];
+---
+
+<div class="picker">
+  {
+    options.map(([code, option]) => (
+      <a
+        href={option.home}
+        class:list={['picker__item', { 'picker__item--on': code === lang }]}
+        hreflang={code}
+        lang={code}
+        aria-current={code === lang ? 'page' : undefined}
+        title={option.name}
+        aria-label={option.name}
+      >
+        {option.short}
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .picker {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 7%);
+  }
+
+  .picker__item {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-family: var(--lm-font-label);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--lm-primary-dim);
+    text-decoration: none;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .picker__item:hover {
+    color: #ffffff;
+  }
+
+  .picker__item--on {
+    background: rgb(255 255 255 / 10%);
+    color: #ffffff;
+  }
+
+  @media (max-width: 480px) {
+    .picker__item {
+      padding: 5px 8px;
+      font-size: 11px;
+    }
+  }
+</style>

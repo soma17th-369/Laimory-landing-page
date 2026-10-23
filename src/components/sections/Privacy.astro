@@ -11,7 +11,9 @@
  * 사진 화면은 HTML로 다시 그렸고, 위치 · 알림 화면은 앱 캡처 위에 선택 테두리를 덧그립니다.
  */
 import Icon from '../Icon.astro';
-import { copy as c } from '../../lib/copy';
+import { useCopy } from '../../lib/i18n';
+
+const c = useCopy(Astro.currentLocale);
 
 const p = c.privacy.picker;
 

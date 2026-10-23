@@ -1,5 +1,7 @@
 /**
  * 화면에 보이는 모든 문구는 이 파일에서 관리합니다.
+ * 한국어(ko)와 영어(en)가 같은 SiteCopy 모양이라, 한쪽에만 항목을 넣으면 타입 검사가 알려 줍니다.
+ * 한국어 문구를 바꾸면 영어 문구도 함께 맞춰 주세요.
  */
 
 import type { IconName } from './icons';
@@ -118,6 +120,8 @@ export interface SiteCopy {
     credit: string;
     /** 약관 링크 묶음의 접근성 레이블 */
     legal: string;
+    /** 약관 링크 아래 안내. 약관 원문이 한국어뿐이라 영어 페이지에만 둡니다. */
+    legalNote?: string;
     /** 키가 lib/links.ts의 TERMS_URL과 1:1로 대응합니다. */
     links: {
       termsOfService: string;
@@ -389,4 +393,251 @@ const ko: SiteCopy = {
   },
 };
 
+const en: SiteCopy = {
+  meta: {
+    title: 'Laimory - The AI that remembers your life',
+    description:
+      'Laimory is a journaling app that gathers your photos, calendar events, and location history, and uses AI to turn them into a timeline of your day.',
+    ogImageAlt: 'The Laimory logo on a white background',
+  },
+
+  nav: {
+    problem: 'Why Laimory',
+    how: 'How it works',
+    privacy: 'Privacy',
+    download: 'Download',
+  },
+
+  hero: {
+    titleLine1: 'What did you do today?',
+    titleLine2: 'Laimory sums it up at a glance.',
+    body: 'AI gathers your photos, calendar events, and location history into a timeline of your day.',
+    ctaPrimary: 'Download the app',
+    ctaSecondary: 'See how it works',
+    deviceAlt: "Today's timeline screen in the Laimory app",
+  },
+
+  problem: {
+    title: 'Memories fade, and journaling keeps getting put off.',
+    panels: [
+      {
+        title: 'Remember what you did last Tuesday?',
+        body: 'Piecing together a busy day from scratch is hard.',
+        alt: 'A person on the subway home, looking out the window at the sunset',
+      },
+      {
+        title: 'Stuck in front of a blank journal page?',
+        body: 'By the time you sort out where you went and who you met, journaling gets put off again.',
+        alt: 'A person at night holding a phone that shows an empty journal screen',
+      },
+    ],
+    bridge:
+      'Laimory brings your scattered records together—photos, calendar, GPS, and more—into a timeline of your day.',
+  },
+
+  result: {
+    titleLine1: 'Scattered moments,',
+    titleLine2: 'turned into a day you can read again.',
+    body: 'Laimory gathers the calendar events, photos, and location history already on your phone and weaves them together in order. Without writing a word, your day is kept as a story of its own.',
+    demoLabel: "An example of calendar, photo, and location records becoming today's timeline",
+    sourcesCaption: 'Records already on your phone',
+    timelineCaption: 'Your day, woven by Laimory',
+    calendar: { title: 'Calendar', event: 'Planning meeting', start: '10:00', end: '11:00' },
+    photo: {
+      title: 'Photos',
+      meta: 'Taken at 18:45',
+      alt: 'Cherry tomatoes, eggs, bananas, and vegetables in a shopping basket',
+    },
+    place: { title: 'Location', meta: 'Arrived 08:50', alt: 'A map pinpointing an office in Yeoksam-dong, Seoul' },
+    make: { title: 'Make a timeline', sub: "Today's moments, all in one" },
+    timelineTitle: "Today's timeline",
+    date: 'Thursday, October 1',
+    entries: [
+      {
+        time: '08:50',
+        text: 'Headed into the office as usual.',
+        from: 'place',
+        icon: 'pin',
+        fromLabel: 'From Location',
+      },
+      {
+        time: '10:00',
+        text: 'Had a planning meeting in the morning.',
+        from: 'calendar',
+        icon: 'briefcase',
+        fromLabel: 'From Calendar',
+      },
+      {
+        time: '18:45',
+        text: 'Picked up groceries on the way home.',
+        from: 'photo',
+        icon: 'bag',
+        fromLabel: 'From Photos',
+      },
+    ],
+  },
+
+  how: {
+    title: 'Connect once, and the rest gathers on its own.',
+    body: 'Just choose what you want at the start—photos, calendar, location, or activity—and from then on, AI organizes it into your timeline every day.',
+    alt: "The Laimory home screen. Today's photos, events, places, and notifications are gathered on one screen, with a Make a timeline button below.",
+    // 앱 화면 캡처 위에 얹는 글자는 캡처와 같은 한국어로 둡니다. 앱이 한국어뿐이라 한 화면 안에서 언어가 섞이지 않게 합니다.
+    schedule: ko.how.schedule,
+    scheduleCount: ko.how.scheduleCount,
+    notifications: ko.how.notifications,
+  },
+
+  sources: {
+    title: 'Where does Laimory get my records?',
+    intro:
+      "Laimory organizes your day using information that's already on your phone. You don't link accounts or sign in to other apps. It only reads what you've allowed in your phone's settings.",
+    items: [
+      {
+        key: 'photo',
+        name: 'Photos',
+        from: "From your phone's Gallery",
+        points: [
+          'It only reads photos saved in your gallery. It never deletes or changes them.',
+          'It checks when each photo was taken and, if the photo has location data, where it was taken.',
+          'Screenshots and downloaded images in your gallery may show up as candidates too, but you choose which photos go into a record.',
+          'If you choose **"Allow selected photos only"** in your phone settings, it can see only those photos.',
+          'Photos you pick when creating a record are sent to the server as original files. AI reads the scenes in them to organize your day.',
+        ],
+      },
+      {
+        key: 'calendar',
+        name: 'Calendar',
+        from: "From your phone's Calendar app",
+        points: [
+          'It only reads events in your phone calendar. It never creates or edits them.',
+          {
+            text: 'It only looks at events in calendars you created.',
+            sub: [
+              "Events you added directly to your phone's default calendar (e.g., Samsung Calendar)",
+              {
+                text: 'Events in calendars you created in the Google account synced to your phone',
+                note: 'This includes not just the default calendar but also calendars you made yourself, like "Workout" or "Work."',
+              },
+              'Your own calendars in any other account set to sync with your phone calendar (e.g., Outlook)',
+            ],
+          },
+          "It doesn't read holiday calendars or calendars other people have shared with you.",
+          "It only checks past events from the last month. It doesn't look at upcoming events.",
+          'It reads event titles, times, locations, and notes. For long notes, it only takes the beginning.',
+        ],
+      },
+      {
+        key: 'notification',
+        name: 'Notifications',
+        from: 'From the notifications at the top of your phone',
+        points: [
+          'Once you turn on **"Notification access"** in your phone settings, it only checks notifications that arrive after that. It can\'t see earlier ones.',
+          'It picks out only notifications that make good life records, such as payments, orders and shipping, food delivery, reservations, and travel (departures and boarding).',
+          'If you tapped a notification yourself, it treats that as a meaningful moment and records it too.',
+          {
+            text: "It doesn't collect the notifications below.",
+            sub: [
+              'Chat messages from apps like KakaoTalk (unless you tapped them)',
+              'Ads, and persistent notifications like download progress',
+              'Notifications containing verification codes or passwords',
+              'Notifications containing identity details such as resident registration or passport numbers, or test results',
+            ],
+          },
+          'Emails, card numbers, phone numbers, account numbers, and detailed addresses are masked before saving. For example, a phone number becomes [phone number].',
+        ],
+      },
+      {
+        key: 'place',
+        name: 'Location',
+        from: "From your phone's location services",
+        points: [
+          "It checks your location even when you're not using the app, to work out where you stayed and how you got around.",
+          "While it's checking your location, a notification stays at the top of your phone.",
+          'It works even if you only allow "Approximate location."',
+        ],
+      },
+      {
+        key: 'outbound',
+        name: 'When does my information leave my phone?',
+        from: "Only after you've reviewed what will be sent",
+        points: [
+          'The information it gathers normally stays stored on your phone only.',
+          "It's sent to the server for AI analysis only when you tap Create record, review the items to be sent, and agree.",
+          "What you send is used only for the AI analysis that organizes your day. It isn't viewed for any other purpose, and it's stored in a form that can't be identified.",
+          'You can turn off each item at any time in Settings > Data collection.',
+        ],
+      },
+    ],
+  },
+
+  privacy: {
+    titleLine1: 'How much gets recorded',
+    titleLine2: 'is up to you.',
+    points: [
+      { label: 'Before creating', body: 'See what will be included, and leave out what you want' },
+      {
+        label: 'After saving',
+        body: "Kept in a form that can't be traced back to you, and deletable at any time",
+      },
+    ],
+    deviceLabel:
+      'The photo, place, and notification picker screens in the Laimory app, where you choose whether each photo, visited place, route, and notification goes into your timeline.',
+    // 사진 고르기 화면은 옆 두 폰(앱 캡처)과 맞춰 날짜를 한국어로 둡니다. 사진 설명만 영어입니다.
+    picker: {
+      date: ko.privacy.picker.date,
+      groups: [
+        {
+          date: ko.privacy.picker.groups[0].date,
+          photos: [
+            { alt: 'A cozy living room with Christmas decorations', picked: true },
+            { alt: 'A snowy street in the evening', picked: true },
+            { alt: 'A desk with a laptop on it', picked: false },
+          ],
+        },
+        {
+          date: ko.privacy.picker.groups[1].date,
+          photos: [
+            { alt: 'A plate of tomato pasta', picked: true },
+            { alt: 'A gray concrete building', picked: true },
+            { alt: 'A sunlit bedroom', picked: false },
+          ],
+        },
+      ],
+    },
+  },
+
+  footer: {
+    title: 'Start keeping your days today.',
+    body: 'Get Laimory on Google Play now.',
+    cta: 'Get it on Google Play',
+    legal: 'Terms and policies',
+    legalNote: 'Our terms and policies are available in Korean only.',
+    links: {
+      termsOfService: 'Terms of Service',
+      privacyPolicy: 'Privacy Policy',
+      sensitiveInformationConsent: 'Sensitive Information Consent',
+      thirdPartyProvisionConsent: 'Third-Party Provision Consent',
+      crossBorderTransferConsent: 'Cross-Border Transfer Consent',
+      locationBasedServiceTerms: 'Location-Based Service Terms',
+    },
+    business: {
+      label: 'Business information',
+      ownerLabel: 'Business · Representative',
+      owner: 'DongGeon Lee',
+      registrationLabel: 'Business registration no.',
+      addressLabel: 'Address',
+      address: '85 Jibeom-ro 17-gil, Suseong-gu, Daegu, Republic of Korea',
+      lbsLabel: 'Location-based service report no.',
+      privacyOfficerLabel: 'Chief privacy officer',
+      privacyOfficer: 'DongGeon Lee',
+      contactLabel: 'Contact',
+    },
+    credit: 'Team 369 · Laimory',
+  },
+};
+
+/** 언어별 문구. 컴포넌트에서는 lib/i18n.ts의 useCopy(Astro.currentLocale)로 꺼내 씁니다. */
+export const copies = { ko, en } satisfies Record<string, SiteCopy>;
+
+/** 기본 언어(한국어) 문구. 언어 구분 없이 한국어로만 보이는 페이지에서 씁니다. */
 export const copy = ko;

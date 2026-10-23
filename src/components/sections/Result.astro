@@ -14,7 +14,9 @@
 import Icon from '../Icon.astro';
 import SourceBadge from '../SourceBadge.astro';
 import { sourceLooks } from '../../lib/sources';
-import { copy as c } from '../../lib/copy';
+import { useCopy } from '../../lib/i18n';
+
+const c = useCopy(Astro.currentLocale);
 
 const r = c.result;
 const photo = { src: '/images/result-photo.webp', width: 960, height: 720 };
