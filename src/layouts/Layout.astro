@@ -166,5 +166,17 @@ const jsonLd = {
       <slot />
     </main>
     <Footer />
+
+    <script>
+      /*
+       * 광고로 들어온 방문이면 다운로드 버튼이 광고의 utm_* 값을 스토어로 넘깁니다.
+       * 스크립트가 돌지 않으면 빌드 때 넣은 웹사이트 값으로 나갑니다.
+       */
+      import { withLandingUtm } from '../lib/links';
+
+      document.querySelectorAll<HTMLAnchorElement>('[data-store-link]').forEach((a) => {
+        a.href = withLandingUtm(a.href, location.search);
+      });
+    </script>
   </body>
 </html>

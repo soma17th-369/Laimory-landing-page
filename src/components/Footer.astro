@@ -22,7 +22,7 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
   <div class="footer__inner lm-page">
     <h2 class="footer__title">{c.footer.title}</h2>
     <p class="footer__body">{c.footer.body}</p>
-    <a class="lm-btn lm-btn--primary footer__cta" href={storeUrl('footer', lang)}>
+    <a class="lm-btn lm-btn--primary footer__cta" href={storeUrl('footer', lang)} data-store-link>
       {c.footer.cta}
     </a>
 
