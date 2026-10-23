@@ -73,7 +73,7 @@ public/
 
 - **문구 변경**: `src/lib/copy.ts` 의 값 수정.
 - **색상 변경**: `src/styles/tokens.css` 의 `--lm-*` 토큰
-- **스토어 링크 UTM**: `src/lib/links.ts` 의 `storeUrl()`. 헤더 · 히어로 · 푸터 버튼이 `utm_source=website`, `utm_medium=organic`, `utm_campaign=landing` 에 버튼 위치(`utm_content`)를 붙여 Google Play로 보냅니다. 광고는 랜딩을 거치지 않고 스토어로 바로 연결합니다.
+- **스토어 링크 UTM**: `src/lib/links.ts` 의 `storeUrl()`. 헤더 · 히어로 · 푸터 버튼이 `utm_source=website`, `utm_medium=organic`, `utm_campaign=landing` 에 버튼 위치(`utm_content`)를 붙여 Google Play로 보냅니다. 광고로 들어와 랜딩 주소에 `utm_*` 가 붙어 있으면(예: `?utm_source=meta&utm_medium=paid&...`) `withLandingUtm()` 이 그 값을 그대로 referrer에 담아 보냅니다.
 - **공지사항 추가**: `src/content/notices/{slug}.md` 추가. `docs/notices.md` 참고.
 - **약관 개정**: `docs/terms.md` 참고. 배포된 버전 파일은 덮어쓰지 않고 새 버전을 추가합니다.
 - **푸터 사업자 정보**: 번호·이메일은 `src/lib/business.ts`, 이름·주소·라벨은 `src/lib/copy.ts`의 `footer.business`. 원본은 약관 본문이므로 바꿀 때 약관과 함께 맞춥니다.
