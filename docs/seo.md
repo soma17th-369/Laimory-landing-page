@@ -72,6 +72,8 @@ Google은 [공식 크롤러 IP 대역 JSON](https://developers.google.com/static
 
 - `vercel.json`의 `redirects`가 중복 주소를 정식 주소로 보냅니다: `/index.html` → `/`, `/terms/{slug}/1.0.html` → `/terms/{slug}/1.0`.
 - 없앤 영어 페이지는 `/en/` 아래 모든 주소를 `/`로 영구 이동시켜, 이미 색인된 `/en/`이 홈으로 이어지게 합니다.
+  - 규칙이 `/en/:path*`와 `/en/:path*/` 두 줄인 이유: Vercel은 `source`를 끝 슬래시를 따로 허용하지 않는 정규식으로 바꾸는데, `trailingSlash: true`라 실제 주소는 모두 `/`로 끝납니다. `/en/:path*` 한 줄만 두면 `/en/index.html`만 이동하고 `/en/`은 404가 됩니다(2026-10-23에 실제로 발생).
+  - `trailingSlash: true`인 동안 폴더형 주소(`/xxx/`)를 옮기는 리다이렉트는 끝 슬래시가 붙은 `source`를 함께 두세요.
 - `permanent: true`는 **308**을 반환합니다. 검색엔진은 308을 301과 동일한 영구 이동 신호로 취급합니다(리터럴 301이 필요하면 `permanent` 대신 `statusCode: 301`).
 - Vercel은 redirects를 rewrites보다 먼저 처리하고 rewrite 목적지는 내부에서만 해석되므로, `.html` → 확장자 없는 주소 → (rewrite) → `.html` 파일 서빙 구조는 루프가 없습니다.
 - **약관 새 버전을 게시할 때는 rewrite와 redirect를 한 줄씩 함께 추가**하세요(와일드카드 금지 정책은 `docs/terms.md` 참고).
