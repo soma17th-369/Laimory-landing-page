@@ -117,6 +117,11 @@ export interface SiteCopy {
     body: string;
     /** 마무리 다운로드 버튼 */
     cta: string;
+    /**
+     * 정부 지원 사업 사사 문구 (AI·SW마에스트로). 지정 문구라 임의로 바꾸지 마세요.
+     * 과제 표기(grant)는 줄바꿈 없이 한 덩어리로 보이도록 따로 둡니다.
+     */
+    funding: { statement: string; grant: string };
     credit: string;
     /** 약관 링크 묶음의 접근성 레이블 */
     legal: string;
@@ -389,6 +394,11 @@ const ko: SiteCopy = {
       privacyOfficer: '이동건',
       contactLabel: '문의',
     },
+    funding: {
+      statement:
+        '이 성과는 2026년도 과학기술정보통신부의 재원으로 정보통신기획평가원의 지원을 받아 수행된 결과물임',
+      grant: '(IITP-2026-AI·SW마에스트로)',
+    },
     credit: 'Team 369 · Laimory',
   },
 };
@@ -631,6 +641,11 @@ const en: SiteCopy = {
       privacyOfficerLabel: 'Chief privacy officer',
       privacyOfficer: 'DongGeon Lee',
       contactLabel: 'Contact',
+    },
+    funding: {
+      statement:
+        'This work was supported by the Institute of Information & Communications Technology Planning & Evaluation (IITP) grant funded by the Korea government (MSIT) in 2026',
+      grant: '(IITP-2026-AI·SW Maestro)',
     },
     credit: 'Team 369 · Laimory',
   },
