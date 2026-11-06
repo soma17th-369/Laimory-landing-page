@@ -45,6 +45,10 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
       </address>
     </div>
 
+    <p class="footer__funding">
+      {c.footer.funding.statement} <span class="footer__grant">{c.footer.funding.grant}</span>
+    </p>
+
     <small class="footer__credit">{c.footer.credit}</small>
   </div>
 </footer>
@@ -172,6 +176,22 @@ const termsKeys = Object.keys(TERMS_URL) as (keyof typeof TERMS_URL)[];
     .footer__business span:nth-child(odd) {
       text-align: center;
     }
+  }
+
+  /* 정부 지원 사사 문구 ─ 사업자 정보와 같은 톤으로 작게 */
+  .footer__funding {
+    max-width: 640px;
+    margin: 4px 0 0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--lm-primary-faint);
+    word-break: keep-all;
+    text-wrap: pretty;
+  }
+
+  .footer__grant {
+    white-space: nowrap;
   }
 
   .footer__credit {
