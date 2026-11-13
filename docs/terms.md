@@ -14,9 +14,12 @@
 | --- | --- | --- |
 | 이용약관 | `public/terms/terms-of-service/1.0.html` | `https://www.laimory.app/terms/terms-of-service/1.0` |
 | 개인정보 처리방침 | `public/terms/privacy-policy/1.0.html` | `https://www.laimory.app/terms/privacy-policy/1.0` |
+| 개인정보 처리방침 2.0 (2026-11-20 시행) | `public/terms/privacy-policy/2.0.html` | `https://www.laimory.app/terms/privacy-policy/2.0` |
 | 민감정보 처리 동의 | `public/terms/sensitive-information-consent/1.0.html` | `https://www.laimory.app/terms/sensitive-information-consent/1.0` |
 | 제3자 제공 동의 | `public/terms/third-party-provision-consent/1.0.html` | `https://www.laimory.app/terms/third-party-provision-consent/1.0` |
+| 제3자 제공 동의 2.0 (2026-11-14 시행) | `public/terms/third-party-provision-consent/2.0.html` | `https://www.laimory.app/terms/third-party-provision-consent/2.0` |
 | 국외 이전 동의 | `public/terms/cross-border-transfer-consent/1.0.html` | `https://www.laimory.app/terms/cross-border-transfer-consent/1.0` |
+| 국외 이전 동의 2.0 (2026-11-14 시행) | `public/terms/cross-border-transfer-consent/2.0.html` | `https://www.laimory.app/terms/cross-border-transfer-consent/2.0` |
 | 위치기반서비스 이용약관 | `public/terms/location-based-service-terms/1.0.html` | `https://www.laimory.app/terms/location-based-service-terms/1.0` |
 
 ## HTML 작성 기준
