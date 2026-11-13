@@ -275,7 +275,9 @@ const shots = [
     width: 40.91%;
     aspect-ratio: 376 / 720;
     container-type: inline-size;
-    filter: drop-shadow(0 18px 40px rgb(31 28 23 / 18%));
+    /* drop-shadow는 스테이지 mask와 겹쳐 무대 크기의 밝은 사각형을 남겨서, 폰 모양에 맞춘 box-shadow로 대체 */
+    border-radius: 8% / 4.2%;
+    box-shadow: 0 18px 40px rgb(31 28 23 / 18%);
     transition:
       left 800ms cubic-bezier(0.3, 0.7, 0.2, 1),
       top 800ms cubic-bezier(0.3, 0.7, 0.2, 1),
