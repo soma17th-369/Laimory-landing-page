@@ -61,7 +61,7 @@ export function withLandingUtm(href: string, search: string): string {
  */
 export const TERMS_URL = {
   termsOfService: '/terms/terms-of-service/1.0',
-  privacyPolicy: '/terms/privacy-policy/1.0',
+  privacyPolicy: '/terms/privacy-policy/2.0',
   sensitiveInformationConsent: '/terms/sensitive-information-consent/1.0',
   thirdPartyProvisionConsent: '/terms/third-party-provision-consent/1.0',
   crossBorderTransferConsent: '/terms/cross-border-transfer-consent/1.0',
